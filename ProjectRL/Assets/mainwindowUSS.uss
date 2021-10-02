@@ -1,0 +1,11 @@
+.container {
+    height: 500px;
+    width: 700px;
+    align-items: stretch;
+    flex-direction: column-reverse;
+    justify-content: center;
+    background-color: rgb(115, 115, 115);
+    position: absolute;
+    top: 0;
+    left: 0;
+}

@@ -1,0 +1,26 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="new_storyline_USS.uss" />
+    <ui:VisualElement name="root" style="width: 390px; height: 200px; background-color: rgb(115, 115, 115);">
+        <ui:VisualElement name="titleHolder" style="width: 180px; height: 30px; position: absolute; left: 105px; top: 25px; background-color: rgb(152, 152, 152);">
+            <ui:VisualElement name="numberHolder" style="height: 20px; width: 40px;">
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="number" style="height: 20px; width: 40px; color: rgba(0, 0, 0, 255); top: 5px;">
+                    <ui:VisualElement name="fieldHolder1" style="position: absolute; left: 55px; top: 0; height: 20px; width: 40px; -unity-text-align: middle-left;" />
+                </ui:Label>
+            </ui:VisualElement>
+            <ui:VisualElement name="partHolder" style="height: 20px; width: 40px; position: absolute; left: 100px; top: 0;">
+                <ui:VisualElement name="fieldHolder2" style="position: absolute; left: 35px; top: 5px; height: 20px; width: 40px; -unity-text-align: middle-left; align-items: stretch;" />
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="part" style="height: 20px; width: 30px; color: rgba(0, 0, 0, 255); position: absolute; top: 5px;" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="labelTitle" style="position: absolute; top: 5px; left: 105px; height: 20px; width: 85px; background-color: rgb(185, 185, 185);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="title" style="height: 20px; width: 85px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="userHolder" style="height: 30px; width: 180px; position: absolute; top: 80px; left: 105px; background-color: rgb(152, 152, 152);">
+        <ui:VisualElement name="fieldHolder3" style="height: 20px; width: 170px; position: absolute; top: 5px; left: 5px; background-color: rgb(152, 152, 152);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="labelUser" style="position: absolute; top: 60px; left: 105px; height: 20px; width: 85px; background-color: rgb(185, 185, 185);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="user" style="height: 20px; width: 85px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="buttonHolder" style="height: 20px; width: 90px; position: absolute; top: 115px; left: 150px; background-color: rgb(152, 152, 152);" />
+</ui:UXML>

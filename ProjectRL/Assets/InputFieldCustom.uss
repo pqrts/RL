@@ -1,0 +1,11 @@
+Button
+ {
+background-color: rgb(185, 185, 185);
+color: rgb(0, 0, 0);
+}
+.TextField-Editor
+ {
+background-color: rgb(152, 152, 152);
+color: rgb(0, 0, 0);
+-unity-text-align: upper-left
+}
