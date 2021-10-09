@@ -26,8 +26,9 @@ public class ext_StorylineEd : MonoBehaviour
     [SerializeField] private float _version;
     private DateTime _date;
     //for Initialization part
-    [HideInInspector] public List<GameObject> _list_required_objects = new List<GameObject>();
+     public List<GameObject> _list_required_objects = new List<GameObject>();
     [HideInInspector] public List<Sprite> _list_required_CG = new List<Sprite>();
+    private string req_objects;
     //steps parameters
     private List<RectTransform> _list_active_RectTransforms = new List<RectTransform>();
     public List<GameObject> _list_active_characters = new List<GameObject>();
@@ -52,7 +53,7 @@ public class ext_StorylineEd : MonoBehaviour
     [HideInInspector] public string _phrase;
     private string _phrase_author;
     //characters spawn
-    private GameObject _character;
+   public  GameObject _character;
     ext_CharacterSp _s_CharacterSp;
     [HideInInspector] public float _canvas_moving_pool;
     [HideInInspector] public float _cg_moving_pool;
@@ -248,7 +249,33 @@ public class ext_StorylineEd : MonoBehaviour
     }
     void Init_update()
     {
-
+        _init_to_str.Clear();
+        _date = System.DateTime.Now;
+        _meta = "Created by: " + _user + " at " + _date;
+        _init_to_str.Add(_s_tag._skip + _s_tag._separator + "**************************META**************************");
+        _init_to_str.Add(_s_tag._skip + _s_tag._separator + _meta);
+        _init_to_str.Add(_s_tag._skip + _s_tag._separator + "********************************************************");
+        _init_to_str.Add(_s_tag._init);
+        _init_to_str.Add(_s_tag._skip);
+        _init_to_str.Add(_s_tag._version);
+        _init_to_str.Add("" + _version);
+        _init_to_str.Add(_s_tag._required_objects);
+        string req_obj = "";
+        foreach (GameObject unit in _list_required_objects)
+        {
+            req_obj = req_obj + unit.name + _s_tag._separator;
+        }
+        _init_to_str.Add(req_obj);
+        _init_to_str.Add(_s_tag._required_cg);
+        string req_cg = "";
+        foreach (Sprite unit2 in _list_required_CG)
+        {
+            req_cg = req_cg + unit2.name + _s_tag._separator;
+        }
+        _init_to_str.Add(req_cg);
+        _init_to_str.Add(_s_tag._skip + _s_tag._separator + "********************************************************");
+        _init_to_str.Add(_s_tag._start);
+        _init_to_str.Add(_s_tag._skip);
     }
     Boolean Action_assembly()
     {
@@ -257,43 +284,15 @@ public class ext_StorylineEd : MonoBehaviour
             switch (i)
             {
                 case 0:
-                    if (_id_action == 1)
+                    foreach (string unit in _init_to_str)
                     {
-                        _date = System.DateTime.Now;
-                        _meta = "Created by: " + _user + " at " + _date;
-                        _actions_to_str.Add(_s_tag._skip + _s_tag._separator + "**************************META**************************");
-                        _actions_to_str.Add(_s_tag._skip + _s_tag._separator + _meta);
-                        _actions_to_str.Add(_s_tag._skip + _s_tag._separator + "********************************************************");
-                    }
-                    else
-                    {
-                        break;
+                        _actions_to_str.Add(unit);
                     }
                     break;
                 case 1:
                     if (_id_action == 1)
                     {
-                        _actions_to_str.Add(_s_tag._init);
-                        _actions_to_str.Add(_s_tag._skip);
-                        _actions_to_str.Add(_s_tag._version);
-                        _actions_to_str.Add("" + _version);
-                        _actions_to_str.Add(_s_tag._required_objects);
-                        string req_obj = "";
-                        foreach (GameObject unit in _list_required_objects)
-                        {
-                            req_obj = req_obj + unit.name + _s_tag._separator;
-                        }
-                        _actions_to_str.Add(req_obj);
-                        _actions_to_str.Add(_s_tag._required_cg);
-                        string req_cg = "";
-                        foreach (Sprite unit2 in _list_required_CG)
-                        {
-                            req_cg = req_cg + unit2.name + _s_tag._separator;
-                        }
-                        _actions_to_str.Add(req_cg);
-                        _actions_to_str.Add(_s_tag._skip + _s_tag._separator + "********************************************************");
-                        _actions_to_str.Add(_s_tag._start);
-                        _actions_to_str.Add(_s_tag._skip);
+                       
                     }
                     else
                     {
@@ -353,21 +352,24 @@ public class ext_StorylineEd : MonoBehaviour
                     _CG_image.sprite = _CG_sprite;
                 }
             }
+           // Init_update();
         }
         catch (Exception ex)
         {
             return false;
         }
-
+        
         return true;
     }
-    public string Add_character(string character_path, string character_name)
+    public void Add_character(string character_path, string character_name)
     {
         try
         {
             if (_list_required_objects.Count == 0)
             {
+                Debug.Log("1");
                 _character = _s_CharacterSp.Spawn(_Canvas, _s_folder._root, _s_folder._body, _s_folder._haircut, _s_folder._clothes, _s_folder._makeup, character_path, character_name);
+                Debug.Log("2");
                 _list_required_objects.Add(_character);
                 RectTransform RT = _character.GetComponent<RectTransform>();
                 RT.localPosition = new Vector3(458f, -121f, 0f);
@@ -379,12 +381,14 @@ public class ext_StorylineEd : MonoBehaviour
                 {
                     _list_activated_characters.Add(character_name);
                     _list_active_characters.Add(_character);
+                    
                 }
                 else
                 {
                     _list_inactivated_characters.Add(character_name);
                     _character.SetActive(false);
                 }
+             //   Init_update();
                 _character = null;
             }
             else
@@ -408,6 +412,7 @@ public class ext_StorylineEd : MonoBehaviour
                         _list_inactivated_characters.Add(character_name);
                         _character.SetActive(false);
                     }
+                //    Init_update();
                     _character = null;
                 }
                 else
@@ -420,7 +425,7 @@ public class ext_StorylineEd : MonoBehaviour
         {
             Debug.Log("" + ex.Message);
         }
-        return character_path;
+   
     }
     // >> check class
     Boolean Check_character_activation(string character_name)

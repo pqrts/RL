@@ -174,7 +174,7 @@ public class ui_StorylineEd_editor : EditorWindow
         Label l_charsprite = VTuxml.Q<VisualElement>("sprites") as Label;
         l_charsprite.text = "Character options";
        // Label l_phrase = VTuxml.Q<VisualElement>("_phrase") as Label;
-       // l_phrase.text = "Character _phrase";
+      //  l_phrase.text = "Character _phrase";
         Label l_status = VTuxml.Q<VisualElement>("status") as Label;
         l_status.text = "Initialization : " + s_target._init_status + "      Current file : " + s_target._str_name;
         Label l_status2 = VTuxml.Q<VisualElement>("status2") as Label;
@@ -468,9 +468,11 @@ public class ui_StorylineEd_editor : EditorWindow
         string path = EditorUtility.OpenFilePanel("Select Character", s_target._s_folder._characters, "char");
         if (path.Length != 0)
         {
+           
             string t = path.Replace(s_target._s_folder._root + "/Resources/", "");
             string t2 = t.Replace(".char", "");
             string t3 = t2.Replace("Gamedata/Ñharacters/", "");
+ 
             s_target.Add_character(path, t3);
         }
     }

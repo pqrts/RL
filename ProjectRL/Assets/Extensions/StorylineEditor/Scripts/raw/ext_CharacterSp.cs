@@ -20,8 +20,10 @@ public class ext_CharacterSp : MonoBehaviour
     ext_StorylineEd s_StorylineEd;
     public GameObject Spawn(GameObject Canvas, string root, string p_body, string p_haircut, string p_clothes, string p_makeup, string p_characters, string char_name)
     {
+        Debug.Log(Canvas);
         try
         {
+            
             StreamReader SR = new StreamReader(p_characters, encoding: System.Text.Encoding.GetEncoding("windows-1251"));
             string line = SR.ReadLine();
             _char_runtime_name = line;
