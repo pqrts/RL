@@ -247,6 +247,21 @@ public class ui_StorylineEd_editor : EditorWindow
             }
         });
         character_activate.text = "Activate existing";
+
+        Button control_panel = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                ui_Storyline_control.ShowWindow();
+
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+        control_panel.text = "Open control panel";
+
         Button character_set_author = new Button(() =>
         {
             if (s_target.Check_str_existence(s_target._str_name))
@@ -362,6 +377,7 @@ public class ui_StorylineEd_editor : EditorWindow
         phrase.maxLength = 2000;
         //
         rootVisualElement.Add(VTuxml);
+        VTuxml.Q<VisualElement>("leftToolbar").Add(control_panel);
         VTuxml.Q<VisualElement>("leftToolbar").Add(new_file);
         VTuxml.Q<VisualElement>("leftToolbar").Add(open_file);
         VTuxml.Q<VisualElement>("leftToolbar").Add(character_add);

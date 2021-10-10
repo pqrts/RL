@@ -352,7 +352,7 @@ public class ext_StorylineEd : MonoBehaviour
                     _CG_image.sprite = _CG_sprite;
                 }
             }
-           // Init_update();
+            Init_update();
         }
         catch (Exception ex)
         {
@@ -388,7 +388,7 @@ public class ext_StorylineEd : MonoBehaviour
                     _list_inactivated_characters.Add(character_name);
                     _character.SetActive(false);
                 }
-             //   Init_update();
+                Init_update();
                 _character = null;
             }
             else
@@ -412,7 +412,7 @@ public class ext_StorylineEd : MonoBehaviour
                         _list_inactivated_characters.Add(character_name);
                         _character.SetActive(false);
                     }
-                //    Init_update();
+                    Init_update();
                     _character = null;
                 }
                 else
