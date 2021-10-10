@@ -22,11 +22,12 @@ public class ui_Storyline_control : EditorWindow
         return window_control;
 
     }
-    private void CreateGUI()
+   public  void CreateGUI()
     {
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/control_panel.uxml");
         VisualElement VTuxml = VT.Instantiate();
+        TextField action_number = new TextField();
 
         Label l_actions_total = VTuxml.Q<VisualElement>("total_actions") as Label;
         l_actions_total.text = "Total actions: " + s_target._id_action_total;
@@ -41,7 +42,7 @@ public class ui_Storyline_control : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-                
+                s_target.Select_action(int.Parse(action_number.value));
             }
             else
             {
@@ -50,10 +51,38 @@ public class ui_Storyline_control : EditorWindow
         });
         move_to.text = "Move to: ";
 
-        TextField action_number = new TextField();
+        Button next_action = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+        next_action.text = "Next Action";
+
+        Button previous_action = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+        previous_action.text = "Previous Action";
+
+      
 
 
         VTuxml.Q<VisualElement>("moveto_buttonHolder").Add(move_to);
+        VTuxml.Q<VisualElement>("next_action_Holder").Add(next_action);
+        VTuxml.Q<VisualElement>("previous_action_Holder").Add(previous_action);
         VTuxml.Q<VisualElement>("moveto_fieldHolder").Add(action_number);
         rootVisualElement.Add(VTuxml);
     }

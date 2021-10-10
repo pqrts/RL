@@ -26,7 +26,7 @@ public class ext_StorylineEd : MonoBehaviour
     [SerializeField] private float _version;
     private DateTime _date;
     //for Initialization part
-     public List<GameObject> _list_required_objects = new List<GameObject>();
+    public List<GameObject> _list_required_objects = new List<GameObject>();
     [HideInInspector] public List<Sprite> _list_required_CG = new List<Sprite>();
     private string req_objects;
     //steps parameters
@@ -34,12 +34,16 @@ public class ext_StorylineEd : MonoBehaviour
     public List<GameObject> _list_active_characters = new List<GameObject>();
     private List<string> _list_activated_characters = new List<string>();
     private List<string> _list_inactivated_characters = new List<string>();
+    public List<string> _list_activated_objects = new List<string>();
+    public List<string> _list_inactivated_objects = new List<string>();
+    public List<string> _list_selected_action_data = new List<string>();
+    
     private string _to_activation;
     private string _to_inactivation;
     public string _str_name;
     //for str form
     public List<string> _init_to_str = new List<string>();
-    [HideInInspector] public List<string> _actions_to_str = new List<string>();
+    public List<string> _actions_to_str = new List<string>();
     private List<string> _steps_to_action = new List<string>();
     [HideInInspector] public List<string> _steps_total = new List<string>();
     [HideInInspector] public List<List<string>> _actions_total = new List<List<string>>();
@@ -53,7 +57,7 @@ public class ext_StorylineEd : MonoBehaviour
     [HideInInspector] public string _phrase;
     private string _phrase_author;
     //characters spawn
-   public  GameObject _character;
+    public GameObject _character;
     ext_CharacterSp _s_CharacterSp;
     [HideInInspector] public float _canvas_moving_pool;
     [HideInInspector] public float _cg_moving_pool;
@@ -61,6 +65,10 @@ public class ext_StorylineEd : MonoBehaviour
     [HideInInspector] public RectTransform _CG_RectTransform;
     [HideInInspector] public float _cg_edge_left;
     [HideInInspector] public float _cg_edge_right;
+    ///?
+    ///
+
+
     public void Init()
     {
         _s_CharacterSp = GetComponent<ext_CharacterSp>();
@@ -242,6 +250,8 @@ public class ext_StorylineEd : MonoBehaviour
         {
             _id_action += 1;
             _id_step = 1;
+            _id_action_total += 1;
+            
             _steps_to_action.Clear();
             _steps_total.Clear();
         }
@@ -284,20 +294,10 @@ public class ext_StorylineEd : MonoBehaviour
             switch (i)
             {
                 case 0:
-                    foreach (string unit in _init_to_str)
-                    {
-                        _actions_to_str.Add(unit);
-                    }
+
                     break;
                 case 1:
-                    if (_id_action == 1)
-                    {
-                       
-                    }
-                    else
-                    {
-                        break;
-                    }
+
                     break;
                 case 2:
                     _actions_to_str.Add(_s_tag._action + _s_tag._separator + _id_action);
@@ -358,7 +358,7 @@ public class ext_StorylineEd : MonoBehaviour
         {
             return false;
         }
-        
+
         return true;
     }
     public void Add_character(string character_path, string character_name)
@@ -381,7 +381,7 @@ public class ext_StorylineEd : MonoBehaviour
                 {
                     _list_activated_characters.Add(character_name);
                     _list_active_characters.Add(_character);
-                    
+
                 }
                 else
                 {
@@ -425,8 +425,120 @@ public class ext_StorylineEd : MonoBehaviour
         {
             Debug.Log("" + ex.Message);
         }
-   
+
     }
+    public void Select_action(int target_action_id)
+    {
+        _id_action = target_action_id;
+        Get_selected_action_data();
+    }
+    public void Get_selected_action_data()
+    {
+        int k = 0;
+        _list_selected_action_data.Clear();
+        int id_action_next = _id_action + 1;
+        string action_next = _s_tag._action + _s_tag._separator + id_action_next;
+        string action_current = _s_tag._action + _s_tag._separator +_id_action;
+        for (int i = 0; i < _actions_to_str.Count; i ++)
+        {
+            if (_actions_to_str[i] == action_current)
+            {
+                k = i;
+                goto Fill;
+
+            }
+            else 
+            {
+                continue;
+            }
+        }
+        Fill:
+        for (int r = k; r < _actions_to_str.Count; r++)
+        {
+            if (_actions_to_str[r] != action_next)
+            {
+                _list_selected_action_data.Add(_actions_to_str[r]);
+            }
+            else 
+            {
+                break;
+            }
+        }
+       
+    }
+    
+    
+    public void Selected_action_setup()
+    { 
+    
+    }
+
+    private Boolean Activate_objects()
+    {
+        if (_list_activated_objects.Count != 0)
+        {
+            foreach (string unit in _list_activated_objects)
+            {
+                foreach (GameObject GO in _list_required_objects)
+                {
+                    if (GO.name == unit)
+                    {
+                        GO.SetActive(true);
+                    }
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+        return true;
+    }
+    private Boolean Inactivate_objects()
+    {
+        if (_list_inactivated_objects.Count != 0)
+        {
+            foreach (string unit in _list_inactivated_objects)
+            {
+                foreach (GameObject GO in _list_required_objects)
+                {
+                    if (GO.name == unit)
+                    {
+                        GO.SetActive(false);
+                    }
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+        return true;
+    }
+    private Boolean Relocate_objects(string char_name, float pos_x, float pos_y, float pos_z)
+    {
+        for (int i = 0; i < _list_required_objects.Count; i++)
+        {
+            if (_list_required_objects[i].name == char_name)
+            {
+                _list_required_objects[i].GetComponent<RectTransform>().localPosition = new Vector3(pos_x, pos_y, pos_z);
+                _list_required_objects[i].GetComponent<RectTransform>().localScale = new Vector3(1.8f, 1.8f, 1.8f);
+            }
+        }
+        return true;
+    }
+ //   private Boolean Rescale_objects(string char_name, float sca_x, float sca_y, float sca_z)
+ //   {
+ //       for (int i = 0; i < _list_existing_characters.Count; i++)
+ //       {
+ //           if (_list_existing_characters[i].name == char_name)
+ //           {
+  //              _list_existing_RT[i].localScale = new Vector3(sca_x, sca_y, sca_z);
+   //         }
+    //    }
+   //     return true;
+  //  }
+
     // >> check class
     Boolean Check_character_activation(string character_name)
     {
@@ -555,6 +667,8 @@ public class ext_StorylineEd : MonoBehaviour
         _list_inactivated_characters.Clear();
         _list_activated_characters.Clear();
         _list_required_CG.Clear();
+        _actions_to_str.Clear();
+        _init_to_str.Clear();
         _actions_total.Clear();
         _steps_total.Clear();
         _CG_image.sprite = null;

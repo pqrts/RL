@@ -12,6 +12,8 @@
                 <ui:Label text="Label" display-tooltip-when-elided="true" name="action_number" style="position: absolute; left: 5px; top: 0; height: 20px; width: 50px; font-size: 12px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
             </ui:VisualElement>
             <ui:VisualElement name="moveto_fieldHolder" style="width: 90px; height: 20px; position: absolute; left: 65px; top: 80px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+            <ui:VisualElement name="next_action_Holder" style="width: 150px; height: 20px; position: absolute; left: 5px; top: 105px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+            <ui:VisualElement name="previous_action_Holder" style="width: 150px; height: 20px; position: absolute; left: 5px; top: 130px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
