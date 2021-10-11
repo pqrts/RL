@@ -1,4 +1,6 @@
-using System.Collections;
+using System;
+using System.Globalization;
+
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -37,7 +39,8 @@ public class ext_StorylineEd : MonoBehaviour
     public List<string> _list_activated_objects = new List<string>();
     public List<string> _list_inactivated_objects = new List<string>();
     public List<string> _list_selected_action_data = new List<string>();
-    
+    public List<string> _list_selected_action_steps = new List<string>();
+
     private string _to_activation;
     private string _to_inactivation;
     public string _str_name;
@@ -66,6 +69,7 @@ public class ext_StorylineEd : MonoBehaviour
     [HideInInspector] public float _cg_edge_left;
     [HideInInspector] public float _cg_edge_right;
     ///?
+    private int _id_decomposed_steps;
     ///
 
 
@@ -251,7 +255,7 @@ public class ext_StorylineEd : MonoBehaviour
             _id_action += 1;
             _id_step = 1;
             _id_action_total += 1;
-            
+
             _steps_to_action.Clear();
             _steps_total.Clear();
         }
@@ -436,10 +440,13 @@ public class ext_StorylineEd : MonoBehaviour
     {
         int k = 0;
         _list_selected_action_data.Clear();
+        _list_selected_action_steps.Clear();
+        _list_activated_characters.Clear();
+        _list_inactivated_characters.Clear();
         int id_action_next = _id_action + 1;
         string action_next = _s_tag._action + _s_tag._separator + id_action_next;
-        string action_current = _s_tag._action + _s_tag._separator +_id_action;
-        for (int i = 0; i < _actions_to_str.Count; i ++)
+        string action_current = _s_tag._action + _s_tag._separator + _id_action;
+        for (int i = 0; i < _actions_to_str.Count; i++)
         {
             if (_actions_to_str[i] == action_current)
             {
@@ -447,7 +454,7 @@ public class ext_StorylineEd : MonoBehaviour
                 goto Fill;
 
             }
-            else 
+            else
             {
                 continue;
             }
@@ -459,19 +466,148 @@ public class ext_StorylineEd : MonoBehaviour
             {
                 _list_selected_action_data.Add(_actions_to_str[r]);
             }
-            else 
+            else
             {
+                Decompose_selected_action();
                 break;
             }
         }
-       
+
     }
-    
-    
+    private void Decompose_selected_action()
+    {
+        _id_decomposed_steps = 1;
+        for (int i = 0; i < _list_selected_action_data.Count; i++)
+        {
+            string step_unit = _s_tag._step + _s_tag._separator + _id_decomposed_steps;
+            string step_unit_next = _s_tag._step + _s_tag._separator + (_id_decomposed_steps + 1);
+            string action_unit_next = _s_tag._action + _s_tag._action + (_id_action + 1);
+            if (_list_selected_action_data[i] == step_unit)
+            {
+                string step_raw = "";
+                for (int e = i; e < _list_selected_action_data.Count; e++)
+                {
+                    if (_list_selected_action_data[e] != step_unit_next || _list_selected_action_data[e] != "}")
+                    {
+                        string temp_tag_skip = "          " + _s_tag._skip;
+                        if (_list_selected_action_data[e] != temp_tag_skip && _list_selected_action_data[e] != step_unit && _list_selected_action_data[e] != "/&endstep" && _list_selected_action_data[e] != "}")
+                        {
+                            string t = _list_selected_action_data[e].Replace("          ", "");
+                            step_raw = step_raw + t + _s_tag._separator_vert;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+                _list_selected_action_steps.Add(step_raw);
+            
+
+                step_raw = "";
+                _id_decomposed_steps += 1;
+                
+            }
+        }
+        Selected_action_setup();
+    }
+
     public void Selected_action_setup()
-    { 
-    
+    {
+        string step_raw = _list_selected_action_steps[_id_step - 1];
+        string[] units = step_raw.Split(_s_tag._separator_vert.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        for (int i = 0; i < units.Length; i++)
+        {
+            if (units[i] == _s_tag._activate)
+            {
+                if (units[i + 1] != _s_tag._null)
+                {
+                    string line = units[i + 1];
+                    string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string unit2 in units2)
+                    {
+                        _list_activated_objects.Add(unit2);
+                    }
+                }
+            }
+            if (units[i] == _s_tag._inactivate)
+            {
+                if (units[i + 1] != _s_tag._null)
+                {
+                    string line = units[i + 1];
+                    string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string unit2 in units2)
+                    {
+                        _list_inactivated_objects.Add(unit2);
+                    }
+                }
+            }
+
+            if (units[i] == _s_tag._character_relocated)
+            {
+                if (units[i + 1] != _s_tag._null)
+                {
+                    for (int k = (i + 1); k < units.Length; k++)
+                    {
+                        if (units[k] != _s_tag._skip)
+                        {
+                            string line = units[k];
+                            string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            string p_char_name = units2[0];
+                            foreach (string unittt in units2)
+                            { 
+                            Debug.Log (unittt);
+                            }
+                            float p_pos_char_x = float.Parse(units2[1], CultureInfo.InvariantCulture);
+                            float p_pos_char_y = float.Parse(units2[2], CultureInfo.InvariantCulture);
+                            float p_pos_char_z = float.Parse(units2[3], CultureInfo.InvariantCulture);
+                            Relocate_objects(p_char_name, p_pos_char_x, p_pos_char_y, p_pos_char_z);
+                        }
+                    }
+                }
+            }
+            if (units[i] == _s_tag._rescale)
+            {
+                if (units[i + 1] != _s_tag._null)
+                {
+                    string line = units[i + 1];
+                    string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string p_char_name = units2[0];
+                    float p_sca_x = float.Parse(units2[1], CultureInfo.InvariantCulture);
+                    float p_sca_y = float.Parse(units2[2], CultureInfo.InvariantCulture);
+                    float p_sca_z = float.Parse(units2[3], CultureInfo.InvariantCulture);
+                   // Rescale_objects(p_char_name, p_sca_x, p_sca_y, p_sca_z);
+                }
+            }
+            if (units[i] == _s_tag._cg_position)
+            {
+                if (units[i + 1] != _s_tag._null)
+                {
+                    string line = units[i + 1];
+                    string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    float p_pos_cg_x = float.Parse(units2[0], CultureInfo.InvariantCulture);
+                    float p_pos_cg_y = float.Parse(units2[1], CultureInfo.InvariantCulture);
+                    float p_pos_cg_z = float.Parse(units2[2], CultureInfo.InvariantCulture);
+                    Vector3 new_pos_cg = new Vector3(p_pos_cg_x, p_pos_cg_y, p_pos_cg_z);
+                    _CG_image.GetComponent<RectTransform>().localPosition = new_pos_cg;
+                }
+            }
+            if (i == units.Length - 1)
+            {
+                Activate_objects();
+                Inactivate_objects();
+                _id_step += 1;
+                break;
+            }
+        }
+  
     }
+
 
     private Boolean Activate_objects()
     {
@@ -527,17 +663,17 @@ public class ext_StorylineEd : MonoBehaviour
         }
         return true;
     }
- //   private Boolean Rescale_objects(string char_name, float sca_x, float sca_y, float sca_z)
- //   {
- //       for (int i = 0; i < _list_existing_characters.Count; i++)
- //       {
- //           if (_list_existing_characters[i].name == char_name)
- //           {
-  //              _list_existing_RT[i].localScale = new Vector3(sca_x, sca_y, sca_z);
-   //         }
+    //   private Boolean Rescale_objects(string char_name, float sca_x, float sca_y, float sca_z)
+    //   {
+    //       for (int i = 0; i < _list_existing_characters.Count; i++)
+    //       {
+    //           if (_list_existing_characters[i].name == char_name)
+    //           {
+    //              _list_existing_RT[i].localScale = new Vector3(sca_x, sca_y, sca_z);
+    //         }
     //    }
-   //     return true;
-  //  }
+    //     return true;
+    //  }
 
     // >> check class
     Boolean Check_character_activation(string character_name)
@@ -661,6 +797,8 @@ public class ext_StorylineEd : MonoBehaviour
     {
         // >> clearing method
         _str_name = file_name;
+        _list_selected_action_data.Clear();
+        _list_selected_action_steps.Clear();
         _list_required_objects.Clear();
         _list_active_characters.Clear();
         _list_active_RectTransforms.Clear();

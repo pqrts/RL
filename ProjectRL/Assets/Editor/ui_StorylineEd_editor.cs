@@ -289,8 +289,7 @@ public class ui_StorylineEd_editor : EditorWindow
                 if (s_target.New_action())
                 {
                     EditorUtility.DisplayDialog("Notice", "New action created", "OK");
-                    ui_Storyline_control s_control = (ui_Storyline_control)FindObjectOfType(typeof(ui_Storyline_control));
-                    s_control.CreateGUI();
+                   
                     CreateGUI();
                 }
             }
