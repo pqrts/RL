@@ -24,6 +24,7 @@ public class ui_Storyline_control : EditorWindow
     }
    public  void CreateGUI()
     {
+  
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/control_panel.uxml");
         VisualElement VTuxml = VT.Instantiate();
@@ -38,6 +39,48 @@ public class ui_Storyline_control : EditorWindow
         Label l_action_number = VTuxml.Q<VisualElement>("action_number") as Label;
         l_action_number.text = "Action ¹: ";
 
+        Label l_info = VTuxml.Q<VisualElement>("info") as Label;
+        l_info.text = "Info";
+
+        Label l_moveto = VTuxml.Q<VisualElement>("move_to") as Label;
+        l_moveto.text = "Move to action:";
+
+        Label l_act_selection = VTuxml.Q<VisualElement>("act_selection") as Label;
+        l_act_selection.text = "Switching";
+
+        Label l_status_main = VTuxml.Q<VisualElement>("status") as Label;
+        l_status_main.text = "Action status";
+
+        Label l_status_file = VTuxml.Q<VisualElement>("status_file") as Label;
+        l_status_file.text = "Create .str";
+
+        Label l_status_cg = VTuxml.Q<VisualElement>("status_CG") as Label;
+        l_status_cg.text = "Select CG";
+
+
+        ////
+        Label l_status_1 = VTuxml.Q<VisualElement>("status_1") as Label;
+        if (s_target.Check_str_existence(s_target._str_name))
+        {
+            l_status_1.text = "Done";
+        }
+        else 
+        {
+            l_status_1.text = "Null";
+        }
+        Label l_status_2 = VTuxml.Q<VisualElement>("status_2") as Label;
+        if (s_target._CG_sprite != null)
+        {
+            l_status_2.text = "Done";
+        }
+        else 
+        {
+            l_status_2.text = "Null";
+        }
+
+
+        ///
+
         Button move_to = new Button(() =>
         {
             if (s_target.Check_str_existence(s_target._str_name))
@@ -49,7 +92,7 @@ public class ui_Storyline_control : EditorWindow
                 EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
             }
         });
-        move_to.text = "Move to: ";
+        move_to.text = "Move";
 
         Button next_action = new Button(() =>
         {

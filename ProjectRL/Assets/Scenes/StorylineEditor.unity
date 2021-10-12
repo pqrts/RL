@@ -310,9 +310,9 @@ MonoBehaviour:
   _Canvas: {fileID: 1151944298}
   _ref_resolution_widht: 1440
   _init_status: successful
-  _id_action: 1
+  _id_action: 2
   _id_action_total: 3
-  _id_step: 2
+  _id_step: 1
   _id_assembly_stages: 4
   _s_folder: {fileID: 251693748}
   _user: sdgsdg
@@ -339,32 +339,10 @@ MonoBehaviour:
   - Father
   - Father
   - Father
-  _list_inactivated_objects: []
-  _list_selected_action_data:
-  - /&action#1
-  - '{'
-  - /&phrase#1
-  - gthrh
-  - /&author
   - Father
-  - /&sprite_CG
-  - cg_ggroom_7
-  - /&step#1
-  - '          >>'
-  - '          /&cg_position'
-  - '          1102#0#0#'
-  - '          /&char_activ'
-  - '          Father#'
-  - '          /&char_inact'
-  - '          >null'
-  - '          /&char_reloc'
-  - '          Father#458#-121#0#'
-  - '          >>'
-  - /&endstep
-  - '}'
-  - '>>'
-  _list_selected_action_steps:
-  - /&cg_position||1102#0#0#||/&char_activ||Father#||/&char_inact||>null||/&char_reloc||Father#458#-121#0#||>>||
+  - Father
+  - Father
+  _list_inactivated_objects: []
   _str_name: storyline_3_part_1.str
   _init_to_str:
   - '>>#**************************META**************************'
@@ -451,7 +429,7 @@ MonoBehaviour:
   _steps_total: []
   _CG_sprite: {fileID: 1688042941}
   _CG_image: {fileID: 268568670}
-  _phrase: gthrh
+  _phrase: 
   _character: {fileID: 0}
   _canvas_moving_pool: 3114
   _cg_moving_pool: 0
@@ -555,10 +533,77 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e0a0394937f8b4f42be2d07fd6f12f2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _list_before_selected_data: []
-  _list_after_selected_data: []
-  _list_selected_action_data: []
-  _list_selected_action_steps: []
+  _list_before_selected_data:
+  - /&action#1
+  - '{'
+  - /&phrase#1
+  - gthrh
+  - /&author
+  - Father
+  - /&sprite_CG
+  - cg_ggroom_7
+  - /&step#1
+  - '          >>'
+  - '          /&cg_position'
+  - '          1102#0#0#'
+  - '          /&char_activ'
+  - '          Father#'
+  - '          /&char_inact'
+  - '          >null'
+  - '          /&char_reloc'
+  - '          Father#458#-121#0#'
+  - '          >>'
+  - /&endstep
+  - '}'
+  - '>>'
+  _list_after_selected_data:
+  - /&action#3
+  - '{'
+  - /&phrase#3
+  - gthrh
+  - /&author
+  - Father
+  - /&sprite_CG
+  - cg_ggroom_7
+  - /&step#1
+  - '          >>'
+  - '          /&cg_position'
+  - '          1102#0#0#'
+  - '          /&char_activ'
+  - '          >null'
+  - '          /&char_inact'
+  - '          >null'
+  - '          /&char_reloc'
+  - '          Father#-1090#-121#0#'
+  - '          >>'
+  - /&endstep
+  - '}'
+  - '>>'
+  _list_selected_action_data:
+  - /&action#2
+  - '{'
+  - /&phrase#2
+  - gthrh
+  - /&author
+  - Father
+  - /&sprite_CG
+  - cg_ggroom_7
+  - /&step#1
+  - '          >>'
+  - '          /&cg_position'
+  - '          1102#0#0#'
+  - '          /&char_activ'
+  - '          >null'
+  - '          /&char_inact'
+  - '          >null'
+  - '          /&char_reloc'
+  - '          Father#-1090#-121#0#'
+  - '          >>'
+  - /&endstep
+  - '}'
+  - '>>'
+  _list_selected_action_steps:
+  - /&cg_position||1102#0#0#||/&char_activ||>null||/&char_inact||>null||/&char_reloc||Father#-1090#-121#0#||>>||
 --- !u!1 &268568668
 GameObject:
   m_ObjectHideFlags: 0
@@ -1093,7 +1138,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 458, y: -121}
+  m_AnchoredPosition: {x: -1090, y: -121}
   m_SizeDelta: {x: 720, y: 1280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &814252745

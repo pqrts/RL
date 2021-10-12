@@ -1,19 +1,38 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <ui:VisualElement name="VisualElement" style="width: 170px; height: 500px; position: absolute; left: 0; top: 0; color: rgb(195, 195, 195); background-color: rgb(115, 115, 115);">
-        <ui:VisualElement name="leftToolbar" style="background-color: rgb(152, 152, 152); width: 160px; height: 490px; position: absolute; left: 5px; top: 5px;">
-            <ui:VisualElement name="total_action_Holder" style="width: 150px; height: 20px; position: absolute; left: 5px; top: 5px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
-                <ui:Label text="Label" display-tooltip-when-elided="true" name="total_actions" style="position: absolute; left: 5px; top: 0; height: 20px; width: 140px; font-size: 12px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
+    <ui:VisualElement name="VisualElement" style="background-color: rgb(115, 115, 115); height: 500px; width: 170px;">
+        <ui:VisualElement name="leftToolbar" style="background-color: rgb(152, 152, 152); width: 160px; height: 35px; position: absolute; left: 5px; top: 15px;" />
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="total_actions" style="position: absolute; left: 5px; top: 20px; height: 10px; width: 160px; font-size: 12px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="current_action" style="position: absolute; left: 5px; top: 35px; height: 10px; width: 160px; font-size: 12px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
+        <ui:VisualElement name="moveto_buttonHolder" style="width: 160px; height: 20px; position: absolute; left: 5px; top: 85px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+        <ui:VisualElement name="moveto_Holder" style="width: 60px; height: 20px; position: absolute; left: 5px; top: 65px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="action_number" style="color: rgb(0, 0, 0);" />
+            <ui:VisualElement name="moveto_fieldHolder" style="width: 100px; height: 20px; position: absolute; left: 60px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="next_action_Holder" style="width: 160px; height: 20px; position: absolute; left: 5px; top: 120px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+        <ui:VisualElement name="previous_action_Holder" style="width: 160px; height: 20px; position: absolute; left: 5px; top: 140px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="labelInfo" style="top: 5px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="info" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_moveto" style="top: 55px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="move_to" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_selection" style="top: 110px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="act_selection" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_status" style="top: 165px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="status" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+        <ui:VisualElement name="status_file_Holder" style="width: 115px; height: 20px; position: absolute; left: 0; top: 15px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_file" style="color: rgb(0, 0, 0);" />
+            <ui:VisualElement name="label_status" style="width: 40px; height: 20px; position: absolute; left: 120px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="status_1" style="color: rgb(0, 0, 0);" />
             </ui:VisualElement>
-            <ui:VisualElement name="current_action_Holder" style="width: 150px; height: 20px; position: absolute; left: 5px; top: 30px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
-                <ui:Label text="Label" display-tooltip-when-elided="true" name="current_action" style="position: absolute; left: 5px; top: 0; height: 20px; width: 140px; font-size: 12px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status_CG_Holder" style="width: 115px; height: 20px; position: absolute; left: 0; top: 40px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_CG" style="color: rgb(0, 0, 0);" />
+            <ui:VisualElement name="label_status" style="width: 40px; height: 20px; position: absolute; left: 120px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="status_2" style="color: rgb(0, 0, 0);" />
             </ui:VisualElement>
-            <ui:VisualElement name="moveto_buttonHolder" style="width: 150px; height: 20px; position: absolute; left: 5px; top: 55px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
-            <ui:VisualElement name="moveto_Holder" style="width: 60px; height: 20px; position: absolute; left: 5px; top: 80px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
-                <ui:Label text="Label" display-tooltip-when-elided="true" name="action_number" style="position: absolute; left: 5px; top: 0; height: 20px; width: 50px; font-size: 12px; -unity-text-align: middle-left; color: rgb(0, 0, 0);" />
-            </ui:VisualElement>
-            <ui:VisualElement name="moveto_fieldHolder" style="width: 90px; height: 20px; position: absolute; left: 65px; top: 80px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
-            <ui:VisualElement name="next_action_Holder" style="width: 150px; height: 20px; position: absolute; left: 5px; top: 105px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
-            <ui:VisualElement name="previous_action_Holder" style="width: 150px; height: 20px; position: absolute; left: 5px; top: 130px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

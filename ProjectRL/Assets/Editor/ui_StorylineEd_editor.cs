@@ -167,8 +167,15 @@ public class ui_StorylineEd_editor : EditorWindow
         l_preview.text = "Character preview";
         Label l_description = VTuxml.Q<VisualElement>("description") as Label;
         l_description.text = "Description";
-        Label l_tools = VTuxml.Q<VisualElement>("tools") as Label;
-        l_tools.text = "Options";
+        Label l_tools = VTuxml.Q<VisualElement>("toolbar1") as Label;
+        l_tools.text = "Tools";
+
+        Label l_file_opt = VTuxml.Q<VisualElement>("toolbar2") as Label;
+        l_file_opt.text = "File options";
+
+        Label l_editing_opt = VTuxml.Q<VisualElement>("toolbar3") as Label;
+        l_editing_opt.text = "Editing options";
+
         Label l_charname = VTuxml.Q<VisualElement>("charname") as Label;
         l_charname.text = "Runtime Name";
         Label l_charsprite = VTuxml.Q<VisualElement>("sprites") as Label;
@@ -260,7 +267,7 @@ public class ui_StorylineEd_editor : EditorWindow
                 EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
             }
         });
-        control_panel.text = "Open control panel";
+        control_panel.text = "Control panel";
 
         Button character_set_author = new Button(() =>
         {
@@ -298,7 +305,7 @@ public class ui_StorylineEd_editor : EditorWindow
                 EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
             }
         });
-        new_action.text = "New action";
+        new_action.text = "New Action";
 
 
         Button select_cg = new Button(() =>
@@ -332,6 +339,40 @@ public class ui_StorylineEd_editor : EditorWindow
         });
         new_step.text = "New Step";
 
+        Button char_editor = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                if (s_target.Create_step())
+                {
+                    CreateGUI();
+                }
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+
+        });
+        char_editor.text = "Character Editor";
+
+        Button save_progress = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                if (s_target.Create_step())
+                {
+                    CreateGUI();
+                }
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+
+        });
+        save_progress.text = "Save";
+
         Button save_action = new Button(() =>
         {
             if (s_target.Check_str_existence(s_target._str_name))
@@ -345,7 +386,52 @@ public class ui_StorylineEd_editor : EditorWindow
             }
         });
 
-        save_action.text = "Write action to str";
+        save_action.text = "Export to .str";
+
+        Button add_choise = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                s_target.Form_str();
+                EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+
+        add_choise.text = "Add Choise";
+
+        Button jump_to = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                s_target.Form_str();
+                EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+
+        jump_to.text = "Add jump marker";
+
+        Button delete_character = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                s_target.Form_str();
+                EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+
+        delete_character.text = "Delete character";
 
         Button new_file = new Button(() =>
         {
@@ -356,6 +442,15 @@ public class ui_StorylineEd_editor : EditorWindow
 
         new_file.text = "New .str";
 
+        Button add_effect = new Button(() =>
+        {
+
+            ui_Storyline_create.ShowWindow();
+
+        });
+
+        add_effect.text = "Add effect";
+
         Button open_file = new Button(() =>
         {
 
@@ -364,11 +459,19 @@ public class ui_StorylineEd_editor : EditorWindow
 
         open_file.text = "Open .str";
 
+        Button delete_char_from_act = new Button(() =>
+        {
+
+            Select_str();
+        });
+
+        delete_char_from_act.text = "Delete from current";
+
         TextField phrase = new TextField();
 
         var SS4 = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/InputFieldCustom.uss");
 
-        rootVisualElement.styleSheets.Add(SS4);
+       // rootVisualElement.styleSheets.Add(SS4);
         phrase.Q(TextField.textInputUssName).AddToClassList("TextField-Editor");
         phrase.multiline = true;
         phrase.style.whiteSpace = WhiteSpace.Normal;
@@ -378,18 +481,27 @@ public class ui_StorylineEd_editor : EditorWindow
         //
         rootVisualElement.Add(VTuxml);
         VTuxml.Q<VisualElement>("leftToolbar").Add(control_panel);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(new_file);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(open_file);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(character_add);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(new_action);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(select_cg);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(new_step);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(save_action);
+        VTuxml.Q<VisualElement>("leftToolbar").Add(char_editor);
+        
+        VTuxml.Q<VisualElement>("leftToolbar2").Add(new_file);
+        VTuxml.Q<VisualElement>("leftToolbar2").Add(open_file);
+        VTuxml.Q<VisualElement>("leftToolbar2").Add(save_progress);
+
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(select_cg);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(character_add);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(delete_character);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(new_step);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(jump_to);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(add_choise);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(add_effect);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(new_action);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(save_action);
 
         VTuxml.Q<VisualElement>("phraseHolder2").Add(phrase);
         VTuxml.Q<VisualElement>("CharspriteHolder").Add(character_deactivate);
         VTuxml.Q<VisualElement>("CharspriteHolder").Add(character_activate);
         VTuxml.Q<VisualElement>("CharspriteHolder").Add(character_set_author);
+        VTuxml.Q<VisualElement>("CharspriteHolder").Add(delete_char_from_act);
         VTuxml.Q<VisualElement>("charlistBackgroung").Add(listView);
         VTuxml.Q<VisualElement>("steplistArea").Add(listView2);
         VTuxml.Q<VisualElement>("CG_sliderHolder").Add(CG_positioning);
