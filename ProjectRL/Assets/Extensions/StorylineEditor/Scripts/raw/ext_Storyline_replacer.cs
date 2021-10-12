@@ -27,28 +27,32 @@ public class ext_Storyline_replacer : MonoBehaviour
     }
     public Boolean Get_selected_action_data()
     {
-       
+
         int k = 0;
+        int f = 0;
         _list_selected_action_data.Clear();
         _list_selected_action_steps.Clear();
-      
+        _list_before_selected_data.Clear();
+        _list_after_selected_data.Clear();
+
         int id_action_next = _s_str_ed._id_action + 1;
         string action_next = _s_tag._action + _s_tag._separator + id_action_next;
         string action_current = _s_tag._action + _s_tag._separator + _s_str_ed._id_action;
+
         for (int i = 0; i < _s_str_ed._actions_to_str.Count; i++)
         {
-            if (_s_str_ed._actions_to_str[i] == action_current)
+            if (_s_str_ed._actions_to_str[i] != action_current)
             {
-                k = i;
-                goto Fill;
-
+                _list_before_selected_data.Add(_s_str_ed._actions_to_str[i]);
             }
             else
             {
-                continue;
+                k = i;
+                goto Selected;
             }
+
         }
-        Fill:
+        Selected:
         for (int r = k; r < _s_str_ed._actions_to_str.Count; r++)
         {
             if (_s_str_ed._actions_to_str[r] != action_next)
@@ -57,9 +61,15 @@ public class ext_Storyline_replacer : MonoBehaviour
             }
             else
             {
+                f = r;
                 Decompose_selected_action();
-                break;
+                goto After;
             }
+        }
+        After:
+        for (int l = f; l < _s_str_ed._actions_to_str.Count; l++)
+        {
+            _list_after_selected_data.Add(_s_str_ed._actions_to_str[l]);
         }
         return true;
     }

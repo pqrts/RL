@@ -482,10 +482,6 @@ public class ext_StorylineEd : MonoBehaviour
                             string line = units[k];
                             string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                             string p_char_name = units2[0];
-                            foreach (string unittt in units2)
-                            {
-                                Debug.Log(unittt);
-                            }
                             float p_pos_char_x = float.Parse(units2[1], CultureInfo.InvariantCulture);
                             float p_pos_char_y = float.Parse(units2[2], CultureInfo.InvariantCulture);
                             float p_pos_char_z = float.Parse(units2[3], CultureInfo.InvariantCulture);
