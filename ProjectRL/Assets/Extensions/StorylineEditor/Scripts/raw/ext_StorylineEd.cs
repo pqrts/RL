@@ -22,6 +22,7 @@ public class ext_StorylineEd : MonoBehaviour
     //scripts
     global_taglist _s_tag;
     public global_folders _s_folder;
+    ext_Storyline_replacer _s_replacer;
     //metadata
     private string _meta;
     [SerializeField] public string _user;
@@ -38,8 +39,6 @@ public class ext_StorylineEd : MonoBehaviour
     private List<string> _list_inactivated_characters = new List<string>();
     public List<string> _list_activated_objects = new List<string>();
     public List<string> _list_inactivated_objects = new List<string>();
-    public List<string> _list_selected_action_data = new List<string>();
-    public List<string> _list_selected_action_steps = new List<string>();
 
     private string _to_activation;
     private string _to_inactivation;
@@ -78,8 +77,9 @@ public class ext_StorylineEd : MonoBehaviour
         _s_CharacterSp = GetComponent<ext_CharacterSp>();
         _s_tag = GetComponent<global_taglist>();
         _s_folder = GetComponent<global_folders>();
+        _s_replacer = GetComponent<ext_Storyline_replacer>();
         _CG_RectTransform = _CG_image.GetComponent<RectTransform>();
-        if (_s_folder.Setup_folders() && _s_tag.Setup_tags() && Get_pos_limits())
+        if (_s_folder.Setup_folders() && _s_tag.Setup_tags() && Get_pos_limits() && _s_replacer.Get_scripts())
         {
             _init_status = "successful";
         }
@@ -371,9 +371,9 @@ public class ext_StorylineEd : MonoBehaviour
         {
             if (_list_required_objects.Count == 0)
             {
-                Debug.Log("1");
+
                 _character = _s_CharacterSp.Spawn(_Canvas, _s_folder._root, _s_folder._body, _s_folder._haircut, _s_folder._clothes, _s_folder._makeup, character_path, character_name);
-                Debug.Log("2");
+
                 _list_required_objects.Add(_character);
                 RectTransform RT = _character.GetComponent<RectTransform>();
                 RT.localPosition = new Vector3(458f, -121f, 0f);
@@ -434,92 +434,15 @@ public class ext_StorylineEd : MonoBehaviour
     public void Select_action(int target_action_id)
     {
         _id_action = target_action_id;
-        Get_selected_action_data();
-    }
-    public void Get_selected_action_data()
-    {
-        int k = 0;
-        _list_selected_action_data.Clear();
-        _list_selected_action_steps.Clear();
         _list_activated_characters.Clear();
         _list_inactivated_characters.Clear();
-        int id_action_next = _id_action + 1;
-        string action_next = _s_tag._action + _s_tag._separator + id_action_next;
-        string action_current = _s_tag._action + _s_tag._separator + _id_action;
-        for (int i = 0; i < _actions_to_str.Count; i++)
-        {
-            if (_actions_to_str[i] == action_current)
-            {
-                k = i;
-                goto Fill;
+        _s_replacer.Get_selected_action_data();
 
-            }
-            else
-            {
-                continue;
-            }
-        }
-        Fill:
-        for (int r = k; r < _actions_to_str.Count; r++)
-        {
-            if (_actions_to_str[r] != action_next)
-            {
-                _list_selected_action_data.Add(_actions_to_str[r]);
-            }
-            else
-            {
-                Decompose_selected_action();
-                break;
-            }
-        }
-
-    }
-    private void Decompose_selected_action()
-    {
-        _id_decomposed_steps = 1;
-        for (int i = 0; i < _list_selected_action_data.Count; i++)
-        {
-            string step_unit = _s_tag._step + _s_tag._separator + _id_decomposed_steps;
-            string step_unit_next = _s_tag._step + _s_tag._separator + (_id_decomposed_steps + 1);
-            string action_unit_next = _s_tag._action + _s_tag._action + (_id_action + 1);
-            if (_list_selected_action_data[i] == step_unit)
-            {
-                string step_raw = "";
-                for (int e = i; e < _list_selected_action_data.Count; e++)
-                {
-                    if (_list_selected_action_data[e] != step_unit_next || _list_selected_action_data[e] != "}")
-                    {
-                        string temp_tag_skip = "          " + _s_tag._skip;
-                        if (_list_selected_action_data[e] != temp_tag_skip && _list_selected_action_data[e] != step_unit && _list_selected_action_data[e] != "/&endstep" && _list_selected_action_data[e] != "}")
-                        {
-                            string t = _list_selected_action_data[e].Replace("          ", "");
-                            step_raw = step_raw + t + _s_tag._separator_vert;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                _list_selected_action_steps.Add(step_raw);
-            
-
-                step_raw = "";
-                _id_decomposed_steps += 1;
-                
-            }
-        }
-        Selected_action_setup();
     }
 
     public void Selected_action_setup()
     {
-        string step_raw = _list_selected_action_steps[_id_step - 1];
+        string step_raw = _s_replacer._list_selected_action_steps[_id_step - 1];
         string[] units = step_raw.Split(_s_tag._separator_vert.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < units.Length; i++)
         {
@@ -560,8 +483,8 @@ public class ext_StorylineEd : MonoBehaviour
                             string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                             string p_char_name = units2[0];
                             foreach (string unittt in units2)
-                            { 
-                            Debug.Log (unittt);
+                            {
+                                Debug.Log(unittt);
                             }
                             float p_pos_char_x = float.Parse(units2[1], CultureInfo.InvariantCulture);
                             float p_pos_char_y = float.Parse(units2[2], CultureInfo.InvariantCulture);
@@ -581,7 +504,7 @@ public class ext_StorylineEd : MonoBehaviour
                     float p_sca_x = float.Parse(units2[1], CultureInfo.InvariantCulture);
                     float p_sca_y = float.Parse(units2[2], CultureInfo.InvariantCulture);
                     float p_sca_z = float.Parse(units2[3], CultureInfo.InvariantCulture);
-                   // Rescale_objects(p_char_name, p_sca_x, p_sca_y, p_sca_z);
+                    // Rescale_objects(p_char_name, p_sca_x, p_sca_y, p_sca_z);
                 }
             }
             if (units[i] == _s_tag._cg_position)
@@ -601,14 +524,12 @@ public class ext_StorylineEd : MonoBehaviour
             {
                 Activate_objects();
                 Inactivate_objects();
-                _id_step += 1;
+
                 break;
             }
         }
-  
+
     }
-
-
     private Boolean Activate_objects()
     {
         if (_list_activated_objects.Count != 0)
@@ -797,8 +718,8 @@ public class ext_StorylineEd : MonoBehaviour
     {
         // >> clearing method
         _str_name = file_name;
-        _list_selected_action_data.Clear();
-        _list_selected_action_steps.Clear();
+        _s_replacer._list_selected_action_data.Clear();
+        _s_replacer._list_selected_action_steps.Clear();
         _list_required_objects.Clear();
         _list_active_characters.Clear();
         _list_active_RectTransforms.Clear();

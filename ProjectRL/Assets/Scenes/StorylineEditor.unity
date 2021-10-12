@@ -286,6 +286,7 @@ GameObject:
   - component: {fileID: 251693750}
   - component: {fileID: 251693748}
   - component: {fileID: 251693749}
+  - component: {fileID: 251693751}
   m_Layer: 0
   m_Name: 'StorylineEditor '
   m_TagString: Untagged
@@ -335,6 +336,7 @@ MonoBehaviour:
   - Odry
   - Odry
   - Odry
+  - Father
   - Father
   - Father
   _list_inactivated_objects: []
@@ -541,6 +543,22 @@ MonoBehaviour:
   _null: '>null'
   _separator_vert: '||'
   _cg_position: /&cg_position
+--- !u!114 &251693751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 251693745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0a0394937f8b4f42be2d07fd6f12f2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _list_before_selected_data: []
+  _list_after_selected_data: []
+  _list_selected_action_data: []
+  _list_selected_action_steps: []
 --- !u!1 &268568668
 GameObject:
   m_ObjectHideFlags: 0
@@ -576,7 +594,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 1102, y: 0}
+  m_AnchoredPosition: {x: 1102.356, y: 0}
   m_SizeDelta: {x: 4554, y: 2560}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &268568670
@@ -1075,7 +1093,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1090, y: -121}
+  m_AnchoredPosition: {x: 458, y: -121}
   m_SizeDelta: {x: 720, y: 1280}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &814252745
