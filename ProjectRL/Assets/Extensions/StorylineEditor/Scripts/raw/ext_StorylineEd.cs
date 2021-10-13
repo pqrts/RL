@@ -57,7 +57,7 @@ public class ext_StorylineEd : MonoBehaviour
     private Vector2 _moving_pool_pos;
     private Vector2 _cg_moving_pool_pos;
     [HideInInspector] public string _phrase;
-    private string _phrase_author;
+    [HideInInspector] public  string _phrase_author;
     //characters spawn
     public GameObject _character;
     ext_CharacterSp _s_CharacterSp;

@@ -22,7 +22,12 @@ public class ui_Storyline_control : EditorWindow
         return window_control;
 
     }
-   public  void CreateGUI()
+    public void Update()
+    {
+       
+        Repaint();
+    }
+    public  void CreateGUI()
     {
   
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
@@ -52,10 +57,17 @@ public class ui_Storyline_control : EditorWindow
         l_status_main.text = "Action status";
 
         Label l_status_file = VTuxml.Q<VisualElement>("status_file") as Label;
-        l_status_file.text = "Create .str";
+        l_status_file.text = "Create .str: ";
 
         Label l_status_cg = VTuxml.Q<VisualElement>("status_CG") as Label;
-        l_status_cg.text = "Select CG";
+        l_status_cg.text = "Select CG: ";
+
+        Label l_status_phrase = VTuxml.Q<VisualElement>("status_phrase") as Label;
+        l_status_phrase.text = " Add phrase: ";
+
+        Label l_status_author = VTuxml.Q<VisualElement>("status_author") as Label;
+        l_status_author.text = "Set author: ";
+     
 
 
         ////
@@ -76,6 +88,24 @@ public class ui_Storyline_control : EditorWindow
         else 
         {
             l_status_2.text = "Null";
+        }
+        Label l_status_3 = VTuxml.Q<VisualElement>("status_3") as Label;
+        if (s_target._phrase != "")
+        {
+            l_status_3.text = "Done";
+        }
+        else
+        {
+            l_status_3.text = "Null";
+        }
+        Label l_status_4 = VTuxml.Q<VisualElement>("status_4") as Label;
+        if (s_target._phrase_author != "")
+        {
+            l_status_4.text = "Done";
+        }
+        else
+        {
+            l_status_4.text = "Null";
         }
 
 
@@ -129,4 +159,5 @@ public class ui_Storyline_control : EditorWindow
         VTuxml.Q<VisualElement>("moveto_fieldHolder").Add(action_number);
         rootVisualElement.Add(VTuxml);
     }
+
 }

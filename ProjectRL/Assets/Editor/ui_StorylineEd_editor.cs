@@ -50,6 +50,8 @@ public class ui_StorylineEd_editor : EditorWindow
     {
 
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
+    
+
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/mainwindow.uxml");
         var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/charIconTemplate.uxml");
         VisualElement VTuxml = VT.Instantiate();
@@ -401,7 +403,7 @@ public class ui_StorylineEd_editor : EditorWindow
             }
         });
 
-        add_choise.text = "Add Choise";
+        add_choise.text = "Add choise";
 
         Button jump_to = new Button(() =>
         {
@@ -513,6 +515,9 @@ public class ui_StorylineEd_editor : EditorWindow
         CG_positioning.valueChanged += (e => CG_moving(CG_positioning.value));
         phrase.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Select_phrase(phrase.value));
         phrase.value = s_target._phrase;
+    
+
+
     }
     void Set_selected_character_RT(string char_name)
     {

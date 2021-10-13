@@ -34,5 +34,17 @@
                 <ui:Label text="Label" display-tooltip-when-elided="true" name="status_2" style="color: rgb(0, 0, 0);" />
             </ui:VisualElement>
         </ui:VisualElement>
+        <ui:VisualElement name="status_phrase_Holder" style="width: 115px; height: 20px; position: absolute; left: 0; top: 65px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_phrase" style="color: rgb(0, 0, 0);" />
+            <ui:VisualElement name="label_status" style="width: 40px; height: 20px; position: absolute; left: 120px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="status_3" style="color: rgb(0, 0, 0);" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="status_author_Holder" style="width: 115px; height: 20px; position: absolute; left: 0; top: 90px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_author" style="color: rgb(0, 0, 0);" />
+            <ui:VisualElement name="label_status" style="width: 40px; height: 20px; position: absolute; left: 120px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="status_4" style="color: rgb(0, 0, 0);" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
