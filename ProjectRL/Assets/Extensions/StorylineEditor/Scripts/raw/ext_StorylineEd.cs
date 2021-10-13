@@ -728,6 +728,7 @@ public class ext_StorylineEd : MonoBehaviour
         _steps_total.Clear();
         _CG_image.sprite = null;
         _CG_sprite = null;
+        _phrase_author = "";
         _id_step = 1;
         _id_action = 1;
         foreach (GameObject destroy in _list_required_objects)

@@ -21,6 +21,7 @@
         <ui:Label text="Label" display-tooltip-when-elided="true" name="act_selection" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
     </ui:VisualElement>
     <ui:VisualElement name="label_status" style="top: 165px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:VisualElement name="leftToolbar" style="background-color: rgb(152, 152, 152); width: 160px; height: 130px; position: absolute; left: 0; top: 10px;" />
         <ui:Label text="Label" display-tooltip-when-elided="true" name="status" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
         <ui:VisualElement name="status_file_Holder" style="width: 115px; height: 20px; position: absolute; left: 0; top: 15px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="status_file" style="color: rgb(0, 0, 0);" />
@@ -44,6 +45,12 @@
             <ui:Label text="Label" display-tooltip-when-elided="true" name="status_author" style="color: rgb(0, 0, 0);" />
             <ui:VisualElement name="label_status" style="width: 40px; height: 20px; position: absolute; left: 120px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
                 <ui:Label text="Label" display-tooltip-when-elided="true" name="status_4" style="color: rgb(0, 0, 0);" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="status_author_name_Holder" style="width: 50px; height: 20px; position: absolute; left: 0; top: 115px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_name" style="color: rgb(0, 0, 0);" />
+            <ui:VisualElement name="label_status" style="width: 105px; height: 20px; position: absolute; left: 55px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+                <ui:Label text="Label" display-tooltip-when-elided="true" name="status_5" style="color: rgb(0, 0, 0);" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

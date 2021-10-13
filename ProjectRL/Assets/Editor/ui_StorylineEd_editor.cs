@@ -216,6 +216,7 @@ public class ui_StorylineEd_editor : EditorWindow
             if (s_target.Check_str_existence(s_target._str_name))
             {
                 Select_character();
+                ui_Storyline_control.ShowWindow();
                 CreateGUI();
             }
             else
@@ -233,6 +234,7 @@ public class ui_StorylineEd_editor : EditorWindow
                 if (s_target.Deactivate_character(t))
                 {
                     EditorUtility.DisplayDialog("Notice", "Character deactivated", "OK");
+                    ui_Storyline_control.ShowWindow();
                     CreateGUI();
                 }
             }
@@ -278,6 +280,7 @@ public class ui_StorylineEd_editor : EditorWindow
                 if (listView.selectedItem != null)
                 {
                     s_target.Set_author(listView.selectedItem.ToString());
+                    ui_Storyline_control.ShowWindow();
                 }
                 else
                 {
@@ -298,7 +301,8 @@ public class ui_StorylineEd_editor : EditorWindow
                 if (s_target.New_action())
                 {
                     EditorUtility.DisplayDialog("Notice", "New action created", "OK");
-                   
+                    ui_Storyline_control.ShowWindow();
+
                     CreateGUI();
                 }
             }
@@ -315,6 +319,7 @@ public class ui_StorylineEd_editor : EditorWindow
             if (s_target.Check_str_existence(s_target._str_name))
             {
                 Select_cg();
+                ui_Storyline_control.ShowWindow();
             }
             else
             {
@@ -330,6 +335,7 @@ public class ui_StorylineEd_editor : EditorWindow
             {
                 if (s_target.Create_step())
                 {
+                    ui_Storyline_control.ShowWindow();
                     CreateGUI();
                 }
             }
@@ -380,6 +386,7 @@ public class ui_StorylineEd_editor : EditorWindow
             if (s_target.Check_str_existence(s_target._str_name))
             {
                 s_target.Form_str();
+                ui_Storyline_control.ShowWindow();
                 EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
             }
             else
@@ -613,6 +620,9 @@ public class ui_StorylineEd_editor : EditorWindow
     {
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         s_target._phrase = phrase_text;
+       
+        
+
 
         return (phrase_text);
     }

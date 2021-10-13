@@ -13,102 +13,135 @@ public class ui_Storyline_control : EditorWindow
     Sprite preview_makeup;
     string char_name;
     string char_descr;
+
+    public string status_1;
+    private string status_2;
+    private string status_3;
+    private string status_4;
+    private string status_5;
+
+    Label l_actions_total;
+    Label l_action_current;
+    Label l_action_number;
+    Label l_info;
+    Label l_moveto;
+    Label l_act_selection;
+    Label l_status_main;
+    Label l_status_file;
+    Label l_status_cg;
+    Label l_status_phrase;
+    Label l_status_author;
+    Label l_status_author_name;
+
+
+
+    Label l_status_1;
+    Label l_status_2;
+    Label l_status_3;
+    Label l_status_4;
+    Label l_status_5;
     public static ui_Storyline_control ShowWindow()
     {
         ui_Storyline_control window_control = GetWindow<ui_Storyline_control>();
         window_control.titleContent = new GUIContent("Control panel");
         window_control.minSize = new Vector2(170, 500f);
         window_control.maxSize = new Vector2(170f, 500f);
+
         return window_control;
 
     }
+
     public void Update()
     {
-       
-        Repaint();
-    }
-    public  void CreateGUI()
-    {
-  
+
+
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/control_panel.uxml");
-        VisualElement VTuxml = VT.Instantiate();
-        TextField action_number = new TextField();
 
-        Label l_actions_total = VTuxml.Q<VisualElement>("total_actions") as Label;
         l_actions_total.text = "Total actions: " + s_target._id_action_total;
-        
-        Label l_action_current = VTuxml.Q<VisualElement>("current_action") as Label;
         l_action_current.text = "Current action: " + s_target._id_action;
-
-        Label l_action_number = VTuxml.Q<VisualElement>("action_number") as Label;
         l_action_number.text = "Action ¹: ";
-
-        Label l_info = VTuxml.Q<VisualElement>("info") as Label;
         l_info.text = "Info";
-
-        Label l_moveto = VTuxml.Q<VisualElement>("move_to") as Label;
         l_moveto.text = "Move to action:";
-
-        Label l_act_selection = VTuxml.Q<VisualElement>("act_selection") as Label;
-        l_act_selection.text = "Switching";
-
-        Label l_status_main = VTuxml.Q<VisualElement>("status") as Label;
+        l_act_selection.text = "Navigation";
         l_status_main.text = "Action status";
-
-        Label l_status_file = VTuxml.Q<VisualElement>("status_file") as Label;
         l_status_file.text = "Create .str: ";
-
-        Label l_status_cg = VTuxml.Q<VisualElement>("status_CG") as Label;
         l_status_cg.text = "Select CG: ";
-
-        Label l_status_phrase = VTuxml.Q<VisualElement>("status_phrase") as Label;
         l_status_phrase.text = " Add phrase: ";
-
-        Label l_status_author = VTuxml.Q<VisualElement>("status_author") as Label;
         l_status_author.text = "Set author: ";
-     
+        l_status_author_name.text = "Author: ";
 
 
-        ////
-        Label l_status_1 = VTuxml.Q<VisualElement>("status_1") as Label;
+
+
+
         if (s_target.Check_str_existence(s_target._str_name))
         {
+
             l_status_1.text = "Done";
         }
-        else 
+        else
         {
-            l_status_1.text = "Null";
+            l_status_1.text = "----";
         }
-        Label l_status_2 = VTuxml.Q<VisualElement>("status_2") as Label;
+
         if (s_target._CG_sprite != null)
         {
             l_status_2.text = "Done";
         }
-        else 
+        else
         {
-            l_status_2.text = "Null";
+            l_status_2.text = "----";
         }
-        Label l_status_3 = VTuxml.Q<VisualElement>("status_3") as Label;
+
         if (s_target._phrase != "")
         {
             l_status_3.text = "Done";
         }
         else
         {
-            l_status_3.text = "Null";
+            l_status_3.text = "----";
         }
-        Label l_status_4 = VTuxml.Q<VisualElement>("status_4") as Label;
+
+
         if (s_target._phrase_author != "")
         {
             l_status_4.text = "Done";
         }
         else
         {
-            l_status_4.text = "Null";
+            l_status_4.text = "----";
         }
+        l_status_5.text = s_target._phrase_author;
+        this.Repaint();
+    }
 
+    public void CreateGUI()
+    {
 
+        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
+        var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/control_panel.uxml");
+        VisualElement VTuxml = VT.Instantiate();
+        TextField action_number = new TextField();
+
+        l_actions_total = VTuxml.Q<VisualElement>("total_actions") as Label;
+        l_action_current = VTuxml.Q<VisualElement>("current_action") as Label;
+        l_action_number = VTuxml.Q<VisualElement>("action_number") as Label;
+        l_info = VTuxml.Q<VisualElement>("info") as Label;
+        l_moveto = VTuxml.Q<VisualElement>("move_to") as Label;
+        l_act_selection = VTuxml.Q<VisualElement>("act_selection") as Label;
+        l_status_main = VTuxml.Q<VisualElement>("status") as Label;
+        l_status_file = VTuxml.Q<VisualElement>("status_file") as Label;
+        l_status_cg = VTuxml.Q<VisualElement>("status_CG") as Label;
+        l_status_phrase = VTuxml.Q<VisualElement>("status_phrase") as Label;
+        l_status_author = VTuxml.Q<VisualElement>("status_author") as Label;
+        l_status_author_name = VTuxml.Q<VisualElement>("status_name") as Label;
+        ////
+
+        l_status_1 = VTuxml.Q<VisualElement>("status_1") as Label;
+        l_status_2 = VTuxml.Q<VisualElement>("status_2") as Label;
+        l_status_3 = VTuxml.Q<VisualElement>("status_3") as Label;
+        l_status_4 = VTuxml.Q<VisualElement>("status_4") as Label;
+        l_status_5 = VTuxml.Q<VisualElement>("status_5") as Label;
         ///
 
         Button move_to = new Button(() =>
@@ -150,7 +183,7 @@ public class ui_Storyline_control : EditorWindow
         });
         previous_action.text = "Previous Action";
 
-      
+
 
 
         VTuxml.Q<VisualElement>("moveto_buttonHolder").Add(move_to);
