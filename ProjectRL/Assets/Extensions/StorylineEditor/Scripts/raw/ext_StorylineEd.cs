@@ -743,6 +743,11 @@ public class ext_StorylineEd : MonoBehaviour
         string t = author_obj.ToString().Replace(" (UnityEngine.GameObject)", "");
         _phrase_author = t;
     }
+    public void Delete_character(string character_name)
+    { 
+    
+    
+    }
     public void LOG()
     {
         Debug.Log(_list_active_RectTransforms[0].anchoredPosition);

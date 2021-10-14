@@ -116,7 +116,7 @@ public class ext_Storyline_replacer : MonoBehaviour
         _s_str_ed.Selected_action_setup();
     }
 
-
+    
 
 
 }

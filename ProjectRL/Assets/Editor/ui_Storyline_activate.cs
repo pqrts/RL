@@ -17,8 +17,8 @@ public class ui_Storyline_activate : EditorWindow
     {
         ui_Storyline_activate window_activate = GetWindow<ui_Storyline_activate>();
         window_activate.titleContent = new GUIContent("Activate existing");
-        window_activate.minSize = new Vector2(200, 500f);
-        window_activate.maxSize = new Vector2(200f, 500f);
+        window_activate.minSize = new Vector2(170, 475f);
+        window_activate.maxSize = new Vector2(170f, 475f);
         return window_activate;
 
     }
@@ -32,8 +32,7 @@ public class ui_Storyline_activate : EditorWindow
         rootVisualElement.Add(VTuxml);
         Label l_preview = VTuxml.Q<VisualElement>("preview") as Label;
         l_preview.text = "Character preview";
-        Label l_description = VTuxml.Q<VisualElement>("description") as Label;
-        l_description.text = "Description";
+   
         Label l_charname = VTuxml.Q<VisualElement>("charname") as Label;
         l_charname.text = "Runtime Name";
         Label l_charlist = VTuxml.Q<VisualElement>("list") as Label;
@@ -114,7 +113,7 @@ public class ui_Storyline_activate : EditorWindow
         character_activate.text = "Activate existing";
         //
         VTuxml.Q<VisualElement>("charlistBackgroung").Add(listView);
-        VTuxml.Q<VisualElement>("buttonHolder").Add(character_activate);
+        VTuxml.Q<VisualElement>("buttonHolder1").Add(character_activate);
 
     }
     private void Activate(string char_name)
