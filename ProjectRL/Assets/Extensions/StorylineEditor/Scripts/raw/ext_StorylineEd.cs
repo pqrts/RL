@@ -57,7 +57,7 @@ public class ext_StorylineEd : MonoBehaviour
     private Vector2 _moving_pool_pos;
     private Vector2 _cg_moving_pool_pos;
     [HideInInspector] public string _phrase;
-    [HideInInspector] public  string _phrase_author;
+    [HideInInspector] public string _phrase_author;
     //characters spawn
     public GameObject _character;
     ext_CharacterSp _s_CharacterSp;
@@ -69,7 +69,7 @@ public class ext_StorylineEd : MonoBehaviour
     [HideInInspector] public float _cg_edge_right;
     ///?
     private int _id_decomposed_steps;
-    [HideInInspector] public bool _ready_for_next_action; 
+    [HideInInspector] public bool _ready_for_next_action;
     ///
 
 
@@ -718,6 +718,7 @@ public class ext_StorylineEd : MonoBehaviour
         _s_replacer._list_selected_action_data.Clear();
         _s_replacer._list_selected_action_steps.Clear();
         _list_required_objects.Clear();
+        _list_activated_objects.Clear();
         _list_active_characters.Clear();
         _list_active_RectTransforms.Clear();
         _list_inactivated_characters.Clear();
@@ -743,10 +744,52 @@ public class ext_StorylineEd : MonoBehaviour
         string t = author_obj.ToString().Replace(" (UnityEngine.GameObject)", "");
         _phrase_author = t;
     }
-    public void Delete_character(string character_name)
-    { 
-    
-    
+    public Boolean Delete_character(string character_name)
+    {
+        for (int i = 0; i < _list_required_objects.Count; i++)
+        {
+            if (_list_required_objects[i].name == character_name)
+            {
+                GameObject t = _list_required_objects[i];
+                t.SetActive(true);
+                _list_required_objects.Remove(_list_required_objects[i]);
+
+
+                if ( i< _list_active_characters.Count && _list_active_characters[i] != null && _list_active_characters[i].name == character_name)
+                {
+                    _list_active_characters.Remove(_list_active_characters[i]);
+                }
+
+                if (i < _list_activated_objects.Count && _list_activated_objects[i] != null && _list_activated_objects[i] == character_name)
+                {
+                    _list_activated_objects.Remove(_list_activated_objects[i]);
+                }
+
+                if (i < _list_inactivated_objects.Count && _list_inactivated_objects[i] != null && _list_inactivated_objects[i] == character_name)
+                {
+                    _list_inactivated_objects.Remove(_list_inactivated_objects[i]);
+                }
+
+                if (i < _list_active_RectTransforms.Count && _list_active_RectTransforms[i] != null && _list_active_RectTransforms[i].name == character_name)
+                {
+                    _list_active_RectTransforms.Remove(_list_active_RectTransforms[i]);
+                }
+                
+                if (i < _list_inactivated_characters.Count && _list_inactivated_characters[i] != null && _list_inactivated_characters[i] == character_name)
+                {
+                    _list_inactivated_characters.Remove(_list_inactivated_characters[i]);
+                }
+                if (i < _list_activated_characters.Count && _list_activated_characters[i] != null && _list_activated_characters[i] == character_name)
+                {
+                    _list_activated_characters.Remove(_list_activated_characters[i]);
+                }
+               DestroyImmediate(t);
+                t = null;
+            }
+
+        }
+
+        return true;
     }
     public void LOG()
     {

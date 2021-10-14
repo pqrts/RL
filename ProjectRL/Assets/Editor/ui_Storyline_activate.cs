@@ -22,6 +22,10 @@ public class ui_Storyline_activate : EditorWindow
         return window_activate;
 
     }
+    private void Update()
+    {
+        this.Repaint();
+    }
     private void CreateGUI()
     {
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
@@ -32,7 +36,7 @@ public class ui_Storyline_activate : EditorWindow
         rootVisualElement.Add(VTuxml);
         Label l_preview = VTuxml.Q<VisualElement>("preview") as Label;
         l_preview.text = "Character preview";
-   
+
         Label l_charname = VTuxml.Q<VisualElement>("charname") as Label;
         l_charname.text = "Runtime Name";
         Label l_charlist = VTuxml.Q<VisualElement>("list") as Label;
@@ -41,7 +45,10 @@ public class ui_Storyline_activate : EditorWindow
         var items = new List<GameObject>();
 
         for (int i = 0; i < s_target._list_required_objects.Count; i++)
-            items.Add(s_target._list_required_objects[i]);
+            if (s_target._list_required_objects[i] != null)
+            {
+                items.Add(s_target._list_required_objects[i]);
+            }
         Func<VisualElement> makeItem = () => VTListview.CloneTree();
         Label element_name = VTlistview_element.Q<VisualElement>("name") as Label;
         VisualElement element_icon = VTlistview_element.Q<VisualElement>("icon") as VisualElement;
@@ -59,7 +66,7 @@ public class ui_Storyline_activate : EditorWindow
 
         listView.onItemsChosen += obj =>
         {
-           
+
             Debug.Log(listView.selectedItem);
 
             if (Get_preview_components(listView.selectedIndex))
@@ -92,9 +99,8 @@ public class ui_Storyline_activate : EditorWindow
                     VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = preview_makeup.texture;
                     Label l_char_name = VTuxml.Q<VisualElement>("namecontent") as Label;
                     l_char_name.text = char_name;
-                    Label l_char_descr = VTuxml.Q<VisualElement>("descrcontent") as Label;
-                    l_char_descr.text = char_descr;
-                                    }
+              
+                }
             }
         };
         listView.style.flexGrow = 1.0f;
@@ -110,10 +116,33 @@ public class ui_Storyline_activate : EditorWindow
                 EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
             }
         });
-        character_activate.text = "Activate existing";
+        character_activate.text = "Activate";
+        Button character_delete = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+
+                if (EditorUtility.DisplayDialog("Notice", " Are you sure about this?", "OK", "Cancel"))
+                {
+                    string p_char_name = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+                    if (s_target.Delete_character(p_char_name))
+                    {
+                        CreateGUI();
+                    }
+                }
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+
+        character_delete.text = "Delete";
         //
         VTuxml.Q<VisualElement>("charlistBackgroung").Add(listView);
+        VTuxml.Q<VisualElement>("buttonHolder2").Add(character_delete);
         VTuxml.Q<VisualElement>("buttonHolder1").Add(character_activate);
+  
 
     }
     private void Activate(string char_name)
@@ -131,8 +160,8 @@ public class ui_Storyline_activate : EditorWindow
         preview_haircut = s_target._list_required_objects[id].GetComponent<local_character>()._char_haircut.sprite;
         preview_makeup = s_target._list_required_objects[id].GetComponent<local_character>()._char_makeup.sprite;
         char_name = s_target._list_required_objects[id].GetComponent<local_character>()._char_runtime_name;
-        char_descr = "wwwwwwwwwwwwwwwwwwww";
-    
+
+
         return true;
     }
 }

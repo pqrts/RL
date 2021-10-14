@@ -67,7 +67,10 @@ public class ui_StorylineEd_editor : EditorWindow
         var items = new List<GameObject>();
 
         for (int i = 0; i < s_target._list_active_characters.Count; i++)
-            items.Add(s_target._list_active_characters[i]);
+            if (s_target._list_active_characters[i] != null)
+            {
+                items.Add(s_target._list_active_characters[i]);
+            }
         Func<VisualElement> makeItem = () => VTListview.CloneTree();
         Label element_name = VTlistview_element.Q<VisualElement>("name") as Label;
         VisualElement element_icon = VTlistview_element.Q<VisualElement>("icon") as VisualElement;
