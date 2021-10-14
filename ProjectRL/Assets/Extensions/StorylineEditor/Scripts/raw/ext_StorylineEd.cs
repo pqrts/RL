@@ -754,36 +754,60 @@ public class ext_StorylineEd : MonoBehaviour
                 t.SetActive(true);
                 _list_required_objects.Remove(_list_required_objects[i]);
 
+                for (int i2 = 0; i2 < _list_active_characters.Count; i2++)
+                {
+                    if (_list_active_characters[i2] != null && _list_active_characters[i2].name == character_name)
+                    {
+                        _list_active_characters.Remove(_list_active_characters[i2]);
+                    }
+                }
+                for (int i3 = 0; i3 < _list_activated_objects.Count; i3++)
+                {
+                    if (_list_activated_objects[i3] != null && _list_activated_objects[i3] == character_name)
+                    {
+                        _list_activated_objects.Remove(_list_activated_objects[i3]);
+                    }
+                }
+                for (int i4 = 0; i4 < _list_inactivated_objects.Count; i4++)
+                {
+                    if (_list_inactivated_objects[i4] != null && _list_inactivated_objects[i4] == character_name)
+                    {
+                        _list_inactivated_objects.Remove(_list_inactivated_objects[i4]);
+                    }
+                }
+                for (int i5 = 0; i5 < _list_active_RectTransforms.Count; i5++)
+                {
+                    if (_list_active_RectTransforms[i5] != null && _list_active_RectTransforms[i5].name == character_name)
+                    {
+                        _list_active_RectTransforms.Remove(_list_active_RectTransforms[i5]);
+                    }
+                }
+                for (int i6 = 0; i6 < _list_inactivated_characters.Count; i6++)
+                {
+                    if (_list_inactivated_characters[i6] != null && _list_inactivated_characters[i6] == character_name)
+                    {
+                        _list_inactivated_characters.Remove(_list_inactivated_characters[i6]);
+                    }
+                }
+                for (int i7 = 0; i7 < _list_activated_characters.Count; i7++)
+                {
+                    if (_list_activated_characters[i7] != null && _list_activated_characters[i7] == character_name)
+                    {
+                        _list_activated_characters.Remove(_list_activated_characters[i7]);
+                    }
+                }
+                for (int i8 = 0; i8 < _init_to_str.Count; i8++)
+                {
+                    if (_init_to_str[i8] != null)
+                    {
+                        string y = character_name + _s_tag._separator;
+                        string m = _init_to_str[i8].Replace(y, "");
+                        Debug.Log(_init_to_str[i8] + "^^" + y);
+                        _init_to_str[i8] = m;
 
-                if ( i< _list_active_characters.Count && _list_active_characters[i] != null && _list_active_characters[i].name == character_name)
-                {
-                    _list_active_characters.Remove(_list_active_characters[i]);
+                    }
                 }
-
-                if (i < _list_activated_objects.Count && _list_activated_objects[i] != null && _list_activated_objects[i] == character_name)
-                {
-                    _list_activated_objects.Remove(_list_activated_objects[i]);
-                }
-
-                if (i < _list_inactivated_objects.Count && _list_inactivated_objects[i] != null && _list_inactivated_objects[i] == character_name)
-                {
-                    _list_inactivated_objects.Remove(_list_inactivated_objects[i]);
-                }
-
-                if (i < _list_active_RectTransforms.Count && _list_active_RectTransforms[i] != null && _list_active_RectTransforms[i].name == character_name)
-                {
-                    _list_active_RectTransforms.Remove(_list_active_RectTransforms[i]);
-                }
-                
-                if (i < _list_inactivated_characters.Count && _list_inactivated_characters[i] != null && _list_inactivated_characters[i] == character_name)
-                {
-                    _list_inactivated_characters.Remove(_list_inactivated_characters[i]);
-                }
-                if (i < _list_activated_characters.Count && _list_activated_characters[i] != null && _list_activated_characters[i] == character_name)
-                {
-                    _list_activated_characters.Remove(_list_activated_characters[i]);
-                }
-               DestroyImmediate(t);
+                DestroyImmediate(t);
                 t = null;
             }
 
