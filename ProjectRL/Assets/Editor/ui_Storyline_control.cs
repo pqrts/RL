@@ -14,38 +14,35 @@ public class ui_Storyline_control : EditorWindow
     string char_name;
     string char_descr;
 
-    public string status_1;
-    private string status_2;
-    private string status_3;
-    private string status_4;
-    private string status_5;
-
-    Label l_actions_total;
-    Label l_action_current;
-    Label l_action_number;
-    Label l_info;
-    Label l_moveto;
-    Label l_act_selection;
-    Label l_status_main;
-    Label l_status_file;
-    Label l_status_cg;
-    Label l_status_phrase;
-    Label l_status_author;
-    Label l_status_author_name;
+    private Label l_actions_total;
+    private Label l_action_current;
+    private Label l_action_number;
+    private Label l_info;
+    private Label l_moveto;
+    private Label l_act_selection;
+    private Label l_status_main;
+    private Label l_status_file;
+    private Label l_status_cg;
+    private Label l_status_phrase;
+    private Label l_status_author;
+    private Label l_status_author_name;
+    private Label l_status_steps;
+    private Label l_status_check;
 
 
 
-    Label l_status_1;
-    Label l_status_2;
-    Label l_status_3;
-    Label l_status_4;
-    Label l_status_5;
+    private Label l_status_1;
+    private Label l_status_2;
+    private Label l_status_3;
+    private Label l_status_4;
+    private Label l_status_5;
+    private Label l_status_6;
     public static ui_Storyline_control ShowWindow()
     {
         ui_Storyline_control window_control = GetWindow<ui_Storyline_control>();
         window_control.titleContent = new GUIContent("Control panel");
-        window_control.minSize = new Vector2(170, 500f);
-        window_control.maxSize = new Vector2(170f, 500f);
+        window_control.minSize = new Vector2(170, 475f);
+        window_control.maxSize = new Vector2(170f, 475f);
 
         return window_control;
 
@@ -63,12 +60,13 @@ public class ui_Storyline_control : EditorWindow
         l_info.text = "Info";
         l_moveto.text = "Move to action:";
         l_act_selection.text = "Navigation";
-        l_status_main.text = "Action status";
+        l_status_main.text = "Required: ";
         l_status_file.text = "Create .str: ";
         l_status_cg.text = "Select CG: ";
         l_status_phrase.text = " Add phrase: ";
         l_status_author.text = "Set author: ";
         l_status_author_name.text = "Author: ";
+        l_status_steps.text = "Create step: ";
 
 
 
@@ -111,7 +109,29 @@ public class ui_Storyline_control : EditorWindow
         {
             l_status_4.text = "----";
         }
+               
         l_status_5.text = s_target._phrase_author;
+
+        if (s_target._steps_total.Count != 0)
+        {
+            l_status_6.text = "Done";
+        }
+        else
+        {
+            l_status_6.text = "----";
+        }
+
+        if (l_status_1.text == "Done" && l_status_2.text == "Done" && l_status_3.text == "Done" && l_status_4.text == "Done" && l_status_6.text == "Done")
+        {
+            l_status_check.text = "Ready for next action";
+            s_target._ready_for_next_action = true;
+        }
+        else 
+        {
+            l_status_check.text = "Not ready ";
+            s_target._ready_for_next_action = false;
+        }
+
         this.Repaint();
     }
 
@@ -135,6 +155,8 @@ public class ui_Storyline_control : EditorWindow
         l_status_phrase = VTuxml.Q<VisualElement>("status_phrase") as Label;
         l_status_author = VTuxml.Q<VisualElement>("status_author") as Label;
         l_status_author_name = VTuxml.Q<VisualElement>("status_name") as Label;
+        l_status_steps = VTuxml.Q<VisualElement>("status_steps") as Label;
+        l_status_check = VTuxml.Q<VisualElement>("status_check") as Label;
         ////
 
         l_status_1 = VTuxml.Q<VisualElement>("status_1") as Label;
@@ -142,6 +164,7 @@ public class ui_Storyline_control : EditorWindow
         l_status_3 = VTuxml.Q<VisualElement>("status_3") as Label;
         l_status_4 = VTuxml.Q<VisualElement>("status_4") as Label;
         l_status_5 = VTuxml.Q<VisualElement>("status_5") as Label;
+        l_status_6 = VTuxml.Q<VisualElement>("status_6") as Label;
         ///
 
         Button move_to = new Button(() =>

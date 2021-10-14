@@ -69,6 +69,7 @@ public class ext_StorylineEd : MonoBehaviour
     [HideInInspector] public float _cg_edge_right;
     ///?
     private int _id_decomposed_steps;
+    [HideInInspector] public bool _ready_for_next_action; 
     ///
 
 

@@ -33,8 +33,8 @@ public class ui_StorylineEd_editor : EditorWindow
     {
         ui_StorylineEd_editor window = GetWindow<ui_StorylineEd_editor>();
         window.titleContent = new GUIContent("Storyline Editor");
-        window.minSize = new Vector2(845f, 565f);
-        window.maxSize = new Vector2(845f, 565f);
+        window.minSize = new Vector2(845f, 475f);
+        window.maxSize = new Vector2(845f, 475f);
         return window;
     }
     void OnEnable()
@@ -64,10 +64,6 @@ public class ui_StorylineEd_editor : EditorWindow
         //Charlist setup
         Scroller CG_positioning = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
         CG_positioning.style.height = 20f;
-        Scroller Character_positioning = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
-        Character_positioning.style.height = 20f;
-        Scroller Phrase_positioning = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
-        Phrase_positioning.style.height = 20f;
         var items = new List<GameObject>();
 
         for (int i = 0; i < s_target._list_active_characters.Count; i++)
@@ -193,12 +189,7 @@ public class ui_StorylineEd_editor : EditorWindow
         l_steplist.text = "Steps list";
         Label l_CG_slider = VTuxml.Q<VisualElement>("CGrlabel") as Label;
         l_CG_slider.text = "CG position";
-
-        Label l_character_slider = VTuxml.Q<VisualElement>("characterlabel") as Label;
-        l_character_slider.text = "Selected character position";
-
-        Label l_phrase_slider = VTuxml.Q<VisualElement>("phraselabel") as Label;
-        l_phrase_slider.text = "Phrase holder position";
+         
         Label l_cgprev = VTuxml.Q<VisualElement>("CGpreview") as Label;
         l_cgprev.text = "CG preview";
 
@@ -298,13 +289,21 @@ public class ui_StorylineEd_editor : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-                if (s_target.New_action())
+                if (s_target._ready_for_next_action == true)
                 {
-                    EditorUtility.DisplayDialog("Notice", "New action created", "OK");
-                    ui_Storyline_control.ShowWindow();
+                    if (s_target.New_action())
+                    {
+                        EditorUtility.DisplayDialog("Notice", "New action created", "OK");
+                        ui_Storyline_control.ShowWindow();
 
-                    CreateGUI();
+                        CreateGUI();
+                    }
                 }
+                else 
+                {
+                    EditorUtility.DisplayDialog("Error", "Unable to create, check required conditions", "OK");
+                }
+                
             }
             else
             {
@@ -485,8 +484,8 @@ public class ui_StorylineEd_editor : EditorWindow
         phrase.multiline = true;
         phrase.style.whiteSpace = WhiteSpace.Normal;
 
-        phrase.style.height = 205;
-        phrase.maxLength = 2000;
+        phrase.style.height = 180;
+        phrase.maxLength = 150;
         //
         rootVisualElement.Add(VTuxml);
         VTuxml.Q<VisualElement>("leftToolbar").Add(control_panel);
@@ -514,8 +513,7 @@ public class ui_StorylineEd_editor : EditorWindow
         VTuxml.Q<VisualElement>("charlistBackgroung").Add(listView);
         VTuxml.Q<VisualElement>("steplistArea").Add(listView2);
         VTuxml.Q<VisualElement>("CG_sliderHolder").Add(CG_positioning);
-        VTuxml.Q<VisualElement>("character_sliderHolder").Add(Character_positioning);
-        VTuxml.Q<VisualElement>("phrase_sliderHolder").Add(Phrase_positioning);
+
 
         //events 
 

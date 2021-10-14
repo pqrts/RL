@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <Style src="mainwindowUSS.uss" />
-    <ui:VisualElement name="VisualElement" class="container" style="width: 845px; height: 570px;">
+    <ui:VisualElement name="VisualElement" class="container" style="width: 845px; height: 475px;">
         <ui:VisualElement name="upperHolder" style="position: absolute; height: 20px; width: 355px; top: 5px; left: 5px; background-color: rgb(185, 185, 185); flex-direction: column; align-items: flex-start;">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="status" style="height: 20px; color: rgb(0, 0, 0); width: 355px;" />
         </ui:VisualElement>
@@ -11,8 +11,8 @@
         <ui:VisualElement name="previewHolder2" style="width: 140px; height: 200px; left: 365px; top: 40px; position: absolute; background-color: rgba(152, 152, 152, 0); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
         <ui:VisualElement name="previewHolder3" style="width: 140px; height: 200px; left: 365px; top: 40px; position: absolute; background-color: rgba(152, 152, 152, 0); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
         <ui:VisualElement name="previewHolder4" style="width: 140px; height: 200px; left: 365px; top: 40px; position: absolute; background-color: rgba(152, 152, 152, 0); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
-        <ui:VisualElement name="charlistBack" style="position: absolute; left: 160px; top: 40px; width: 200px; height: 430px; background-color: rgb(152, 152, 152);">
-            <ui:VisualElement name="charlistBackgroung" style="position: absolute; left: 5px; top: 5px; width: 190px; height: 420px; background-color: rgb(152, 152, 152);" />
+        <ui:VisualElement name="charlistBack" style="position: absolute; left: 160px; top: 40px; width: 200px; height: 410px; background-color: rgb(152, 152, 152);">
+            <ui:VisualElement name="charlistBackgroung" style="position: absolute; left: 5px; top: 5px; width: 190px; height: 400px; background-color: rgb(152, 152, 152);" />
         </ui:VisualElement>
         <ui:VisualElement name="CharnameHolder" style="width: 185px; height: 20px; left: 510px; top: 40px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="namecontent" style="width: 185px; height: 20px; white-space: normal; color: rgb(0, 0, 0);" />
@@ -42,8 +42,8 @@
         <ui:VisualElement name="labelPhrase" style="top: 245px; position: absolute; width: 140px; left: 365px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="phrase" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 140px;" />
         </ui:VisualElement>
-        <ui:VisualElement name="phraseHolder" style="top: 255px; position: absolute; width: 330px; left: 365px; height: 215px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
-            <ui:VisualElement name="phraseHolder2" style="top: 5px; position: absolute; width: 320px; left: 5px; height: 205px; background-color: rgb(152, 152, 152); color: rgb(142, 142, 142);" />
+        <ui:VisualElement name="phraseHolder" style="top: 255px; position: absolute; width: 330px; left: 365px; height: 190px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+            <ui:VisualElement name="phraseHolder2" style="top: 5px; position: absolute; width: 320px; left: 5px; height: 180px; background-color: rgb(152, 152, 152); color: rgb(142, 142, 142);" />
         </ui:VisualElement>
         <ui:VisualElement name="CGpreviewHolder" style="width: 140px; height: 200px; left: 700px; top: 40px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);">
             <ui:VisualElement name="CGpreviewArea" style="width: 130px; height: 190px; left: 5px; top: 5px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
@@ -54,25 +54,17 @@
         <ui:VisualElement name="labelStepslist" style="top: 245px; position: absolute; width: 140px; left: 700px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="steplist" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 140px;" />
         </ui:VisualElement>
-        <ui:VisualElement name="steplistHolder" style="width: 140px; height: 215px; left: 700px; top: 255px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);">
-            <ui:VisualElement name="steplistArea" style="width: 130px; height: 205px; left: 5px; top: 5px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+        <ui:VisualElement name="steplistHolder" style="width: 140px; height: 190px; left: 700px; top: 255px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);">
+            <ui:VisualElement name="steplistArea" style="width: 130px; height: 180px; left: 5px; top: 5px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
         </ui:VisualElement>
         <ui:VisualElement name="toggleHolder" style="width: 475px; height: 20px; left: 365px; top: 5px; position: absolute; background-color: rgb(185, 185, 185);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="status2" style="height: 20px; color: rgb(0, 0, 0); width: 665px;" />
         </ui:VisualElement>
         <ui:VisualElement name="leftToolbar" style="width: 150px; position: absolute; left: 5px; top: 40px; height: 50px; background-color: rgb(152, 152, 152);" />
-        <ui:VisualElement name="phrase_sliderHolder" style="width: 475px; height: 20px; left: 365px; top: 545px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
-        <ui:VisualElement name="labelPhraseSlider" style="top: 535px; position: absolute; width: 140px; left: 365px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="phraselabel" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 140px;" />
+        <ui:VisualElement name="labelCGSlider" style="top: 450px; position: absolute; width: 200px; left: 160px; height: 20px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="CGrlabel" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 200px; height: 20px;" />
         </ui:VisualElement>
-        <ui:VisualElement name="labelCharacterSlider" style="top: 505px; position: absolute; width: 140px; left: 365px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="characterlabel" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 140px;" />
-        </ui:VisualElement>
-        <ui:VisualElement name="character_sliderHolder" style="width: 475px; height: 20px; left: 365px; top: 515px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
-        <ui:VisualElement name="labelCGSlider" style="top: 475px; position: absolute; width: 140px; left: 365px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="CGrlabel" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 140px;" />
-        </ui:VisualElement>
-        <ui:VisualElement name="CG_sliderHolder" style="width: 475px; height: 20px; left: 365px; top: 485px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+        <ui:VisualElement name="CG_sliderHolder" style="width: 475px; height: 20px; left: 366px; top: 450px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
         <ui:VisualElement name="labelTools2" style="top: 90px; position: absolute; width: 150px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="toolbar2" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
         </ui:VisualElement>
