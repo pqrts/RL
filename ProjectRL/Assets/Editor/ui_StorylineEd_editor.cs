@@ -28,6 +28,8 @@ public class ui_StorylineEd_editor : EditorWindow
     List<GameObject> charlist_GO = new List<GameObject>();
     private RectTransform selected_character_RT;
 
+  
+   
     [MenuItem("Storyline Editor/Open")]
     public static ui_StorylineEd_editor ShowWindow()
     {
@@ -45,7 +47,14 @@ public class ui_StorylineEd_editor : EditorWindow
             s_target.Init();
         }
     }
-
+    private void Update()
+    {
+        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
+        if (s_target._update_ui_main == true)
+        {
+            CreateGUI();
+        }
+    }
     public void CreateGUI()
     {
 
@@ -212,6 +221,8 @@ public class ui_StorylineEd_editor : EditorWindow
                 Select_character();
                 ui_Storyline_control.ShowWindow();
                 CreateGUI();
+            
+            
             }
             else
             {
@@ -523,8 +534,8 @@ public class ui_StorylineEd_editor : EditorWindow
         CG_positioning.valueChanged += (e => CG_moving(CG_positioning.value));
         phrase.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Select_phrase(phrase.value));
         phrase.value = s_target._phrase;
-    
 
+        s_target._update_ui_main = false;
 
     }
     void Set_selected_character_RT(string char_name)
@@ -615,6 +626,7 @@ public class ui_StorylineEd_editor : EditorWindow
             string t3 = t2.Replace("Gamedata/Ñharacters/", "");
  
             s_target.Add_character(path, t3);
+            s_target.Updade_editor_windows();
         }
     }
     string Select_phrase(string phrase_text)

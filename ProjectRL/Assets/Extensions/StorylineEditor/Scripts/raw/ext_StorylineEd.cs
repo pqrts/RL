@@ -8,6 +8,7 @@ using System;
 using UnityEngine.UI;
 using UnityEditor;
 [ExecuteInEditMode]
+
 public class ext_StorylineEd : MonoBehaviour
 {
 
@@ -23,6 +24,7 @@ public class ext_StorylineEd : MonoBehaviour
     global_taglist _s_tag;
     public global_folders _s_folder;
     ext_Storyline_replacer _s_replacer;
+    ext_Storyline_exeptions _s_exeption;
     //metadata
     private string _meta;
     [SerializeField] public string _user;
@@ -71,7 +73,9 @@ public class ext_StorylineEd : MonoBehaviour
     private int _id_decomposed_steps;
     [HideInInspector] public bool _ready_for_next_action;
     ///
-
+    public bool _update_ui_control;
+    public bool _update_ui_activate;
+    public bool _update_ui_main;
 
     public void Init()
     {
@@ -80,6 +84,7 @@ public class ext_StorylineEd : MonoBehaviour
         _s_folder = GetComponent<global_folders>();
         _s_replacer = GetComponent<ext_Storyline_replacer>();
         _CG_RectTransform = _CG_image.GetComponent<RectTransform>();
+        _s_exeption = GetComponent<ext_Storyline_exeptions>();
         if (_s_folder.Setup_folders() && _s_tag.Setup_tags() && Get_pos_limits() && _s_replacer.Get_scripts())
         {
             _init_status = "successful";
@@ -89,6 +94,7 @@ public class ext_StorylineEd : MonoBehaviour
             _init_status = "failed";
         }
     }
+
 
     Boolean Get_pos_limits()
     {
@@ -309,7 +315,7 @@ public class ext_StorylineEd : MonoBehaviour
                     _actions_to_str.Add("{");
                     _actions_to_str.Add(_s_tag._phrase + _s_tag._separator + _id_action);
                     _actions_to_str.Add(_phrase);
-                    _actions_to_str.Add(_s_tag._author);
+                    _actions_to_str.Add(_s_tag._author+ _s_tag._separator + _id_action);
                     _actions_to_str.Add(_phrase_author);
                     _actions_to_str.Add(_s_tag._CG);
                     string t = _CG_image.sprite.ToString().Replace(" (UnityEngine.Sprite)", "");
@@ -418,6 +424,7 @@ public class ext_StorylineEd : MonoBehaviour
                         _character.SetActive(false);
                     }
                     Init_update();
+                
                     _character = null;
                 }
                 else
@@ -754,6 +761,8 @@ public class ext_StorylineEd : MonoBehaviour
                 t.SetActive(true);
                 _list_required_objects.Remove(_list_required_objects[i]);
 
+            
+               
                 for (int i2 = 0; i2 < _list_active_characters.Count; i2++)
                 {
                     if (_list_active_characters[i2] != null && _list_active_characters[i2].name == character_name)
@@ -796,24 +805,76 @@ public class ext_StorylineEd : MonoBehaviour
                         _list_activated_characters.Remove(_list_activated_characters[i7]);
                     }
                 }
-                for (int i8 = 0; i8 < _init_to_str.Count; i8++)
+                if (_init_to_str.Count != 0)
                 {
-                    if (_init_to_str[i8] != null)
+                    for (int i8 = 0; i8 < _init_to_str.Count; i8++)
                     {
-                        string y = character_name + _s_tag._separator;
-                        string m = _init_to_str[i8].Replace(y, "");
-                        Debug.Log(_init_to_str[i8] + "^^" + y);
-                        _init_to_str[i8] = m;
+                        if (_init_to_str[i8] != null)
+                        {
+                            string y = character_name + _s_tag._separator;
+                            string m = _init_to_str[i8].Replace(y, "");
+                       
+                            _init_to_str[i8] = m;
 
+                        }
                     }
                 }
+                if (_actions_to_str.Count != 0)
+                {
+                    for (int i9 = 0; i9 < _actions_to_str.Count; i9++)
+                    {
+                        if (_actions_to_str[i9] != null)
+                        {
+                            string y = character_name + _s_tag._separator;
+                            if (_actions_to_str[i9] == character_name)
+                            {
+                                _actions_to_str[i9] = "";
+                            }
+                            if (_actions_to_str[i9].StartsWith("          " + y) && _actions_to_str[i9-1] == _s_tag._character_relocated )
+                            {
+                               _actions_to_str.Remove(_actions_to_str[i9]);
+                            }
+                            else 
+                            {
+                                string m = _actions_to_str[i9].Replace(y, "");
+                               _actions_to_str[i9] = m;
+                            }
+                           
+
+                        }
+                    }
+                }
+
                 DestroyImmediate(t);
+                Check_for_exeptions();
                 t = null;
             }
 
         }
 
         return true;
+    }
+    private void Check_for_exeptions()
+    {
+        for (int i = 0; i < _actions_to_str.Count; i++)
+        {
+
+            if (_actions_to_str[i].StartsWith(_s_tag._author))
+            {
+               if ( _actions_to_str[i+1] ==  "" )
+                {
+                    string[] units =_actions_to_str[i].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    int action_id = int.Parse(units[1]);
+                    _s_exeption.Set_no_author(action_id);
+                }
+            }
+        }
+    }
+    public void  Updade_editor_windows()
+    {
+        _update_ui_activate = true;
+        _update_ui_control = true;
+        _update_ui_main = true;
     }
     public void LOG()
     {

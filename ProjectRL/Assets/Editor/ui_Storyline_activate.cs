@@ -5,6 +5,8 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using UnityEditor;
 using System;
+
+
 public class ui_Storyline_activate : EditorWindow
 {
     Sprite preview_body;
@@ -13,6 +15,7 @@ public class ui_Storyline_activate : EditorWindow
     Sprite preview_makeup;
     string char_name;
     string char_descr;
+    public List<GameObject> _list_listview_content = new List<GameObject>();
     public static ui_Storyline_activate ShowWindow()
     {
         ui_Storyline_activate window_activate = GetWindow<ui_Storyline_activate>();
@@ -22,11 +25,21 @@ public class ui_Storyline_activate : EditorWindow
         return window_activate;
 
     }
+
     private void Update()
     {
-        this.Repaint();
+        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
+        if (s_target._update_ui_activate == true)
+        {
+            CreateGUI();
+        }
     }
-    private void CreateGUI()
+    public void bbbb()
+    {
+        CreateGUI();
+       
+    }
+    public  void CreateGUI()
     {
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/char_activation.uxml");
@@ -110,6 +123,7 @@ public class ui_Storyline_activate : EditorWindow
             {
                 string p_char_name = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
                 Activate(p_char_name);
+                s_target.Updade_editor_windows();
             }
             else
             {
@@ -128,6 +142,7 @@ public class ui_Storyline_activate : EditorWindow
                     if (s_target.Delete_character(p_char_name))
                     {
                         CreateGUI();
+                        s_target.Updade_editor_windows();
                     }
                 }
             }
@@ -142,8 +157,8 @@ public class ui_Storyline_activate : EditorWindow
         VTuxml.Q<VisualElement>("charlistBackgroung").Add(listView);
         VTuxml.Q<VisualElement>("buttonHolder2").Add(character_delete);
         VTuxml.Q<VisualElement>("buttonHolder1").Add(character_activate);
-  
 
+        s_target._update_ui_activate = false;
     }
     private void Activate(string char_name)
     {
@@ -164,4 +179,5 @@ public class ui_Storyline_activate : EditorWindow
 
         return true;
     }
+
 }
