@@ -1,0 +1,45 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="VisualElement" style="position: absolute; width: 170px; height: 475px; background-color: rgb(115, 115, 115);" />
+    <ui:VisualElement name="label_options" style="top: 5px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="options" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="options_list_Back" style="background-color: rgb(152, 152, 152); width: 160px; height: 120px; position: absolute; left: 5px; top: 15px;">
+        <ui:VisualElement name="options_list_Holder" style="height: 110px; width: 150px; position: absolute; left: 5px; top: 5px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_parameters" style="top: 5px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="options" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_cost" style="top: 140px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="cost" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="cost_Holder" style="width: 60px; height: 20px; position: absolute; left: 5px; top: 150px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="cost_label" style="color: rgb(0, 0, 0);" />
+        <ui:VisualElement name="cost_fieldHolder" style="width: 100px; height: 20px; position: absolute; left: 60px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_opt_text" style="top: 175px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="opt_text" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_jump_to" style="top: 240px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="jump_to" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="junpto_Holder" style="width: 60px; height: 20px; position: absolute; left: 5px; top: 250px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="jump_label" style="color: rgb(0, 0, 0);" />
+        <ui:VisualElement name="jump_fieldHolder" style="width: 100px; height: 20px; position: absolute; left: 60px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="option_textfield_Back" style="background-color: rgb(152, 152, 152); width: 160px; height: 50px; position: absolute; left: 5px; top: 185px;">
+        <ui:VisualElement name="options_text_Holder" style="height: 40px; width: 150px; position: absolute; left: 5px; top: 5px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_give_item" style="top: 275px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="give_item" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="giveitem_Holder" style="width: 60px; height: 20px; position: absolute; left: 5px; top: 285px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="give_label" style="color: rgb(0, 0, 0);" />
+        <ui:VisualElement name="give_fieldHolder" style="width: 100px; height: 20px; position: absolute; left: 60px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_edit_opt" style="top: 310px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="edit_opt" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; position: absolute; height: 10px; width: 160px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="buttonHolder1" style="height: 20px; width: 160px; position: absolute; left: 5px; top: 320px; background-color: rgb(152, 152, 152);" />
+    <ui:VisualElement name="buttonHolder2" style="height: 20px; width: 160px; position: absolute; left: 5px; top: 340px; background-color: rgb(152, 152, 152);" />
+    <ui:VisualElement name="buttonHolder3" style="height: 20px; width: 160px; position: absolute; left: 5px; top: 360px; background-color: rgb(152, 152, 152);" />
+</ui:UXML>

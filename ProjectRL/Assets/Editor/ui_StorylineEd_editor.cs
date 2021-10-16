@@ -414,8 +414,7 @@ public class ui_StorylineEd_editor : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-                s_target.Form_str();
-                EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
+                ui_Storyline_choise.ShowWindow();
             }
             else
             {
@@ -429,8 +428,8 @@ public class ui_StorylineEd_editor : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-                s_target.Form_str();
-                EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
+                ui_Storyline_choise.ShowWindow();
+                
             }
             else
             {
