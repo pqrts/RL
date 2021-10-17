@@ -1047,6 +1047,9 @@ MonoBehaviour:
   - {fileID: 1891271999}
   _list_activated_objects: []
   _list_inactivated_objects: []
+  _list_choise_options:
+  - 1#Free#0#1#0#sgsgds
+  - 2#Diamonds#2#2#0#eergerg
   _str_name: storyline_3_part_1.str
   _init_to_str:
   - '>>#**************************META**************************'

@@ -625,7 +625,7 @@ public class ui_StorylineEd_editor : EditorWindow
             string t3 = t2.Replace("Gamedata/Ñharacters/", "");
  
             s_target.Add_character(path, t3);
-            s_target.Updade_editor_windows();
+            s_target.Update_editor_windows();
         }
     }
     string Select_phrase(string phrase_text)
@@ -650,5 +650,6 @@ public class ui_StorylineEd_editor : EditorWindow
         char_sprite = "get sprites list";
         return true;
     }
+  
 
 }

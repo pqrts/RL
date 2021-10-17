@@ -123,7 +123,7 @@ public class ui_Storyline_activate : EditorWindow
             {
                 string p_char_name = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
                 Activate(p_char_name);
-                s_target.Updade_editor_windows();
+                s_target.Update_editor_windows();
             }
             else
             {
@@ -142,7 +142,7 @@ public class ui_Storyline_activate : EditorWindow
                     if (s_target.Delete_character(p_char_name))
                     {
                         CreateGUI();
-                        s_target.Updade_editor_windows();
+                        s_target.Update_editor_windows();
                     }
                 }
             }

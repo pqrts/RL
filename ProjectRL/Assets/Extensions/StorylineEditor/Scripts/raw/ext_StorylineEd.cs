@@ -41,6 +41,7 @@ public class ext_StorylineEd : MonoBehaviour
     private List<string> _list_inactivated_characters = new List<string>();
     public List<string> _list_activated_objects = new List<string>();
     public List<string> _list_inactivated_objects = new List<string>();
+    public List<string> _list_choise_options = new List<string>();
 
     private string _to_activation;
     private string _to_inactivation;
@@ -601,6 +602,13 @@ public class ext_StorylineEd : MonoBehaviour
     //  }
 
     // >> check class
+
+    public void Create_choise_option(string currency_type, int cost_value, int jump_to_action_id, int give_item_id, string option_text)
+    {
+        int number = _list_choise_options.Count + 1;
+        string option = number.ToString() + _s_tag._separator+ currency_type+ _s_tag._separator + cost_value + _s_tag._separator + jump_to_action_id + _s_tag._separator + give_item_id + _s_tag._separator + option_text;
+        _list_choise_options.Add(option);
+    }
     Boolean Check_character_activation(string character_name)
     {
         if (_list_activated_characters.Count != 0)
@@ -870,7 +878,7 @@ public class ext_StorylineEd : MonoBehaviour
             }
         }
     }
-    public void  Updade_editor_windows()
+    public void  Update_editor_windows()
     {
         _update_ui_activate = true;
         _update_ui_control = true;

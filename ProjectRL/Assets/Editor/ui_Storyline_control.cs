@@ -141,7 +141,7 @@ public class ui_Storyline_control : EditorWindow
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/control_panel.uxml");
         VisualElement VTuxml = VT.Instantiate();
-        TextField action_number = new TextField();
+        TextField action_number_field = new TextField();
 
         l_actions_total = VTuxml.Q<VisualElement>("total_actions") as Label;
         l_action_current = VTuxml.Q<VisualElement>("current_action") as Label;
@@ -171,7 +171,7 @@ public class ui_Storyline_control : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-                s_target.Select_action(int.Parse(action_number.value));
+                s_target.Select_action(int.Parse(action_number_field.value));
             }
             else
             {
@@ -212,7 +212,7 @@ public class ui_Storyline_control : EditorWindow
         VTuxml.Q<VisualElement>("moveto_buttonHolder").Add(move_to);
         VTuxml.Q<VisualElement>("next_action_Holder").Add(next_action);
         VTuxml.Q<VisualElement>("previous_action_Holder").Add(previous_action);
-        VTuxml.Q<VisualElement>("moveto_fieldHolder").Add(action_number);
+        VTuxml.Q<VisualElement>("moveto_fieldHolder").Add(action_number_field);
         rootVisualElement.Add(VTuxml);
     }
 
