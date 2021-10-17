@@ -609,6 +609,11 @@ public class ext_StorylineEd : MonoBehaviour
         string option = number.ToString() + _s_tag._separator+ currency_type+ _s_tag._separator + cost_value + _s_tag._separator + jump_to_action_id + _s_tag._separator + give_item_id + _s_tag._separator + option_text;
         _list_choise_options.Add(option);
     }
+    public string[] Get_choise_option(int option_id)
+    {
+        string[] units =_list_choise_options[option_id].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        return units;
+    }
     Boolean Check_character_activation(string character_name)
     {
         if (_list_activated_characters.Count != 0)

@@ -1,9 +1,9 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
     <Style src="сhariconTemplateUSS.uss" />
-    <ui:VisualElement name="Character" class="container" style="height: 30px; justify-content: center; width: 240px; background-color: rgba(152, 152, 152, 255); opacity: 1; visibility: visible; overflow: visible;">
-        <ui:VisualElement name="char" style="flex-direction: row; align-items: center; position: absolute; height: 26px; width: 240px; background-color: rgba(185, 185, 185, 255);">
-            <ui:VisualElement name="icon" style="width: 26px; height: 26px; background-image: resource(&apos;Gamedata/Textures/UI/icon_unknown&apos;); left: 2px; top: 0; color: rgba(0, 0, 0, 255);" />
-            <ui:Label text="Label" display-tooltip-when-elided="true" name="name" style="flex-grow: 1; padding-left: 5px; -unity-text-align: upper-left; color: rgba(0, 0, 0, 255);" />
+    <ui:VisualElement name="Character" class="container" style="height: 30px; justify-content: center; width: 240px; background-color: rgb(152, 152, 152); opacity: 1; visibility: visible; overflow: visible;">
+        <ui:VisualElement name="char" style="flex-direction: row; align-items: center; position: absolute; height: 26px; width: 240px; background-color: rgb(185, 185, 185);">
+            <ui:VisualElement name="icon" style="width: 26px; height: 26px; background-image: resource(&apos;Gamedata/Textures/UI/icon_unknown&apos;); left: 2px; top: 0; color: rgb(0, 0, 0);" />
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="name" style="flex-grow: 1; padding-left: 5px; -unity-text-align: upper-left; color: rgb(0, 0, 0);" />
             <ui:VisualElement name="toggleHolder" style="flex-direction: row-reverse; align-items: center; height: 26px; position: absolute; width: 26px; left: 210px; top: 2px;" />
         </ui:VisualElement>
     </ui:VisualElement>

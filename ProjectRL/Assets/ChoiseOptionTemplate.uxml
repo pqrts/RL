@@ -1,0 +1,37 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement style="height: 30px; background-color: rgb(152, 152, 152); width: 870px;">
+        <ui:VisualElement name="label_number" style="width: 20px; height: 20px; position: absolute; top: 5px; left: 5px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="number" style="width: 20px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status_number_Holder" style="width: 40px; height: 20px; position: absolute; top: 5px; left: 30px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_number" style="width: 20px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="label_currency_type" style="width: 85px; height: 20px; position: absolute; top: 5px; left: 75px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="currency_type" style="width: 85px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status_currency_type_Holder" style="width: 80px; height: 20px; position: absolute; top: 5px; left: 165px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_currency_type" style="width: 80px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="label_cost" style="width: 35px; height: 20px; position: absolute; top: 5px; left: 250px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="cost" style="width: 35px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status_cost_Holder" style="width: 50px; height: 20px; position: absolute; top: 5px; left: 290px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_cost" style="width: 50px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="label_jump_to" style="width: 55px; height: 20px; position: absolute; top: 5px; left: 345px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="jump_to" style="width: 55px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status_jump_to_Holder" style="width: 50px; height: 20px; position: absolute; top: 5px; left: 410px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_jump_to" style="width: 50px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="label_ItemID" style="width: 40px; height: 20px; position: absolute; top: 5px; left: 465px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="item_ID" style="width: 40px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status_itemID_Holder" style="width: 50px; height: 20px; position: absolute; top: 5px; left: 510px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_itemID" style="width: 50px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="status_opt_text_Holder" style="width: 300px; height: 20px; position: absolute; top: 5px; left: 565px; background-color: rgb(185, 185, 185);">
+            <ui:Label text="Label" display-tooltip-when-elided="true" name="status_opt_text" style="width: 300px; height: 20px; color: rgb(0, 0, 0);" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

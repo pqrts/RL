@@ -29,8 +29,8 @@ public class ui_Storyline_choise : EditorWindow
     {
         ui_Storyline_choise window_choise = GetWindow<ui_Storyline_choise>();
         window_choise.titleContent = new GUIContent("Choise Constructor");
-        window_choise.minSize = new Vector2(170, 475f);
-        window_choise.maxSize = new Vector2(170f, 475f);
+        window_choise.minSize = new Vector2(340, 340f);
+        window_choise.maxSize = new Vector2(340f, 340f);
 
         return window_choise;
 
@@ -44,6 +44,82 @@ public class ui_Storyline_choise : EditorWindow
    
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/choise_constructor.uxml");
         VisualElement VTuxml = VT.Instantiate();
+
+        var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/ChoiseOptionTemplate.uxml");
+        VisualElement VTlistview_element = VTListview.Instantiate();
+        /// optionslist setup
+        var items = new List<string>();
+
+        for (int i = 0; i < s_target._list_choise_options.Count; i++)
+            if (s_target._list_choise_options[i] != null)
+            {
+                items.Add(s_target._list_choise_options[i]);
+            }
+        Func<VisualElement> makeItem = () => VTListview.CloneTree();
+        
+        Label l_element_number = VTlistview_element.Q<VisualElement>("number") as Label;
+        Label l_element_status_number = VTlistview_element.Q<VisualElement>("status_number") as Label;
+
+        Label l_element_currency = VTlistview_element.Q<VisualElement>("currency_type") as Label;
+        Label l_element_status_currency = VTlistview_element.Q<VisualElement>("status_currency_type") as Label;
+
+        Label l_element_jump_to = VTlistview_element.Q<VisualElement>("jump_to") as Label;
+        Label l_element_status_jump_to = VTlistview_element.Q<VisualElement>("status_jump_to") as Label;
+
+        Label l_element_itemID = VTlistview_element.Q<VisualElement>("item_ID") as Label;
+        Label l_element_status_itemID = VTlistview_element.Q<VisualElement>("status_itemID") as Label;
+        
+        Label l_element_status_opt_text = VTlistview_element.Q<VisualElement>("status_opt_text") as Label;
+     
+
+        Action<VisualElement, int> bindItem = (e, i) =>
+        {
+            string[] _option = s_target.Get_choise_option(i);
+            foreach (string unit in _option)
+            {
+                Debug.Log(unit);
+            }
+           
+            (e.Q<VisualElement>("number") as Label).text = "¹: ";
+            (e.Q<VisualElement>("status_number") as Label).text = _option[0];
+                      
+            (e.Q<VisualElement>("currency_type") as Label).text = "Currency type: ";
+            (e.Q<VisualElement>("status_currency_type") as Label).text = _option[1];
+           
+            (e.Q<VisualElement>("cost") as Label).text = "Cost: ";
+            (e.Q<VisualElement>("status_cost") as Label).text = _option[2];
+
+            (e.Q<VisualElement>("jump_to") as Label).text = "Jump to: ";
+            (e.Q<VisualElement>("status_jump_to") as Label).text = _option[3];
+
+            (e.Q<VisualElement>("item_ID") as Label).text = "Item ID: ";
+            (e.Q<VisualElement>("status_itemID") as Label).text = _option[4];
+
+            (e.Q<VisualElement>("status_opt_text") as Label).text = _option[5];
+          
+        };
+
+        const int itemHeight = 30;
+        var listView = new ListView(items, itemHeight, makeItem, bindItem);
+
+        listView.selectionType = SelectionType.Single;
+
+        listView.onItemsChosen += obj =>
+        {
+
+            Debug.Log(listView.selectedItem);
+
+           
+        };
+        listView.onSelectionChange += objects =>
+        {
+            Debug.Log(objects);
+            Debug.Log(listView.selectedItem);
+           
+        };
+        listView.style.flexGrow = 1.0f;
+        /// 
+
 
         _cost_value_field = new TextField();
         _cost_value_field.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Set_value(_cost_value_field.value, _type_cost, true));
@@ -143,8 +219,9 @@ public class ui_Storyline_choise : EditorWindow
         VTuxml.Q<VisualElement>("jump_fieldHolder").Add(_jump_to_field);
         VTuxml.Q<VisualElement>("give_fieldHolder").Add(_item_id_field);
         VTuxml.Q<VisualElement>("currency_DropHolder").Add(_d_currency_type);
+        VTuxml.Q<VisualElement>("options_list_Holder").Add(listView);
 
-
+        
         rootVisualElement.Add(VTuxml);
     }
 
