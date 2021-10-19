@@ -13,7 +13,7 @@ public class ui_Storyline_choise : EditorWindow
     private string _option_text_value;
     private int _jump_to_value;
     private int _item_id_value;
-    private  List<string> _currency_choices = new List<string> { "Free", "Diamonds", "Hearts" };
+    private List<string> _currency_choices = new List<string> { "Free", "Diamonds", "Hearts" };
 
     private TextField _cost_value_field;
     private TextField _jump_to_field;
@@ -29,8 +29,8 @@ public class ui_Storyline_choise : EditorWindow
     {
         ui_Storyline_choise window_choise = GetWindow<ui_Storyline_choise>();
         window_choise.titleContent = new GUIContent("Choise Constructor");
-        window_choise.minSize = new Vector2(340, 340f);
-        window_choise.maxSize = new Vector2(340f, 340f);
+        window_choise.minSize = new Vector2(340, 475f);
+        window_choise.maxSize = new Vector2(340f, 475f);
 
         return window_choise;
 
@@ -39,9 +39,16 @@ public class ui_Storyline_choise : EditorWindow
     {
         s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
     }
+    private void Update()
+    {
+        if (s_target._update_ui_choise == true)
+        {
+            CreateGUI();
+        }
+    }
     public void CreateGUI()
     {
-   
+
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/choise_constructor.uxml");
         VisualElement VTuxml = VT.Instantiate();
 
@@ -56,7 +63,7 @@ public class ui_Storyline_choise : EditorWindow
                 items.Add(s_target._list_choise_options[i]);
             }
         Func<VisualElement> makeItem = () => VTListview.CloneTree();
-        
+
         Label l_element_number = VTlistview_element.Q<VisualElement>("number") as Label;
         Label l_element_status_number = VTlistview_element.Q<VisualElement>("status_number") as Label;
 
@@ -68,9 +75,9 @@ public class ui_Storyline_choise : EditorWindow
 
         Label l_element_itemID = VTlistview_element.Q<VisualElement>("item_ID") as Label;
         Label l_element_status_itemID = VTlistview_element.Q<VisualElement>("status_itemID") as Label;
-        
+
         Label l_element_status_opt_text = VTlistview_element.Q<VisualElement>("status_opt_text") as Label;
-     
+
 
         Action<VisualElement, int> bindItem = (e, i) =>
         {
@@ -79,13 +86,13 @@ public class ui_Storyline_choise : EditorWindow
             {
                 Debug.Log(unit);
             }
-           
+
             (e.Q<VisualElement>("number") as Label).text = "¹: ";
             (e.Q<VisualElement>("status_number") as Label).text = _option[0];
-                      
+
             (e.Q<VisualElement>("currency_type") as Label).text = "Currency type: ";
             (e.Q<VisualElement>("status_currency_type") as Label).text = _option[1];
-           
+
             (e.Q<VisualElement>("cost") as Label).text = "Cost: ";
             (e.Q<VisualElement>("status_cost") as Label).text = _option[2];
 
@@ -96,7 +103,7 @@ public class ui_Storyline_choise : EditorWindow
             (e.Q<VisualElement>("status_itemID") as Label).text = _option[4];
 
             (e.Q<VisualElement>("status_opt_text") as Label).text = _option[5];
-          
+
         };
 
         const int itemHeight = 30;
@@ -106,16 +113,19 @@ public class ui_Storyline_choise : EditorWindow
 
         listView.onItemsChosen += obj =>
         {
+          listView.contentContainer.
+          
+      
 
-            Debug.Log(listView.selectedItem);
-
-           
         };
         listView.onSelectionChange += objects =>
         {
-            Debug.Log(objects);
-            Debug.Log(listView.selectedItem);
-           
+            int r = listView.selectedIndex;
+            Action<VisualElement, int> bindItem = (e, r) =>
+            {
+                (e.Q<VisualElement>(" Background") as VisualElement).style.backgroundColor = Color.cyan;
+            };
+
         };
         listView.style.flexGrow = 1.0f;
         /// 
@@ -134,10 +144,10 @@ public class ui_Storyline_choise : EditorWindow
         _item_id_field = new TextField();
         _item_id_field.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Set_value(_item_id_field.value, _type_item_id, true));
 
-      
+
         _d_currency_type = new DropdownField("", _currency_choices, 0);
-      
-       
+
+
 
         Label l_options = VTuxml.Q<VisualElement>("options") as Label;
         l_options.text = "Options: ";
@@ -187,8 +197,15 @@ public class ui_Storyline_choise : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-
-                s_target.Update_editor_windows();
+                if (listView.selectedItem != null)
+                {
+                    Delete_option(listView.selectedIndex);
+                    s_target.Update_editor_windows();
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
+                }
             }
             else
             {
@@ -221,8 +238,9 @@ public class ui_Storyline_choise : EditorWindow
         VTuxml.Q<VisualElement>("currency_DropHolder").Add(_d_currency_type);
         VTuxml.Q<VisualElement>("options_list_Holder").Add(listView);
 
-        
+
         rootVisualElement.Add(VTuxml);
+        s_target._update_ui_choise = false;
     }
 
     private void Set_value(string field_value, string field_type, bool need_parsing)
@@ -241,8 +259,8 @@ public class ui_Storyline_choise : EditorWindow
             {
                 if (field_type == _type_cost)
                 {
-                  
-                        _cost_value = out_value;
+
+                    _cost_value = out_value;
                 }
                 if (field_type == _type_jump_to)
                 {
@@ -270,7 +288,7 @@ public class ui_Storyline_choise : EditorWindow
                 if (field_type == _type_cost)
                 {
                     _cost_value_field.value = "";
-                   
+
                 }
                 if (field_type == _type_jump_to)
                 {
@@ -295,23 +313,27 @@ public class ui_Storyline_choise : EditorWindow
                 _cost_value_field.value = "0";
                 s_target.Create_choise_option(_d_currency_type.value, _cost_value, _jump_to_value, _item_id_value, _option_text_value);
             }
-            else 
+            else
             {
                 if (_cost_value != 0)
                 {
                     s_target.Create_choise_option(_d_currency_type.value, _cost_value, _jump_to_value, _item_id_value, _option_text_value);
                 }
-                else 
+                else
                 {
                     EditorUtility.DisplayDialog("Notice", "Option type 'Paid', cost value cant be '0'", "OK");
                 }
             }
-          
+
         }
-        else 
+        else
         {
             EditorUtility.DisplayDialog("Notice", "Fill all fields", "OK");
         }
+    }
+    private void Delete_option(int selected_id)
+    {
+        s_target.Delete_choise_option(selected_id);
     }
 
 }

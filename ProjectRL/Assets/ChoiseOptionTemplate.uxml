@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
-    <ui:VisualElement style="height: 30px; background-color: rgb(152, 152, 152); width: 870px;">
+    <ui:VisualElement name="Background" style="height: 30px; background-color: rgb(135, 135, 135); width: 870px;">
         <ui:VisualElement name="label_number" style="width: 20px; height: 20px; position: absolute; top: 5px; left: 5px; background-color: rgb(185, 185, 185);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="number" style="width: 20px; height: 20px; color: rgb(0, 0, 0);" />
         </ui:VisualElement>
@@ -21,10 +21,10 @@
         <ui:VisualElement name="label_jump_to" style="width: 55px; height: 20px; position: absolute; top: 5px; left: 345px; background-color: rgb(185, 185, 185);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="jump_to" style="width: 55px; height: 20px; color: rgb(0, 0, 0);" />
         </ui:VisualElement>
-        <ui:VisualElement name="status_jump_to_Holder" style="width: 50px; height: 20px; position: absolute; top: 5px; left: 410px; background-color: rgb(185, 185, 185);">
+        <ui:VisualElement name="status_jump_to_Holder" style="width: 50px; height: 20px; position: absolute; top: 5px; left: 405px; background-color: rgb(185, 185, 185);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="status_jump_to" style="width: 50px; height: 20px; color: rgb(0, 0, 0);" />
         </ui:VisualElement>
-        <ui:VisualElement name="label_ItemID" style="width: 40px; height: 20px; position: absolute; top: 5px; left: 465px; background-color: rgb(185, 185, 185);">
+        <ui:VisualElement name="label_ItemID" style="width: 45px; height: 20px; position: absolute; top: 5px; left: 460px; background-color: rgb(185, 185, 185);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="item_ID" style="width: 40px; height: 20px; color: rgb(0, 0, 0);" />
         </ui:VisualElement>
         <ui:VisualElement name="status_itemID_Holder" style="width: 50px; height: 20px; position: absolute; top: 5px; left: 510px; background-color: rgb(185, 185, 185);">

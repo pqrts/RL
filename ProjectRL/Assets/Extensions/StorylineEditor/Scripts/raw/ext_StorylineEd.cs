@@ -77,6 +77,7 @@ public class ext_StorylineEd : MonoBehaviour
     public bool _update_ui_control;
     public bool _update_ui_activate;
     public bool _update_ui_main;
+    public bool _update_ui_choise;
 
     public void Init()
     {
@@ -614,6 +615,11 @@ public class ext_StorylineEd : MonoBehaviour
         string[] units =_list_choise_options[option_id].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         return units;
     }
+    public void Delete_choise_option(int option_id)
+    {
+        _list_choise_options.Remove(_list_choise_options[option_id]);
+        
+    }
     Boolean Check_character_activation(string character_name)
     {
         if (_list_activated_characters.Count != 0)
@@ -888,6 +894,7 @@ public class ext_StorylineEd : MonoBehaviour
         _update_ui_activate = true;
         _update_ui_control = true;
         _update_ui_main = true;
+        _update_ui_choise = true;
     }
     public void LOG()
     {
