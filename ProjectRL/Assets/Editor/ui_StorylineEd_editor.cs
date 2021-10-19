@@ -332,7 +332,7 @@ public class ui_StorylineEd_editor : EditorWindow
             if (s_target.Check_str_existence(s_target._str_name))
             {
                 Select_cg();
-                ui_Storyline_control.ShowWindow();
+                s_target.Update_editor_windows();
             }
             else
             {
@@ -348,7 +348,7 @@ public class ui_StorylineEd_editor : EditorWindow
             {
                 if (s_target.Create_step())
                 {
-                    ui_Storyline_control.ShowWindow();
+                    s_target.Update_editor_windows();
                     CreateGUI();
                 }
             }
@@ -366,6 +366,7 @@ public class ui_StorylineEd_editor : EditorWindow
             {
                 if (s_target.Create_step())
                 {
+                    s_target.Update_editor_windows();
                     CreateGUI();
                 }
             }
@@ -383,6 +384,7 @@ public class ui_StorylineEd_editor : EditorWindow
             {
                 if (s_target.Create_step())
                 {
+                    s_target.Update_editor_windows();
                     CreateGUI();
                 }
             }
@@ -399,7 +401,7 @@ public class ui_StorylineEd_editor : EditorWindow
             if (s_target.Check_str_existence(s_target._str_name))
             {
                 s_target.Form_str();
-                ui_Storyline_control.ShowWindow();
+                s_target.Update_editor_windows();
                 EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
             }
             else

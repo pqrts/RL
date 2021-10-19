@@ -19,7 +19,7 @@ public class ui_Storyline_activate : EditorWindow
     public static ui_Storyline_activate ShowWindow()
     {
         ui_Storyline_activate window_activate = GetWindow<ui_Storyline_activate>();
-        window_activate.titleContent = new GUIContent("Activate existing");
+        window_activate.titleContent = new GUIContent("Characters list");
         window_activate.minSize = new Vector2(170, 475f);
         window_activate.maxSize = new Vector2(170f, 475f);
         return window_activate;

@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 using UnityEditor;
 using System;
 
+
 public class ui_Storyline_choise : EditorWindow
 {
     private ext_StorylineEd s_target;
@@ -114,13 +115,13 @@ public class ui_Storyline_choise : EditorWindow
         listView.onItemsChosen += obj =>
         {
 
-          
-      
+
+
 
         };
         listView.onSelectionChange += objects =>
         {
-     
+
 
         };
         listView.style.flexGrow = 1.0f;
@@ -131,7 +132,7 @@ public class ui_Storyline_choise : EditorWindow
         _cost_value_field.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Set_value(_cost_value_field.value, _type_cost, true));
 
         _option_text_field = new TextField();
-        _option_text_field.style.height = 40f;
+        _option_text_field.style.height = 20f;
         _option_text_field.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Set_value(_option_text_field.value, _type_opt_text, false));
 
         _jump_to_field = new TextField();
@@ -224,9 +225,73 @@ public class ui_Storyline_choise : EditorWindow
         });
         add_option_to_action.text = "Add choise to Action";
 
+        Button move_option_up = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                if (listView.selectedItem != null)
+                {
+                    int selected_option_id = listView.selectedIndex;
+
+                    if (selected_option_id != 0)
+                    {
+                        s_target.Move_choise_option_up(selected_option_id);
+                        listView.selectedIndex = selected_option_id - 1;
+                    }
+                    else
+                    {
+                        EditorUtility.DisplayDialog("Notice", "Option already on top", "OK");
+                    }
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
+                }
+                s_target.Update_editor_windows();
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+        move_option_up.text = "Move up";
+
+        Button move_option_down = new Button(() =>
+        {
+            if (s_target.Check_str_existence(s_target._str_name))
+            {
+                if (listView.selectedItem != null)
+                {
+                    int selected_option_id = listView.selectedIndex;
+                    if ((selected_option_id + 1) != s_target._list_choise_options.Count)
+                    {
+                        s_target.Move_choise_option_down(selected_option_id);
+                   
+                        listView.selectedIndex = selected_option_id + 1;
+                    }
+                    else
+                    {
+                        EditorUtility.DisplayDialog("Notice", "Option already on top", "OK");
+                    }
+                }
+                else
+                {
+                    EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
+                }
+                s_target.Update_editor_windows();
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            }
+        });
+        move_option_down.text = "Move down";
+
         VTuxml.Q<VisualElement>("buttonHolder1").Add(add_option);
         VTuxml.Q<VisualElement>("buttonHolder2").Add(delete_option);
         VTuxml.Q<VisualElement>("buttonHolder3").Add(add_option_to_action);
+        VTuxml.Q<VisualElement>("buttonHolder4").Add(move_option_up);
+        VTuxml.Q<VisualElement>("buttonHolder5").Add(move_option_down);
         VTuxml.Q<VisualElement>("cost_fieldHolder").Add(_cost_value_field);
         VTuxml.Q<VisualElement>("options_text_Holder").Add(_option_text_field);
         VTuxml.Q<VisualElement>("jump_fieldHolder").Add(_jump_to_field);

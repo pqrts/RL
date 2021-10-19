@@ -7,11 +7,13 @@ using System.IO;
 using System;
 using UnityEngine.UI;
 using UnityEditor;
+
+
 [ExecuteInEditMode]
 
 public class ext_StorylineEd : MonoBehaviour
 {
-
+    
     public Sprite _temp_CharIcon;
     public GameObject _Canvas;
     [SerializeField] private int _ref_resolution_widht;
@@ -81,6 +83,7 @@ public class ext_StorylineEd : MonoBehaviour
 
     public void Init()
     {
+       
         _s_CharacterSp = GetComponent<ext_CharacterSp>();
         _s_tag = GetComponent<global_taglist>();
         _s_folder = GetComponent<global_folders>();
@@ -317,7 +320,7 @@ public class ext_StorylineEd : MonoBehaviour
                     _actions_to_str.Add("{");
                     _actions_to_str.Add(_s_tag._phrase + _s_tag._separator + _id_action);
                     _actions_to_str.Add(_phrase);
-                    _actions_to_str.Add(_s_tag._author+ _s_tag._separator + _id_action);
+                    _actions_to_str.Add(_s_tag._author + _s_tag._separator + _id_action);
                     _actions_to_str.Add(_phrase_author);
                     _actions_to_str.Add(_s_tag._CG);
                     string t = _CG_image.sprite.ToString().Replace(" (UnityEngine.Sprite)", "");
@@ -426,7 +429,7 @@ public class ext_StorylineEd : MonoBehaviour
                         _character.SetActive(false);
                     }
                     Init_update();
-                
+
                     _character = null;
                 }
                 else
@@ -607,18 +610,51 @@ public class ext_StorylineEd : MonoBehaviour
     public void Create_choise_option(string currency_type, int cost_value, int jump_to_action_id, int give_item_id, string option_text)
     {
         int number = _list_choise_options.Count + 1;
-        string option = number.ToString() + _s_tag._separator+ currency_type+ _s_tag._separator + cost_value + _s_tag._separator + jump_to_action_id + _s_tag._separator + give_item_id + _s_tag._separator + option_text;
+        string option = number.ToString() + _s_tag._separator + currency_type + _s_tag._separator + cost_value + _s_tag._separator + jump_to_action_id + _s_tag._separator + give_item_id + _s_tag._separator + option_text;
         _list_choise_options.Add(option);
     }
     public string[] Get_choise_option(int option_id)
     {
-        string[] units =_list_choise_options[option_id].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        string[] units = _list_choise_options[option_id].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         return units;
     }
     public void Delete_choise_option(int option_id)
     {
         _list_choise_options.Remove(_list_choise_options[option_id]);
-        
+        Renumber_choise_options_list();
+
+    }
+    public void Move_choise_option_down(int option_id)
+    {
+        string replaced_option = _list_choise_options[option_id + 1];
+        _list_choise_options[option_id + 1] = _list_choise_options[option_id];
+        _list_choise_options[option_id] = replaced_option;
+        replaced_option = null;
+        Renumber_choise_options_list();
+    }
+    public void Move_choise_option_up(int option_id)
+    {
+        string replaced_option = _list_choise_options[option_id - 1];
+        _list_choise_options[option_id - 1] = _list_choise_options[option_id];
+        _list_choise_options[option_id] = replaced_option;
+        replaced_option = null;
+        Renumber_choise_options_list();
+
+    }
+    public void Renumber_choise_options_list()
+    {
+        for (int i = 0; i < _list_choise_options.Count; i++)
+        {
+            string[] units = _list_choise_options[i].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            units[0] = (i + 1).ToString();
+            string t = "";
+            for (int r = 0; r < units.Length; r++)
+            {
+                t += units[r] + _s_tag._separator;
+            }
+            _list_choise_options[i] = t;
+            t = "";
+        }
     }
     Boolean Check_character_activation(string character_name)
     {
@@ -780,8 +816,8 @@ public class ext_StorylineEd : MonoBehaviour
                 t.SetActive(true);
                 _list_required_objects.Remove(_list_required_objects[i]);
 
-            
-               
+
+
                 for (int i2 = 0; i2 < _list_active_characters.Count; i2++)
                 {
                     if (_list_active_characters[i2] != null && _list_active_characters[i2].name == character_name)
@@ -832,7 +868,7 @@ public class ext_StorylineEd : MonoBehaviour
                         {
                             string y = character_name + _s_tag._separator;
                             string m = _init_to_str[i8].Replace(y, "");
-                       
+
                             _init_to_str[i8] = m;
 
                         }
@@ -849,16 +885,16 @@ public class ext_StorylineEd : MonoBehaviour
                             {
                                 _actions_to_str[i9] = "";
                             }
-                            if (_actions_to_str[i9].StartsWith("          " + y) && _actions_to_str[i9-1] == _s_tag._character_relocated )
+                            if (_actions_to_str[i9].StartsWith("          " + y) && _actions_to_str[i9 - 1] == _s_tag._character_relocated)
                             {
-                               _actions_to_str.Remove(_actions_to_str[i9]);
+                                _actions_to_str.Remove(_actions_to_str[i9]);
                             }
-                            else 
+                            else
                             {
                                 string m = _actions_to_str[i9].Replace(y, "");
-                               _actions_to_str[i9] = m;
+                                _actions_to_str[i9] = m;
                             }
-                           
+
 
                         }
                     }
@@ -868,7 +904,7 @@ public class ext_StorylineEd : MonoBehaviour
                 Check_for_exeptions();
                 t = null;
             }
-
+            
         }
 
         return true;
@@ -880,25 +916,26 @@ public class ext_StorylineEd : MonoBehaviour
 
             if (_actions_to_str[i].StartsWith(_s_tag._author))
             {
-               if ( _actions_to_str[i+1] ==  "" )
+                if (_actions_to_str[i + 1] == "")
                 {
-                    string[] units =_actions_to_str[i].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string[] units = _actions_to_str[i].Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     int action_id = int.Parse(units[1]);
                     _s_exeption.Set_no_author(action_id);
                 }
             }
         }
     }
-    public void  Update_editor_windows()
+
+
+    public void Update_editor_windows()
     {
+   
         _update_ui_activate = true;
         _update_ui_control = true;
         _update_ui_main = true;
         _update_ui_choise = true;
     }
-    public void LOG()
-    {
-        Debug.Log(_list_active_RectTransforms[0].anchoredPosition);
-        Debug.Log(_list_active_RectTransforms[0].localPosition);
-    }
+   
+    
+
 }
