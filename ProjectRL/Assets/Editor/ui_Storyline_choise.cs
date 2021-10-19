@@ -113,18 +113,14 @@ public class ui_Storyline_choise : EditorWindow
 
         listView.onItemsChosen += obj =>
         {
-          listView.contentContainer.
+
           
       
 
         };
         listView.onSelectionChange += objects =>
         {
-            int r = listView.selectedIndex;
-            Action<VisualElement, int> bindItem = (e, r) =>
-            {
-                (e.Q<VisualElement>(" Background") as VisualElement).style.backgroundColor = Color.cyan;
-            };
+     
 
         };
         listView.style.flexGrow = 1.0f;
