@@ -8,12 +8,9 @@ using System;
 using UnityEngine.UI;
 using UnityEditor;
 
-
 [ExecuteInEditMode]
-
 public class ext_StorylineEd : MonoBehaviour
 {
-    
     public Sprite _temp_CharIcon;
     public GameObject _Canvas;
     [SerializeField] private int _ref_resolution_widht;
@@ -80,10 +77,11 @@ public class ext_StorylineEd : MonoBehaviour
     public bool _update_ui_activate;
     public bool _update_ui_main;
     public bool _update_ui_choise;
+    public bool _update_ui_char_contructor;
 
     public void Init()
     {
-       
+
         _s_CharacterSp = GetComponent<ext_CharacterSp>();
         _s_tag = GetComponent<global_taglist>();
         _s_folder = GetComponent<global_folders>();
@@ -904,7 +902,7 @@ public class ext_StorylineEd : MonoBehaviour
                 Check_for_exeptions();
                 t = null;
             }
-            
+
         }
 
         return true;
@@ -929,13 +927,14 @@ public class ext_StorylineEd : MonoBehaviour
 
     public void Update_editor_windows()
     {
-   
+
         _update_ui_activate = true;
         _update_ui_control = true;
         _update_ui_main = true;
         _update_ui_choise = true;
+        _update_ui_char_contructor = true;
     }
-   
-    
+
+
 
 }

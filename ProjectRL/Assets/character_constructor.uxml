@@ -1,0 +1,60 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="VisualElement" style="position: absolute; width: 340px; height: 475px; background-color: rgb(115, 115, 115);" />
+    <ui:VisualElement name="label_tech_name" style="top: 255px; position: absolute; width: 160px; left: 175px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Technical Name" display-tooltip-when-elided="true" name="tech_name" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="tech_name_Holder" style="width: 60px; height: 20px; position: absolute; left: 175px; top: 265px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+        <ui:Label text="Name" display-tooltip-when-elided="true" name="tech_name_label" style="color: rgb(0, 0, 0);" />
+        <ui:VisualElement name="tech_name_fieldHolder" style="width: 100px; height: 20px; position: absolute; left: 60px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="runtime_name_Holder" style="width: 60px; height: 20px; position: absolute; left: 175px; top: 300px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+        <ui:Label text="Name" display-tooltip-when-elided="true" name="runtime_name_label" style="color: rgb(0, 0, 0);" />
+        <ui:VisualElement name="runtime_name_fieldHolder" style="width: 100px; height: 20px; position: absolute; left: 60px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_runtime_name" style="top: 290px; position: absolute; width: 160px; left: 175px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Runtime Name" display-tooltip-when-elided="true" name="runtime_name" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_description" style="top: 325px; position: absolute; width: 160px; left: 175px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Description" display-tooltip-when-elided="true" name="description" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="description_field_Back" style="background-color: rgb(152, 152, 152); width: 160px; height: 80px; position: absolute; left: 175px; top: 335px;">
+        <ui:VisualElement name="description_fieldHolder" style="height: 70px; width: 150px; position: absolute; left: 5px; top: 5px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="buttonHolder1" style="height: 20px; width: 160px; position: absolute; left: 175px; top: 431px; background-color: rgb(152, 152, 152);" />
+    <ui:VisualElement name="previewBackHolder" style="width: 165px; height: 235px; left: 5px; top: 15px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="previewHolder" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="previewHolder2" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="previewHolder3" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgba(152, 152, 152, 0); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="previewHolder4" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgba(152, 152, 152, 0); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="labelPreview" style="top: 5px; position: absolute; width: 165px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142); -unity-text-align: upper-center;">
+        <ui:Label text="Prewiev" display-tooltip-when-elided="true" name="preview" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 160px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_character_body" style="top: 255px; position: absolute; width: 165px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Body" display-tooltip-when-elided="true" name="character_body" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="character_body_Holder" style="top: 285px; position: absolute; width: 165px; left: 5px; height: 20px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="status_character_body" style="font-size: 12px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; height: 20px;" />
+        <ui:VisualElement name="character_body_buttonHolder" style="height: 20px; width: 165px; position: absolute; left: 0; top: -20px; background-color: rgb(152, 152, 152);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_character_clothes" style="top: 310px; position: absolute; width: 165px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Clothes" display-tooltip-when-elided="true" name="character_clothes" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="character_clothes_Holder" style="top: 340px; position: absolute; width: 165px; left: 5px; height: 20px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="status_character_clothes" style="font-size: 12px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; height: 20px;" />
+        <ui:VisualElement name="character_clothes_buttonHolder" style="height: 20px; width: 165px; position: absolute; left: 0; top: -20px; background-color: rgb(152, 152, 152);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_character_haircut" style="top: 365px; position: absolute; width: 165px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Haircut" display-tooltip-when-elided="true" name="character_haircut" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="character_haircut_Holder" style="top: 395px; position: absolute; width: 165px; left: 5px; height: 20px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="status_character_haircut" style="font-size: 12px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; height: 20px;" />
+        <ui:VisualElement name="character_haircut_buttonHolder" style="height: 20px; width: 165px; position: absolute; left: 0; top: -20px; background-color: rgb(152, 152, 152);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="label_character_makeup" style="top: 420px; position: absolute; width: 165px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Makeup" display-tooltip-when-elided="true" name="character_makeup" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="character_makeup_Holder" style="top: 450px; position: absolute; width: 165px; left: 5px; height: 20px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Label" display-tooltip-when-elided="true" name="status_character_makeup" style="font-size: 12px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; height: 20px;" />
+        <ui:VisualElement name="character_makeup_buttonHolder" style="height: 20px; width: 165px; position: absolute; left: 0; top: -20px; background-color: rgb(152, 152, 152);" />
+    </ui:VisualElement>
+</ui:UXML>

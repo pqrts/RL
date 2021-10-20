@@ -366,6 +366,7 @@ public class ui_StorylineEd_editor : EditorWindow
             {
                 if (s_target.Create_step())
                 {
+                    ui_Storyline_char_constructor.ShowWindow();
                     s_target.Update_editor_windows();
                     CreateGUI();
                 }
