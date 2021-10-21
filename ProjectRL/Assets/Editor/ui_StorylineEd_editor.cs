@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor;
 using System;
-
+using StorylineEditor;
 using System.IO;
 
 public class ui_StorylineEd_editor : EditorWindow
@@ -28,8 +28,8 @@ public class ui_StorylineEd_editor : EditorWindow
     List<GameObject> charlist_GO = new List<GameObject>();
     private RectTransform selected_character_RT;
 
-  
-   
+
+
     [MenuItem("Storyline Editor/Open")]
     public static ui_StorylineEd_editor ShowWindow()
     {
@@ -59,7 +59,7 @@ public class ui_StorylineEd_editor : EditorWindow
     {
 
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-    
+
 
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/mainwindow.uxml");
         var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/charIconTemplate.uxml");
@@ -190,8 +190,8 @@ public class ui_StorylineEd_editor : EditorWindow
         l_charname.text = "Runtime Name";
         Label l_charsprite = VTuxml.Q<VisualElement>("sprites") as Label;
         l_charsprite.text = "Character options";
-       // Label l_phrase = VTuxml.Q<VisualElement>("_phrase") as Label;
-      //  l_phrase.text = "Character _phrase";
+        // Label l_phrase = VTuxml.Q<VisualElement>("_phrase") as Label;
+        //  l_phrase.text = "Character _phrase";
         Label l_status = VTuxml.Q<VisualElement>("status") as Label;
         l_status.text = "Initialization : " + s_target._init_status + "      Current file : " + s_target._str_name;
         Label l_status2 = VTuxml.Q<VisualElement>("status2") as Label;
@@ -201,7 +201,7 @@ public class ui_StorylineEd_editor : EditorWindow
         l_steplist.text = "Steps list";
         Label l_CG_slider = VTuxml.Q<VisualElement>("CGrlabel") as Label;
         l_CG_slider.text = "CG position";
-         
+
         Label l_cgprev = VTuxml.Q<VisualElement>("CGpreview") as Label;
         l_cgprev.text = "CG preview";
 
@@ -221,8 +221,8 @@ public class ui_StorylineEd_editor : EditorWindow
                 Select_character();
                 ui_Storyline_control.ShowWindow();
                 CreateGUI();
-            
-            
+
+
             }
             else
             {
@@ -313,11 +313,11 @@ public class ui_StorylineEd_editor : EditorWindow
                         CreateGUI();
                     }
                 }
-                else 
+                else
                 {
                     EditorUtility.DisplayDialog("Error", "Unable to create, check required conditions", "OK");
                 }
-                
+
             }
             else
             {
@@ -432,7 +432,7 @@ public class ui_StorylineEd_editor : EditorWindow
             if (s_target.Check_str_existence(s_target._str_name))
             {
                 ui_Storyline_choise.ShowWindow();
-                
+
             }
             else
             {
@@ -495,7 +495,7 @@ public class ui_StorylineEd_editor : EditorWindow
 
         var SS4 = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/InputFieldCustom.uss");
 
-       // rootVisualElement.styleSheets.Add(SS4);
+        // rootVisualElement.styleSheets.Add(SS4);
         phrase.Q(TextField.textInputUssName).AddToClassList("TextField-Editor");
         phrase.multiline = true;
         phrase.style.whiteSpace = WhiteSpace.Normal;
@@ -506,7 +506,7 @@ public class ui_StorylineEd_editor : EditorWindow
         rootVisualElement.Add(VTuxml);
         VTuxml.Q<VisualElement>("leftToolbar").Add(control_panel);
         VTuxml.Q<VisualElement>("leftToolbar").Add(char_editor);
-        
+
         VTuxml.Q<VisualElement>("leftToolbar2").Add(new_file);
         VTuxml.Q<VisualElement>("leftToolbar2").Add(open_file);
         VTuxml.Q<VisualElement>("leftToolbar2").Add(save_progress);
@@ -622,11 +622,11 @@ public class ui_StorylineEd_editor : EditorWindow
         string path = EditorUtility.OpenFilePanel("Select Character", s_target._s_folder._characters, "char");
         if (path.Length != 0)
         {
-           
+
             string t = path.Replace(s_target._s_folder._root + "/Resources/", "");
             string t2 = t.Replace(".char", "");
             string t3 = t2.Replace("Gamedata/Сharacters/", "");
- 
+
             s_target.Add_character(path, t3);
             s_target.Update_editor_windows();
         }
@@ -635,8 +635,8 @@ public class ui_StorylineEd_editor : EditorWindow
     {
         ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         s_target._phrase = phrase_text;
-       
-        
+
+
 
 
         return (phrase_text);
@@ -652,7 +652,32 @@ public class ui_StorylineEd_editor : EditorWindow
         char_descr = "Персонаж, используемый для разработки редактора";
         char_sprite = "get sprites list";
         return true;
+      
     }
   
 
+}
+namespace StorylineEditor
+{
+ 
+    public  class StrPreviewComponentType
+    {
+       private string _type_index;
+        public StrPreviewComponentType(string index)
+        {
+            _type_index = index;
+        }
+        public static StrPreviewComponentType Body = new StrPreviewComponentType("type_body");
+        public static StrPreviewComponentType Clothes = new StrPreviewComponentType("type_clothes");
+    }
+    public class StrFieldType
+    {
+        private string _type_index;
+        public StrFieldType(string index)
+        {
+            _type_index = index;
+        }
+        public static StrFieldType RuntimeName = new StrFieldType("type_runtime_name");
+        public static StrFieldType TechName = new StrFieldType("type_tech_name");
+    }
 }
