@@ -13,14 +13,19 @@ public class ui_Storyline_char_constructor : EditorWindow
     private TextField _field_tech_name;
     private TextField _field_runtime_name;
 
-    private static string _f_type_runtime_name = "runtime_name";
-    private static string _f_type_tech_name = "tech_name";
+    private Sprite _preview_body;
+    private Sprite _preview_haircut;
+    private Sprite _preview_clothes;
+    private Sprite _preview_makeup;
+
+    private VisualElement _preview_body_holder;
 
     private string _value_runtime_name;
     private string _value_tech_name;
 
     private Label l_status_tech_name;
     private Label l_status_runtime_name;
+    private Label l_status_body;
 
 
 
@@ -53,7 +58,9 @@ public class ui_Storyline_char_constructor : EditorWindow
 
         l_status_runtime_name = VTuxml.Q<VisualElement>("status_char_runtime_name") as Label;
         l_status_tech_name = VTuxml.Q<VisualElement>("status_char_technical_name") as Label;
-        
+        l_status_body = VTuxml.Q<VisualElement>("status_character_body") as Label;
+
+
         _field_tech_name = new TextField();
         _field_runtime_name = new TextField();
 
@@ -64,7 +71,9 @@ public class ui_Storyline_char_constructor : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-         
+                string path = EditorUtility.OpenFilePanel("Select sprite", s_target._s_folder._body, "png");
+
+                Set_preview_component(path, StrPreviewComponentType.Body);
                 s_target.Update_editor_windows();
             }
             else
@@ -92,7 +101,7 @@ public class ui_Storyline_char_constructor : EditorWindow
         {
             if (s_target.Check_str_existence(s_target._str_name))
             {
-               
+
                 s_target.Update_editor_windows();
             }
             else
@@ -116,6 +125,14 @@ public class ui_Storyline_char_constructor : EditorWindow
         });
         select_makeup.text = "Select";
 
+      
+
+        if (_preview_body != null)
+        {
+            VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_body.texture;
+       
+            l_status_body.text = _preview_body.name;
+        }
 
         VTuxml.Q<VisualElement>("tech_name_fieldHolder").Add(_field_tech_name);
         VTuxml.Q<VisualElement>("runtime_name_fieldHolder").Add(_field_runtime_name);
@@ -149,8 +166,52 @@ public class ui_Storyline_char_constructor : EditorWindow
         Repaint();
     }
 
-    private void Set_preview_component(string component_name, StrPreviewComponentType component_type)
-    { 
-    
+    private void Set_preview_component(string component_path, StrPreviewComponentType component_type)
+    {
+
+        string path = null;
+        string preview_component_name = null;
+        string preview_component_resources_path = null;
+        if (component_type == StrPreviewComponentType.Body)
+        {
+            if (component_path.Length != 0)
+            {
+                preview_component_name = Get_component_name(component_path, "Char_body");
+                preview_component_resources_path = Get_component_resources_path(s_target._s_folder._body, preview_component_name);
+                _preview_body = Create_preview_component(preview_component_resources_path, preview_component_name);
+                Debug.Log(_preview_body.name + "+" + preview_component_name);
+               
+                CreateGUI();
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("Notice", "Select sprite", "OK");
+            }
+        }
+
+    }
+    private string Get_component_name(string source_string, string removed_part)
+    {
+        string t = source_string.Replace(s_target._s_folder._root + "/Resources/", "");
+        string t2 = t.Replace(".png", "");
+        string m = "Gamedata/Textures/" + removed_part + "/";
+        string component_name = t2.Replace(m, "");
+        return component_name;
+    }
+    private string Get_component_resources_path(string component_folder, string component_name)
+    {
+        Debug.Log(component_name);
+        string res_path = component_folder.Replace(s_target._s_folder._root + "/Resources/", "") + "/" + component_name;
+        return res_path;
+    }
+    private Sprite Create_preview_component(string component_resources_path, string component_name)
+    {
+        Debug.Log(component_resources_path);
+        Texture2D tex;
+        tex = Resources.Load(component_resources_path) as Texture2D;
+        Sprite preview_sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
+        preview_sprite.name = component_name;
+        return preview_sprite;
     }
 }
+

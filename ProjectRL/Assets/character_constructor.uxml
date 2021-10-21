@@ -15,11 +15,8 @@
         <ui:VisualElement name="description_fieldHolder" style="height: 70px; width: 150px; position: absolute; left: 5px; top: 5px;" />
     </ui:VisualElement>
     <ui:VisualElement name="buttonHolder1" style="height: 20px; width: 160px; position: absolute; left: 175px; top: 430px; background-color: rgb(152, 152, 152);" />
-    <ui:VisualElement name="previewBackHolder" style="width: 165px; height: 235px; left: 5px; top: 15px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
-    <ui:VisualElement name="previewHolder" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
-    <ui:VisualElement name="previewHolder2" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
-    <ui:VisualElement name="previewHolder3" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgba(152, 152, 152, 0); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
-    <ui:VisualElement name="previewHolder4" style="width: 120px; height: 230px; left: 25px; top: 15px; position: absolute; background-color: rgba(152, 152, 152, 0); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="preview_holder_back" style="height: 235px; width: 165px; position: absolute; left: 5px; top: 15px; background-color: rgb(152, 152, 152);" />
+    <ui:VisualElement name="previewHolder" style="position: absolute; left: 25px; top: 15px; width: 120px; height: 230px;" />
     <ui:VisualElement name="labelPreview" style="top: 5px; position: absolute; width: 165px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142); -unity-text-align: upper-center;">
         <ui:Label text="Prewiev" display-tooltip-when-elided="true" name="preview" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 160px;" />
     </ui:VisualElement>

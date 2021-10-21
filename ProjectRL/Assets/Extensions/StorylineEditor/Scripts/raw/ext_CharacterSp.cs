@@ -18,13 +18,13 @@ public class ext_CharacterSp : MonoBehaviour
     private string _s_clothes;
     private string _s_makeup;
     ext_StorylineEd s_StorylineEd;
-    public GameObject Spawn(GameObject Canvas, string root, string p_body, string p_haircut, string p_clothes, string p_makeup, string p_characters, string char_name)
+    public GameObject Spawn(GameObject Canvas, string root, string path_body, string path_haircut, string path_clothes, string path_makeup, string path_characters, string char_name)
     {
         Debug.Log(Canvas);
         try
         {
             
-            StreamReader SR = new StreamReader(p_characters, encoding: System.Text.Encoding.GetEncoding("windows-1251"));
+            StreamReader SR = new StreamReader(path_characters, encoding: System.Text.Encoding.GetEncoding("windows-1251"));
             string line = SR.ReadLine();
             _char_runtime_name = line;
             int count = 1;
@@ -52,16 +52,16 @@ public class ext_CharacterSp : MonoBehaviour
                 }
             }
             SR.Close();
-            string res_p_body = p_body.Replace(root + "/Resources/", "") + "/" + _s_body;
-            string res_p_haircut = p_haircut.Replace(root + "/Resources/", "") + "/" + _s_haircut;
-            string res_p_clothes = p_clothes.Replace(root + "/Resources/", "") + "/" + _s_clothes;
-            string res_p_makeup = p_makeup.Replace(root + "/Resources/", "") + "/" + _s_makeup;
+            string resources_path_body = path_body.Replace(root + "/Resources/", "") + "/" + _s_body;
+            string resources_path_haircut = path_haircut.Replace(root + "/Resources/", "") + "/" + _s_haircut;
+            string resources_path_clothes = path_clothes.Replace(root + "/Resources/", "") + "/" + _s_clothes;
+            string resources_path_makeup = path_makeup.Replace(root + "/Resources/", "") + "/" + _s_makeup;
 
-            if (Create_body(Canvas, res_p_body, char_name))
+            if (Create_body(Canvas, resources_path_body, char_name))
             {
-                Create_haircut( res_p_haircut);
-                Create_clothes( res_p_clothes);
-                if (Create_makeup( res_p_makeup))
+                Create_haircut( resources_path_haircut);
+                Create_clothes( resources_path_clothes);
+                if (Create_makeup( resources_path_makeup))
                 {
                     _char_GO.tag = "character";
                     _char_GO.AddComponent<local_character>();

@@ -652,32 +652,6 @@ public class ui_StorylineEd_editor : EditorWindow
         char_descr = "ѕерсонаж, используемый дл€ разработки редактора";
         char_sprite = "get sprites list";
         return true;
-      
-    }
+          }
   
-
-}
-namespace StorylineEditor
-{
- 
-    public  class StrPreviewComponentType
-    {
-       private string _type_index;
-        public StrPreviewComponentType(string index)
-        {
-            _type_index = index;
-        }
-        public static StrPreviewComponentType Body = new StrPreviewComponentType("type_body");
-        public static StrPreviewComponentType Clothes = new StrPreviewComponentType("type_clothes");
-    }
-    public class StrFieldType
-    {
-        private string _type_index;
-        public StrFieldType(string index)
-        {
-            _type_index = index;
-        }
-        public static StrFieldType RuntimeName = new StrFieldType("type_runtime_name");
-        public static StrFieldType TechName = new StrFieldType("type_tech_name");
-    }
 }

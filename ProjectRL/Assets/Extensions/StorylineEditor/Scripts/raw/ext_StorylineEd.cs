@@ -934,7 +934,27 @@ public class ext_StorylineEd : MonoBehaviour
         _update_ui_choise = true;
         _update_ui_char_contructor = true;
     }
-
-
-
+ }
+namespace StorylineEditor
+{
+    public class StrPreviewComponentType
+    {
+        private string _type_index;
+        public StrPreviewComponentType(string index)
+        {
+            _type_index = index;
+        }
+        public static StrPreviewComponentType Body = new StrPreviewComponentType("type_body");
+        public static StrPreviewComponentType Clothes = new StrPreviewComponentType("type_clothes");
+    }
+    public class StrFieldType
+    {
+        private string _type_index;
+        public StrFieldType(string index)
+        {
+            _type_index = index;
+        }
+        public static StrFieldType RuntimeName = new StrFieldType("type_runtime_name");
+        public static StrFieldType TechName = new StrFieldType("type_tech_name");
+    }
 }

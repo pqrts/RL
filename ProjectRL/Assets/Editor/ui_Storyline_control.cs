@@ -206,9 +206,6 @@ public class ui_Storyline_control : EditorWindow
         });
         previous_action.text = "Previous Action";
 
-
-
-
         VTuxml.Q<VisualElement>("moveto_buttonHolder").Add(move_to);
         VTuxml.Q<VisualElement>("next_action_Holder").Add(next_action);
         VTuxml.Q<VisualElement>("previous_action_Holder").Add(previous_action);
