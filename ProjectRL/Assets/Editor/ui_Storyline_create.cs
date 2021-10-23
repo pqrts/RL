@@ -49,11 +49,11 @@ public class ui_Storyline_create : EditorWindow
             {
                 string file_name = "storyline_" + number.value + "_" + "part_" + part.value + ".str";
                 string s_user = t_user.value;
-                ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
+                ext_StorylineEditor s_target = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
 
-                if (!s_target.Check_str_existence(file_name))
+                if (!s_target.CheckStorylineExistence(file_name))
                 {
-                    if (s_target.Create_new_str(file_name, s_user))
+                    if (s_target.CreateNewStoryline(file_name, s_user))
                     {
                         EditorUtility.DisplayDialog("Notice", "Storyline created", "OK");
                       

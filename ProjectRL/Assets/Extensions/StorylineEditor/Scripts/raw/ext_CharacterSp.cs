@@ -17,7 +17,7 @@ public class ext_CharacterSp : MonoBehaviour
     private string _s_haircut;
     private string _s_clothes;
     private string _s_makeup;
-    ext_StorylineEd s_StorylineEd;
+    ext_StorylineEditor s_StorylineEd;
     public GameObject Spawn(GameObject Canvas, string root, string path_body, string path_haircut, string path_clothes, string path_makeup, string path_characters, string char_name)
     {
         Debug.Log(Canvas);

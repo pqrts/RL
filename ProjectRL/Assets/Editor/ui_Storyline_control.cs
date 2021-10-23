@@ -7,36 +7,31 @@ using UnityEditor;
 using System;
 public class ui_Storyline_control : EditorWindow
 {
-    Sprite preview_body;
-    Sprite preview_haircut;
-    Sprite preview_clothes;
-    Sprite preview_makeup;
-    string char_name;
-    string char_descr;
+    private Label _l_ActionsTotal;
+    private Label _l_ActionCurrent;
+    private Label _l_ActionNumber;
+    private Label _l_Info;
+    private Label _l_MoveTo;
+    private Label _l_ActionSelection;
+    private Label _l_StatusMain;
+    private Label _l_StatusFile;
+    private Label _l_StatusCG;
+    private Label _l_StatusPhrase;
+    private Label _l_StatusAuthor;
+    private Label _l_StatusAuthorName;
+    private Label _l_StatusSteps;
+    private Label _l_StatusCheck;
 
-    private Label l_actions_total;
-    private Label l_action_current;
-    private Label l_action_number;
-    private Label l_info;
-    private Label l_moveto;
-    private Label l_act_selection;
-    private Label l_status_main;
-    private Label l_status_file;
-    private Label l_status_cg;
-    private Label l_status_phrase;
-    private Label l_status_author;
-    private Label l_status_author_name;
-    private Label l_status_steps;
-    private Label l_status_check;
+    private Label _l_Status1;
+    private Label _l_Status2;
+    private Label _l_Status3;
+    private Label _l_Status4;
+    private Label _l_Status5;
+    private Label _l_Status6;
 
+    private ext_StorylineEditor _s_StorylineEditor;
+    private ext_StorylineEventSystem _s_StrEvent;
 
-
-    private Label l_status_1;
-    private Label l_status_2;
-    private Label l_status_3;
-    private Label l_status_4;
-    private Label l_status_5;
-    private Label l_status_6;
     public static ui_Storyline_control ShowWindow()
     {
         ui_Storyline_control window_control = GetWindow<ui_Storyline_control>();
@@ -47,170 +42,174 @@ public class ui_Storyline_control : EditorWindow
         return window_control;
 
     }
-
-    public void Update()
+    private void OnEnable()
     {
-
-
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-
-        l_actions_total.text = "Total actions: " + s_target._id_action_total;
-        l_action_current.text = "Current action: " + s_target._id_action;
-        l_action_number.text = "Action ¹: ";
-        l_info.text = "Info";
-        l_moveto.text = "Move to action:";
-        l_act_selection.text = "Navigation";
-        l_status_main.text = "Required: ";
-        l_status_file.text = "Create .str: ";
-        l_status_cg.text = "Select CG: ";
-        l_status_phrase.text = " Add phrase: ";
-        l_status_author.text = "Set author: ";
-        l_status_author_name.text = "Author: ";
-        l_status_steps.text = "Create step: ";
-
-
-
-
-
-        if (s_target.Check_str_existence(s_target._str_name))
-        {
-
-            l_status_1.text = "Done";
-        }
-        else
-        {
-            l_status_1.text = "----";
-        }
-
-        if (s_target._CG_sprite != null)
-        {
-            l_status_2.text = "Done";
-        }
-        else
-        {
-            l_status_2.text = "----";
-        }
-
-        if (s_target._phrase != "")
-        {
-            l_status_3.text = "Done";
-        }
-        else
-        {
-            l_status_3.text = "----";
-        }
-
-
-        if (s_target._phrase_author != "")
-        {
-            l_status_4.text = "Done";
-        }
-        else
-        {
-            l_status_4.text = "----";
-        }
-               
-        l_status_5.text = s_target._phrase_author;
-
-        if (s_target._steps_total.Count != 0)
-        {
-            l_status_6.text = "Done";
-        }
-        else
-        {
-            l_status_6.text = "----";
-        }
-
-        if (l_status_1.text == "Done" && l_status_2.text == "Done" && l_status_3.text == "Done" && l_status_4.text == "Done" && l_status_6.text == "Done")
-        {
-            l_status_check.text = "Ready for next action";
-            s_target._ready_for_next_action = true;
-        }
-        else 
-        {
-            l_status_check.text = "Not ready ";
-            s_target._ready_for_next_action = false;
-        }
-
-        this.Repaint();
+        _s_StrEvent = (ext_StorylineEventSystem)FindObjectOfType(typeof(ext_StorylineEventSystem));
+        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StrEvent.OnStrEdUpdated += OnStrEdUpdated;
     }
+    private void OnStrEdUpdated()
+    {
+        if (ResetValues())
+        {
+            CreateGUI();
+            Repaint();
+        }
+    }
+    private Boolean ResetValues()
+    {
+        _l_ActionsTotal.text = "Total actions: " + _s_StorylineEditor._IDActionsTotal;
+        _l_ActionCurrent.text = "Current action: " + _s_StorylineEditor._IDAction;
+        _l_ActionNumber.text = "Action ¹: ";
+        _l_Info.text = "Info";
+        _l_MoveTo.text = "Move to action:";
+        _l_ActionSelection.text = "Navigation";
+        _l_StatusMain.text = "Required: ";
+        _l_StatusFile.text = "Create .str: ";
+        _l_StatusCG.text = "Select CG: ";
+        _l_StatusPhrase.text = " Add phrase: ";
+        _l_StatusAuthor.text = "Set author: ";
+        _l_StatusAuthorName.text = "Author: ";
+        _l_StatusSteps.text = "Create step: ";
+        if (_s_StorylineEditor.CheckStorylineExistence(_s_StorylineEditor._StorylineName))
+        {
+            _l_Status1.text = "Done";
+        }
+        else
+        {
+            _l_Status1.text = "----";
+        }
 
-    public void CreateGUI()
+        if (_s_StorylineEditor._CGSprite != null)
+        {
+            _l_Status2.text = "Done";
+        }
+        else
+        {
+            _l_Status2.text = "----";
+        }
+
+        if (_s_StorylineEditor._Phrase != "")
+        {
+            _l_Status3.text = "Done";
+        }
+        else
+        {
+            _l_Status3.text = "----";
+        }
+
+
+        if (_s_StorylineEditor._PhraseAuthor != "")
+        {
+            _l_Status4.text = "Done";
+        }
+        else
+        {
+            _l_Status4.text = "----";
+        }
+
+        _l_Status5.text = _s_StorylineEditor._PhraseAuthor;
+
+        if (_s_StorylineEditor._IDStepsTotal.Count != 0)
+        {
+            _l_Status6.text = "Done";
+        }
+        else
+        {
+            _l_Status6.text = "----";
+        }
+
+        if (_l_Status1.text == "Done" && _l_Status2.text == "Done" && _l_Status3.text == "Done" && _l_Status4.text == "Done" && _l_Status6.text == "Done")
+        {
+            _l_StatusCheck.text = "Ready for next action";
+            _s_StorylineEditor._ready_for_next_action = true;
+        }
+        else
+        {
+            _l_StatusCheck.text = "Not ready ";
+            _s_StorylineEditor._ready_for_next_action = false;
+        }
+        return true;
+    }
+    private void CreateGUI()
     {
 
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/control_panel.uxml");
         VisualElement VTuxml = VT.Instantiate();
-        TextField action_number_field = new TextField();
+        TextField _field_ActionNumber = new TextField();
 
-        l_actions_total = VTuxml.Q<VisualElement>("total_actions") as Label;
-        l_action_current = VTuxml.Q<VisualElement>("current_action") as Label;
-        l_action_number = VTuxml.Q<VisualElement>("action_number") as Label;
-        l_info = VTuxml.Q<VisualElement>("info") as Label;
-        l_moveto = VTuxml.Q<VisualElement>("move_to") as Label;
-        l_act_selection = VTuxml.Q<VisualElement>("act_selection") as Label;
-        l_status_main = VTuxml.Q<VisualElement>("status") as Label;
-        l_status_file = VTuxml.Q<VisualElement>("status_file") as Label;
-        l_status_cg = VTuxml.Q<VisualElement>("status_CG") as Label;
-        l_status_phrase = VTuxml.Q<VisualElement>("status_phrase") as Label;
-        l_status_author = VTuxml.Q<VisualElement>("status_author") as Label;
-        l_status_author_name = VTuxml.Q<VisualElement>("status_name") as Label;
-        l_status_steps = VTuxml.Q<VisualElement>("status_steps") as Label;
-        l_status_check = VTuxml.Q<VisualElement>("status_check") as Label;
+        _l_ActionsTotal = VTuxml.Q<VisualElement>("total_actions") as Label;
+        _l_ActionCurrent = VTuxml.Q<VisualElement>("current_action") as Label;
+        _l_ActionNumber = VTuxml.Q<VisualElement>("action_number") as Label;
+        _l_Info = VTuxml.Q<VisualElement>("info") as Label;
+        _l_MoveTo = VTuxml.Q<VisualElement>("move_to") as Label;
+        _l_ActionSelection = VTuxml.Q<VisualElement>("act_selection") as Label;
+        _l_StatusMain = VTuxml.Q<VisualElement>("status") as Label;
+        _l_StatusFile = VTuxml.Q<VisualElement>("status_file") as Label;
+        _l_StatusCG = VTuxml.Q<VisualElement>("status_CG") as Label;
+        _l_StatusPhrase = VTuxml.Q<VisualElement>("status_phrase") as Label;
+        _l_StatusAuthor = VTuxml.Q<VisualElement>("status_author") as Label;
+        _l_StatusAuthorName = VTuxml.Q<VisualElement>("status_name") as Label;
+        _l_StatusSteps = VTuxml.Q<VisualElement>("status_steps") as Label;
+        _l_StatusCheck = VTuxml.Q<VisualElement>("status_check") as Label;
         ////
 
-        l_status_1 = VTuxml.Q<VisualElement>("status_1") as Label;
-        l_status_2 = VTuxml.Q<VisualElement>("status_2") as Label;
-        l_status_3 = VTuxml.Q<VisualElement>("status_3") as Label;
-        l_status_4 = VTuxml.Q<VisualElement>("status_4") as Label;
-        l_status_5 = VTuxml.Q<VisualElement>("status_5") as Label;
-        l_status_6 = VTuxml.Q<VisualElement>("status_6") as Label;
+        _l_Status1 = VTuxml.Q<VisualElement>("status_1") as Label;
+        _l_Status2 = VTuxml.Q<VisualElement>("status_2") as Label;
+        _l_Status3 = VTuxml.Q<VisualElement>("status_3") as Label;
+        _l_Status4 = VTuxml.Q<VisualElement>("status_4") as Label;
+        _l_Status5 = VTuxml.Q<VisualElement>("status_5") as Label;
+        _l_Status6 = VTuxml.Q<VisualElement>("status_6") as Label;
         ///
 
-        Button move_to = new Button(() =>
+        Button b_MoveTo = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                s_target.Select_action(int.Parse(action_number_field.value));
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                _s_StorylineEditor.SelectAction(int.Parse(_field_ActionNumber.value));
+                _s_StrEvent.EditorUpdated();
             }
         });
-        move_to.text = "Move";
+        b_MoveTo.text = "Move";
 
-        Button next_action = new Button(() =>
+        Button _b_NextAction = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                _s_StrEvent.EditorUpdated();
             }
         });
-        next_action.text = "Next Action";
+        _b_NextAction.text = "Next Action";
 
-        Button previous_action = new Button(() =>
+        Button _b_PreviousAction = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                _s_StrEvent.EditorUpdated();
             }
         });
-        previous_action.text = "Previous Action";
+        _b_PreviousAction.text = "Previous Action";
 
-        VTuxml.Q<VisualElement>("moveto_buttonHolder").Add(move_to);
-        VTuxml.Q<VisualElement>("next_action_Holder").Add(next_action);
-        VTuxml.Q<VisualElement>("previous_action_Holder").Add(previous_action);
-        VTuxml.Q<VisualElement>("moveto_fieldHolder").Add(action_number_field);
+        VTuxml.Q<VisualElement>("moveto_buttonHolder").Add(b_MoveTo);
+        VTuxml.Q<VisualElement>("next_action_Holder").Add(_b_NextAction);
+        VTuxml.Q<VisualElement>("previous_action_Holder").Add(_b_PreviousAction);
+        VTuxml.Q<VisualElement>("moveto_fieldHolder").Add(_field_ActionNumber);
         rootVisualElement.Add(VTuxml);
     }
-
+    private Boolean ValidateStoryline()
+    {
+        if (_s_StorylineEditor.CheckStorylineExistence(_s_StorylineEditor._StorylineName))
+        {
+            return true;
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            return false;
+        }
+    }
+    private void OnDisable()
+    {
+        _s_StrEvent.OnStrEdUpdated -= OnStrEdUpdated;
+    }
 }

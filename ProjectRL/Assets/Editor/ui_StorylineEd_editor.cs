@@ -8,59 +8,55 @@ using System;
 using StorylineEditor;
 using System.IO;
 
+
 public class ui_StorylineEd_editor : EditorWindow
 {
     public int id_action = 0;
     public int id_step;
-    VisualElement rootVE;
-    VisualTreeAsset VTasset;
-    Sprite preview_body;
-    Sprite preview_haircut;
-    Sprite preview_clothes;
-    Sprite preview_makeup;
-    string char_name;
-    string char_descr;
-    string char_sprite;
-    string storyline_title;
-    float p_value;
-    string phrase_str;
-    float char_slider_value;
-    List<GameObject> charlist_GO = new List<GameObject>();
-    private RectTransform selected_character_RT;
+    private VisualElement _RootVisualElement;
+    private VisualTreeAsset _RootVTasset;
+    private Sprite _preview_Body;
+    private Sprite _preview_Haircut;
+    private Sprite _preview_Clothes;
+    private Sprite _preview_Makeup;
+    private string _CharacterName;
+    private string _CharacterDescription;
+    private string _CharacterSprite;
+    private string _SorylineTitle;
+    private string _value_Phrase;
+     
+    private RectTransform _SelectedCharacterRectTransform;
 
-
+    private ext_StorylineEventSystem _s_StrEvent;
+    private ext_StorylineEditor _s_StorylineEditor;
 
     [MenuItem("Storyline Editor/Open")]
     public static ui_StorylineEd_editor ShowWindow()
     {
-        ui_StorylineEd_editor window = GetWindow<ui_StorylineEd_editor>();
-        window.titleContent = new GUIContent("Storyline Editor");
-        window.minSize = new Vector2(845f, 475f);
-        window.maxSize = new Vector2(845f, 475f);
-        return window;
+        ui_StorylineEd_editor main_window = GetWindow<ui_StorylineEd_editor>();
+        main_window.titleContent = new GUIContent("Storyline Editor");
+        main_window.minSize = new Vector2(845f, 475f);
+        main_window.maxSize = new Vector2(845f, 475f);
+        return main_window;
     }
     void OnEnable()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        if (s_target != null)
+        _s_StrEvent = (ext_StorylineEventSystem)FindObjectOfType(typeof(ext_StorylineEventSystem));
+        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StrEvent.OnStrEdUpdated += OnStrEdUpdated;
+        if (_s_StorylineEditor != null)
         {
-            s_target.Init();
+            _s_StorylineEditor.Init();
         }
     }
-    private void Update()
+
+    private void OnStrEdUpdated()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        if (s_target._update_ui_main == true)
-        {
-            CreateGUI();
-        }
+        CreateGUI();
+       
     }
-    public void CreateGUI()
+    private void CreateGUI()
     {
-
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-
-
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/mainwindow.uxml");
         var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/charIconTemplate.uxml");
         VisualElement VTuxml = VT.Instantiate();
@@ -70,75 +66,76 @@ public class ui_StorylineEd_editor : EditorWindow
         rootVisualElement.styleSheets.Add(SS);
         var SS2 = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/сhariconTemplateUSS.uss");
         rootVisualElement.styleSheets.Add(SS2);
-        //Charlist setup
-        Scroller CG_positioning = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
-        CG_positioning.style.height = 20f;
-        var items = new List<GameObject>();
 
-        for (int i = 0; i < s_target._list_active_characters.Count; i++)
-            if (s_target._list_active_characters[i] != null)
+        Scroller _slider_CGPosition = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
+        _slider_CGPosition.style.height = 20f;
+        //Charlist setup
+        var Characters_listview_items = new List<GameObject>();
+
+        for (int i = 0; i < _s_StorylineEditor._list_ActiveCharacters.Count; i++)
+            if (_s_StorylineEditor._list_ActiveCharacters[i] != null)
             {
-                items.Add(s_target._list_active_characters[i]);
+                Characters_listview_items.Add(_s_StorylineEditor._list_ActiveCharacters[i]);
             }
         Func<VisualElement> makeItem = () => VTListview.CloneTree();
         Label element_name = VTlistview_element.Q<VisualElement>("name") as Label;
         VisualElement element_icon = VTlistview_element.Q<VisualElement>("icon") as VisualElement;
         Action<VisualElement, int> bindItem = (e, i) =>
         {
-            (e.Q<VisualElement>("name") as Label).text = s_target._list_active_characters[i].name;
-            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = s_target._temp_CharIcon.texture;
+            (e.Q<VisualElement>("name") as Label).text = _s_StorylineEditor._list_ActiveCharacters[i].name;
+            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = _s_StorylineEditor._temp_CharIcon.texture;
         };
 
         const int itemHeight = 30;
-        var listView = new ListView(items, itemHeight, makeItem, bindItem);
-        listView.selectionType = SelectionType.Single;
+        var _listview_Characters = new ListView(Characters_listview_items, itemHeight, makeItem, bindItem);
+        _listview_Characters.selectionType = SelectionType.Single;
 
-        listView.onItemsChosen += obj =>
+        _listview_Characters.onItemsChosen += obj =>
         {
 
-            string p_char_name = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
-            Set_selected_character_RT(p_char_name);
+            string p_char_name = _listview_Characters.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+            SetSelectedCharacterRectTransform(p_char_name);
 
-            if (Get_preview_components(listView.selectedIndex))
+            if (GetPreviewComponents(_listview_Characters.selectedIndex))
             {
-                if (preview_body != null && preview_clothes != null && preview_haircut != null && preview_makeup != null)
+                if (_preview_Body != null && _preview_Clothes != null && _preview_Haircut != null && _preview_Makeup != null)
                 {
-                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = preview_body.texture;
-                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = preview_clothes.texture;
-                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = preview_haircut.texture;
-                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = preview_makeup.texture;
+                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_Body.texture;
+                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = _preview_Clothes.texture;
+                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = _preview_Haircut.texture;
+                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = _preview_Makeup.texture;
                     Label l_char_name = VTuxml.Q<VisualElement>("namecontent") as Label;
-                    l_char_name.text = char_name;
+                    l_char_name.text = _CharacterName;
                     Label l_char_descr = VTuxml.Q<VisualElement>("descrcontent") as Label;
-                    l_char_descr.text = char_descr;
+                    l_char_descr.text = _CharacterDescription;
                 }
             }
         };
-        listView.onSelectionChange += objects =>
+        _listview_Characters.onSelectionChange += objects =>
         {
 
-            string p_char_name = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
-            Set_selected_character_RT(p_char_name);
-            if (Get_preview_components(listView.selectedIndex))
+            string temp_CharacterName = _listview_Characters.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+            SetSelectedCharacterRectTransform(temp_CharacterName);
+            if (GetPreviewComponents(_listview_Characters.selectedIndex))
             {
-                if (preview_body != null && preview_clothes != null && preview_haircut != null && preview_makeup != null)
+                if (_preview_Body != null && _preview_Clothes != null && _preview_Haircut != null && _preview_Makeup != null)
                 {
-                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = preview_body.texture;
-                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = preview_clothes.texture;
-                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = preview_haircut.texture;
-                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = preview_makeup.texture;
+                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_Body.texture;
+                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = _preview_Clothes.texture;
+                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = _preview_Haircut.texture;
+                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = _preview_Makeup.texture;
                     Label l_char_name = VTuxml.Q<VisualElement>("namecontent") as Label;
-                    l_char_name.text = char_name;
+                    l_char_name.text = _CharacterName;
                     Label l_char_descr = VTuxml.Q<VisualElement>("descrcontent") as Label;
-                    l_char_descr.text = char_descr;
+                    l_char_descr.text = _CharacterDescription;
                 }
             }
         };
-        listView.style.flexGrow = 1.0f;
+        _listview_Characters.style.flexGrow = 1.0f;
         // steplist setup
         var items2 = new List<int>();
 
-        for (int i = 0; i < s_target._steps_total.Count; i++)
+        for (int i = 0; i < _s_StorylineEditor._IDStepsTotal.Count; i++)
             items2.Add(i);
         Func<VisualElement> makeItem2 = () => VTListview.CloneTree();
         Label element_name2 = VTlistview_element.Q<VisualElement>("name") as Label;
@@ -147,511 +144,418 @@ public class ui_StorylineEd_editor : EditorWindow
         {
 
             (e.Q<VisualElement>("name") as Label).text = "Step: " + i.ToString();
-            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = s_target._temp_CharIcon.texture;
+            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = _s_StorylineEditor._temp_CharIcon.texture;
         };
 
         const int itemHeight2 = 30;
-        var listView2 = new ListView(items2, itemHeight2, makeItem2, bindItem2);
+        var _listview_Steps = new ListView(items2, itemHeight2, makeItem2, bindItem2);
 
-        listView2.selectionType = SelectionType.Single;
+        _listview_Steps.selectionType = SelectionType.Single;
 
-        listView2.onItemsChosen += obj =>
+        _listview_Steps.onItemsChosen += obj =>
         {
 
-            Debug.Log(listView2.selectedItem);
+            Debug.Log(_listview_Steps.selectedItem);
 
 
         };
-        listView2.onSelectionChange += objects =>
+        _listview_Steps.onSelectionChange += objects =>
         {
 
-            Debug.Log(listView2.selectedItem);
+            Debug.Log(_listview_Steps.selectedItem);
 
         };
-        listView2.style.flexGrow = 1.0f;
+        _listview_Steps.style.flexGrow = 1.0f;
         /////////////////////////////////////////////////////////////
         //////
-        Label l_charlist = VTuxml.Q<VisualElement>("charlist") as Label;
-        l_charlist.text = "Active Characters";
-        Label l_preview = VTuxml.Q<VisualElement>("preview") as Label;
-        l_preview.text = "Character preview";
-        Label l_description = VTuxml.Q<VisualElement>("description") as Label;
-        l_description.text = "Description";
-        Label l_tools = VTuxml.Q<VisualElement>("toolbar1") as Label;
-        l_tools.text = "Tools";
+        Label _l_Charlist = VTuxml.Q<VisualElement>("charlist") as Label;
+        _l_Charlist.text = "Active Characters";
+        Label _l_Preview = VTuxml.Q<VisualElement>("preview") as Label;
+        _l_Preview.text = "Character preview";
+        Label _l_CharacterDescription = VTuxml.Q<VisualElement>("description") as Label;
+        _l_CharacterDescription.text = "Description";
+        Label _l_Tools = VTuxml.Q<VisualElement>("toolbar1") as Label;
+        _l_Tools.text = "Tools";
 
-        Label l_file_opt = VTuxml.Q<VisualElement>("toolbar2") as Label;
-        l_file_opt.text = "File options";
+        Label _l_FileOptions = VTuxml.Q<VisualElement>("toolbar2") as Label;
+        _l_FileOptions.text = "File options";
 
-        Label l_editing_opt = VTuxml.Q<VisualElement>("toolbar3") as Label;
-        l_editing_opt.text = "Editing options";
+        Label _l_EditingOptions = VTuxml.Q<VisualElement>("toolbar3") as Label;
+        _l_EditingOptions.text = "Editing options";
 
-        Label l_charname = VTuxml.Q<VisualElement>("charname") as Label;
-        l_charname.text = "Runtime Name";
-        Label l_charsprite = VTuxml.Q<VisualElement>("sprites") as Label;
-        l_charsprite.text = "Character options";
+        Label _l_CharacterName = VTuxml.Q<VisualElement>("charname") as Label;
+        _l_CharacterName.text = "Runtime Name";
+        Label _l_CharaterSprite = VTuxml.Q<VisualElement>("sprites") as Label;
+        _l_CharaterSprite.text = "Character options";
         // Label l_phrase = VTuxml.Q<VisualElement>("_phrase") as Label;
         //  l_phrase.text = "Character _phrase";
-        Label l_status = VTuxml.Q<VisualElement>("status") as Label;
-        l_status.text = "Initialization : " + s_target._init_status + "      Current file : " + s_target._str_name;
-        Label l_status2 = VTuxml.Q<VisualElement>("status2") as Label;
-        l_status2.text = "Action: " + s_target._id_action + " (Total: " + s_target._actions_total.Count + ") / Step: " + s_target._id_step + " (Total: " + s_target._steps_total.Count + ")";
+        Label _l_Status = VTuxml.Q<VisualElement>("status") as Label;
+        _l_Status.text = "Initialization : " + _s_StorylineEditor._init_status + "      Current file : " + _s_StorylineEditor._StorylineName;
+        Label _l_Status2 = VTuxml.Q<VisualElement>("status2") as Label;
+        _l_Status2.text = "Action: " + _s_StorylineEditor._IDAction + " (Total: " + _s_StorylineEditor._actions_total.Count + ") / Step: " + _s_StorylineEditor._IDStep + " (Total: " + _s_StorylineEditor._IDStepsTotal.Count + ")";
 
-        Label l_steplist = VTuxml.Q<VisualElement>("steplist") as Label;
-        l_steplist.text = "Steps list";
-        Label l_CG_slider = VTuxml.Q<VisualElement>("CGrlabel") as Label;
-        l_CG_slider.text = "CG position";
+        Label _l_StepsList = VTuxml.Q<VisualElement>("steplist") as Label;
+        _l_StepsList.text = "Steps list";
+        Label _l_CGSlider = VTuxml.Q<VisualElement>("CGrlabel") as Label;
+        _l_CGSlider.text = "CG position";
 
-        Label l_cgprev = VTuxml.Q<VisualElement>("CGpreview") as Label;
-        l_cgprev.text = "CG preview";
+        Label _l_CGPreview = VTuxml.Q<VisualElement>("CGpreview") as Label;
+        _l_CGPreview.text = "CG preview";
 
 
         // CG preview
-        if (s_target._CG_sprite != null)
+        if (_s_StorylineEditor._CGSprite != null)
         {
-            VTuxml.Q<VisualElement>("CGpreviewArea").style.backgroundImage = s_target._CG_sprite.texture;
+            VTuxml.Q<VisualElement>("CGpreviewArea").style.backgroundImage = _s_StorylineEditor._CGSprite.texture;
         }
 
         //buttons
 
-        Button character_add = new Button(() =>
+        Button _b_CharacterAdd = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                Select_character();
-                ui_Storyline_control.ShowWindow();
-                CreateGUI();
-
-
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                SelectCharacter();
+                _s_StrEvent.EditorUpdated();
             }
         });
-        character_add.text = "Add character";
+        _b_CharacterAdd.text = "Add character";
 
-        Button character_deactivate = new Button(() =>
+        Button _b_CharacterDeactivate = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                string t = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
-                if (s_target.Deactivate_character(t))
+                string temp = _listview_Characters.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+                if (_s_StorylineEditor.DeactivateCharacter(temp))
                 {
                     EditorUtility.DisplayDialog("Notice", "Character deactivated", "OK");
-                    ui_Storyline_control.ShowWindow();
-                    CreateGUI();
+                    _s_StrEvent.EditorUpdated();
                 }
             }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
-            }
         });
-        character_deactivate.text = "Deactivate Character";
+        _b_CharacterDeactivate.text = "Deactivate Character";
 
-        Button character_activate = new Button(() =>
+        Button _b_CharacterActivate = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
                 ui_Storyline_activate.ShowWindow();
-
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                _s_StrEvent.EditorUpdated();
             }
         });
-        character_activate.text = "Activate existing";
+        _b_CharacterActivate.text = "Open Characters list";
 
-        Button control_panel = new Button(() =>
+        Button _b_ControlPanel = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
                 ui_Storyline_control.ShowWindow();
+                _s_StrEvent.EditorUpdated();
+            }
 
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
-            }
         });
-        control_panel.text = "Control panel";
+        _b_ControlPanel.text = "Control panel";
 
-        Button character_set_author = new Button(() =>
+        Button _b_SetAuthor = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                if (listView.selectedItem != null)
+                if (_listview_Characters.selectedItem != null)
                 {
-                    s_target.Set_author(listView.selectedItem.ToString());
-                    ui_Storyline_control.ShowWindow();
+                    _s_StorylineEditor.SetAuthor(_listview_Characters.selectedItem.ToString());
+                    _s_StrEvent.EditorUpdated();
                 }
                 else
                 {
                     EditorUtility.DisplayDialog("Notice", "No character selected", "OK");
                 }
             }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
-            }
         });
-        character_set_author.text = "Set as author";
+        _b_SetAuthor.text = "Set as author";
 
-        Button new_action = new Button(() =>
+        Button _b_NewAction = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                if (s_target._ready_for_next_action == true)
+                if (_s_StorylineEditor._ready_for_next_action == true)
                 {
-                    if (s_target.New_action())
+                    if (_s_StorylineEditor.NewAction())
                     {
                         EditorUtility.DisplayDialog("Notice", "New action created", "OK");
-                        ui_Storyline_control.ShowWindow();
-
-                        CreateGUI();
+                        _s_StrEvent.EditorUpdated();
                     }
                 }
                 else
                 {
                     EditorUtility.DisplayDialog("Error", "Unable to create, check required conditions", "OK");
                 }
-
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
             }
         });
-        new_action.text = "New Action";
+        _b_NewAction.text = "New Action";
 
-
-        Button select_cg = new Button(() =>
+        Button _b_SelectCG = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                Select_cg();
-                s_target.Update_editor_windows();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                SelectCG();
+                _s_StrEvent.EditorUpdated();
             }
         });
-        select_cg.text = "Select CG";
+        _b_SelectCG.text = "Select CG";
 
-
-        Button new_step = new Button(() =>
+        Button _b_NewStep = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                if (s_target.Create_step())
+                if (_s_StorylineEditor.CreateStep())
                 {
-                    s_target.Update_editor_windows();
-                    CreateGUI();
+                    _s_StrEvent.EditorUpdated();
                 }
             }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
-            }
-
         });
-        new_step.text = "New Step";
+        _b_NewStep.text = "New Step";
 
-        Button char_editor = new Button(() =>
+        Button _b_CharacterEditor = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                if (s_target.Create_step())
-                {
-                    ui_Storyline_char_constructor.ShowWindow();
-                    s_target.Update_editor_windows();
-                    CreateGUI();
-                }
+                ui_Storyline_char_constructor.ShowWindow();
+                _s_StrEvent.EditorUpdated();
             }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
-            }
-
         });
-        char_editor.text = "Character Editor";
+        _b_CharacterEditor.text = "Character Editor";
 
-        Button save_progress = new Button(() =>
+        Button _b_Save = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                if (s_target.Create_step())
-                {
-                    s_target.Update_editor_windows();
-                    CreateGUI();
-                }
+                Debug.Log(" doing nothing");
+                _s_StrEvent.EditorUpdated();
             }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
-            }
-
         });
-        save_progress.text = "Save";
+        _b_Save.text = "Save";
 
-        Button save_action = new Button(() =>
+        Button _b_ExportToStr = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                s_target.Form_str();
-                s_target.Update_editor_windows();
+                _s_StrEvent.EditorUpdated();
                 EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
             }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
-            }
         });
+        _b_ExportToStr.text = "Export to .str";
 
-        save_action.text = "Export to .str";
-
-        Button add_choise = new Button(() =>
+        Button _b_AddChoise = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
                 ui_Storyline_choise.ShowWindow();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                _s_StrEvent.EditorUpdated();
             }
         });
+        _b_AddChoise.text = "Add choise";
 
-        add_choise.text = "Add choise";
-
-        Button jump_to = new Button(() =>
+        Button _b_JumpTo = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                ui_Storyline_choise.ShowWindow();
-
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                Debug.Log(" doing nothing");
+                _s_StrEvent.EditorUpdated();
             }
         });
+        _b_JumpTo.text = "Add jump marker";
 
-        jump_to.text = "Add jump marker";
-
-        Button delete_character = new Button(() =>
+        Button _b_DeleteCharacter = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                s_target.Form_str();
-                EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                Debug.Log(" doing nothing");
+                _s_StrEvent.EditorUpdated();
             }
         });
 
-        delete_character.text = "Delete character";
+        _b_DeleteCharacter.text = "Delete character";
 
-        Button new_file = new Button(() =>
+        Button _b_NewFile = new Button(() =>
         {
 
             ui_Storyline_create.ShowWindow();
+            _s_StrEvent.EditorUpdated();
 
         });
+        _b_NewFile.text = "New .str";
 
-        new_file.text = "New .str";
-
-        Button add_effect = new Button(() =>
+        Button _b_AddEffect = new Button(() =>
         {
-
-            ui_Storyline_create.ShowWindow();
-
+            if (ValidateStoryline())
+            {
+                Debug.Log(" doing nothing");
+                _s_StrEvent.EditorUpdated();
+            }
         });
+        _b_AddEffect.text = "Add effect";
 
-        add_effect.text = "Add effect";
-
-        Button open_file = new Button(() =>
+        Button _b_OpenFile = new Button(() =>
         {
-
-            Select_str();
+            SelectStoryline();
+            _s_StrEvent.EditorUpdated();
         });
+        _b_OpenFile.text = "Open .str";
 
-        open_file.text = "Open .str";
-
-        Button delete_char_from_act = new Button(() =>
+        Button _b_DeleteCharacterFromStoryline = new Button(() =>
         {
-
-            Select_str();
+            if (ValidateStoryline())
+            {
+                Debug.Log(" doing nothing");
+                _s_StrEvent.EditorUpdated();
+            }
+            SelectStoryline();
         });
+        _b_DeleteCharacterFromStoryline.text = "Delete from current";
 
-        delete_char_from_act.text = "Delete from current";
-
-        TextField phrase = new TextField();
+        TextField _field_Phrase = new TextField();
 
         var SS4 = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/InputFieldCustom.uss");
 
         // rootVisualElement.styleSheets.Add(SS4);
-        phrase.Q(TextField.textInputUssName).AddToClassList("TextField-Editor");
-        phrase.multiline = true;
-        phrase.style.whiteSpace = WhiteSpace.Normal;
+        _field_Phrase.Q(TextField.textInputUssName).AddToClassList("TextField-Editor");
+        _field_Phrase.multiline = true;
+        _field_Phrase.style.whiteSpace = WhiteSpace.Normal;
 
-        phrase.style.height = 180;
-        phrase.maxLength = 150;
+        _field_Phrase.style.height = 180;
+        _field_Phrase.maxLength = 150;
         //
         rootVisualElement.Add(VTuxml);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(control_panel);
-        VTuxml.Q<VisualElement>("leftToolbar").Add(char_editor);
+        VTuxml.Q<VisualElement>("leftToolbar").Add(_b_ControlPanel);
+        VTuxml.Q<VisualElement>("leftToolbar").Add(_b_CharacterEditor);
 
-        VTuxml.Q<VisualElement>("leftToolbar2").Add(new_file);
-        VTuxml.Q<VisualElement>("leftToolbar2").Add(open_file);
-        VTuxml.Q<VisualElement>("leftToolbar2").Add(save_progress);
+        VTuxml.Q<VisualElement>("leftToolbar2").Add(_b_NewFile);
+        VTuxml.Q<VisualElement>("leftToolbar2").Add(_b_OpenFile);
+        VTuxml.Q<VisualElement>("leftToolbar2").Add(_b_Save);
 
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(select_cg);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(character_add);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(delete_character);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(new_step);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(jump_to);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(add_choise);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(add_effect);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(new_action);
-        VTuxml.Q<VisualElement>("leftToolbar3").Add(save_action);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_SelectCG);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_CharacterAdd);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_DeleteCharacter);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_NewStep);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_JumpTo);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_AddChoise);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_AddEffect);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_NewAction);
+        VTuxml.Q<VisualElement>("leftToolbar3").Add(_b_ExportToStr);
 
-        VTuxml.Q<VisualElement>("phraseHolder2").Add(phrase);
-        VTuxml.Q<VisualElement>("CharspriteHolder").Add(character_deactivate);
-        VTuxml.Q<VisualElement>("CharspriteHolder").Add(character_activate);
-        VTuxml.Q<VisualElement>("CharspriteHolder").Add(character_set_author);
-        VTuxml.Q<VisualElement>("CharspriteHolder").Add(delete_char_from_act);
-        VTuxml.Q<VisualElement>("charlistBackgroung").Add(listView);
-        VTuxml.Q<VisualElement>("steplistArea").Add(listView2);
-        VTuxml.Q<VisualElement>("CG_sliderHolder").Add(CG_positioning);
+        VTuxml.Q<VisualElement>("phraseHolder2").Add(_field_Phrase);
+        VTuxml.Q<VisualElement>("CharspriteHolder").Add(_b_CharacterDeactivate);
+        VTuxml.Q<VisualElement>("CharspriteHolder").Add(_b_CharacterActivate);
+        VTuxml.Q<VisualElement>("CharspriteHolder").Add(_b_SetAuthor);
+        VTuxml.Q<VisualElement>("CharspriteHolder").Add(_b_DeleteCharacterFromStoryline);
+        VTuxml.Q<VisualElement>("charlistBackgroung").Add(_listview_Characters);
+        VTuxml.Q<VisualElement>("steplistArea").Add(_listview_Steps);
+        VTuxml.Q<VisualElement>("CG_sliderHolder").Add(_slider_CGPosition);
 
-
-        //events 
-
-        CG_positioning.valueChanged += (e => CG_moving(CG_positioning.value));
-        phrase.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Select_phrase(phrase.value));
-        phrase.value = s_target._phrase;
-
-        s_target._update_ui_main = false;
+        _slider_CGPosition.valueChanged += (e => ConvertSliderToCGPosition(_slider_CGPosition.value));
+        _field_Phrase.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SelectPhrase(_field_Phrase.value));
+        _field_Phrase.value = _s_StorylineEditor._Phrase;
 
     }
-    void Set_selected_character_RT(string char_name)
+    void SetSelectedCharacterRectTransform(string CharacterName)
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        foreach (GameObject unit in s_target._list_active_characters)
+
+        foreach (GameObject unit in _s_StorylineEditor._list_ActiveCharacters)
         {
-            if (unit.name == char_name)
+            if (unit.name == CharacterName)
             {
-                selected_character_RT = unit.GetComponent<RectTransform>();
+                _SelectedCharacterRectTransform = unit.GetComponent<RectTransform>();
 
             }
         }
     }
-    void CG_moving(float p_value_cg)
+    void ConvertSliderToCGPosition(float CGSliderValue)
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        float pool_x = s_target._canvas_moving_pool;
-        float coord_unit = pool_x / 100;
-        float cg_pos_x = p_value_cg * coord_unit;
-        s_target.Move_CG(cg_pos_x);
+        float PoolX = _s_StorylineEditor._CanvasMovingPool;
+        float SliderValueOfDivision = PoolX / 100;
+        float CGPosisitionX = CGSliderValue * SliderValueOfDivision;
+        _s_StorylineEditor.MoveCG(CGPosisitionX);
 
     }
-    void Character_moving(float p_value_character)
+    
+    void SetSelectedCharacterParent()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        selected_character_RT.transform.SetParent(s_target._Canvas.transform, false);
-        if (s_target.Get_pos_limits_cg(selected_character_RT))
-        {
-            float pool_x = s_target._cg_moving_pool;
-            float coord_unit = pool_x / 100;
-            float character_pos_x = p_value_character * coord_unit;
-            s_target.Move_character(character_pos_x, selected_character_RT);
-
-        }
+        _SelectedCharacterRectTransform.transform.SetParent(_s_StorylineEditor._CG_RectTransform.transform, true);
     }
-    void Set_selecter_char_parent()
+    void SelectCG()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        selected_character_RT.transform.SetParent(s_target._CG_RectTransform.transform, true);
-    }
-    void Select_cg()
-    {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         Texture2D tex = new Texture2D(1, 1);
-        string path1 = EditorUtility.OpenFilePanel("Select CG", s_target._s_folder._CG, "png");
-        if (path1.Length != 0)
+        string Path = EditorUtility.OpenFilePanel("Select CG", _s_StorylineEditor._s_Folder._CG, "png");
+        if (Path.Length != 0)
         {
-            string t = path1.Replace(s_target._s_folder._root + "/Resources/", "");
-            string t2 = t.Replace(".png", "");
-            string t3 = t2.Replace("Gamedata/Textures/CG/", "");
-
-            if (s_target.Add_CG(t2, t3))
+            string temp = Path.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+            string temp2 = temp.Replace(".png", "");
+            string temp3 = temp2.Replace("Gamedata/Textures/CG/", "");
+            if (_s_StorylineEditor.AddCG(temp2, temp3))
             {
                 CreateGUI();
             }
 
         }
     }
-    void Select_str()
+    void SelectStoryline()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         if (EditorUtility.DisplayDialog("Notice", "Usaved progress will be lost. Continue?", "OK", "Cancel"))
         {
-            string path = EditorUtility.OpenFilePanel("Select storyline", s_target._s_folder._storylines, "str");
-            if (path.Length != 0)
+            string Path = EditorUtility.OpenFilePanel("Select storyline", _s_StorylineEditor._s_Folder._storylines, "str");
+            if (Path.Length != 0)
             {
-                string t = path.Replace(s_target._s_folder._root + "/Resources/", "");
-                string t2 = t.Replace(".str", "");
-                string t3 = t.Replace("Gamedata/Storylines/", "");
-                if (s_target.open_str(t3))
+                string temp = Path.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+                string temp2 = temp.Replace(".str", "");
+                string temp3 = temp.Replace("Gamedata/Storylines/", "");
+                if (_s_StorylineEditor.OpenStoryline(temp3))
                 {
                     CreateGUI();
                 }
-
             }
         }
     }
-    void Select_character()
+    private void SelectCharacter()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        string path = EditorUtility.OpenFilePanel("Select Character", s_target._s_folder._characters, "char");
-        if (path.Length != 0)
+        string Path = EditorUtility.OpenFilePanel("Select Character", _s_StorylineEditor._s_Folder._characters, "char");
+        if (Path.Length != 0)
         {
-
-            string t = path.Replace(s_target._s_folder._root + "/Resources/", "");
-            string t2 = t.Replace(".char", "");
-            string t3 = t2.Replace("Gamedata/Сharacters/", "");
-
-            s_target.Add_character(path, t3);
-            s_target.Update_editor_windows();
+            string temp = Path.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+            string temp2 = temp.Replace(".char", "");
+            string temp3 = temp2.Replace("Gamedata/Сharacters/", "");
+            _s_StorylineEditor.AddCharacter(Path, temp3);
+             }
+    }
+    private string SelectPhrase(string PhraseText)
+    {
+        _s_StorylineEditor._Phrase = PhraseText;
+        return (PhraseText);
+    }
+    private Boolean GetPreviewComponents(int SelectedCharacterID)
+    {
+        _preview_Body = _s_StorylineEditor._list_ActiveCharacters[SelectedCharacterID].GetComponent<local_character>()._char_body.sprite;
+        _preview_Clothes = _s_StorylineEditor._list_ActiveCharacters[SelectedCharacterID].GetComponent<local_character>()._char_clothes.sprite;
+        _preview_Haircut = _s_StorylineEditor._list_ActiveCharacters[SelectedCharacterID].GetComponent<local_character>()._char_haircut.sprite;
+        _preview_Makeup = _s_StorylineEditor._list_ActiveCharacters[SelectedCharacterID].GetComponent<local_character>()._char_makeup.sprite;
+        _CharacterName = _s_StorylineEditor._list_ActiveCharacters[SelectedCharacterID].GetComponent<local_character>()._char_runtime_name;
+        _CharacterDescription = "Персонаж, используемый для разработки редактора";
+        _CharacterSprite = "get sprites list";
+        return true;
+    }
+    private Boolean ValidateStoryline()
+    {
+        if (_s_StorylineEditor.CheckStorylineExistence(_s_StorylineEditor._StorylineName))
+        {
+            return true;
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            return false;
         }
     }
-    string Select_phrase(string phrase_text)
+    private void OnDisable()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        s_target._phrase = phrase_text;
-
-
-
-
-        return (phrase_text);
+        _s_StrEvent.OnStrEdUpdated -= OnStrEdUpdated;
     }
-    public Boolean Get_preview_components(int id)
-    {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        preview_body = s_target._list_active_characters[id].GetComponent<local_character>()._char_body.sprite;
-        preview_clothes = s_target._list_active_characters[id].GetComponent<local_character>()._char_clothes.sprite;
-        preview_haircut = s_target._list_active_characters[id].GetComponent<local_character>()._char_haircut.sprite;
-        preview_makeup = s_target._list_active_characters[id].GetComponent<local_character>()._char_makeup.sprite;
-        char_name = s_target._list_active_characters[id].GetComponent<local_character>()._char_runtime_name;
-        char_descr = "Персонаж, используемый для разработки редактора";
-        char_sprite = "get sprites list";
-        return true;
-          }
-  
 }

@@ -10,7 +10,7 @@ using System.IO;
 public class ext_Storyline_replacer : MonoBehaviour
 {
     global_taglist _s_tag;
-    ext_StorylineEd _s_str_ed;
+    ext_StorylineEditor _s_str_ed;
     private int _id_decomposed_steps;
 
     public List<string> _list_before_selected_data = new List<string>();
@@ -21,7 +21,7 @@ public class ext_Storyline_replacer : MonoBehaviour
 
     public Boolean Get_scripts()
     {
-        _s_str_ed = GetComponent<ext_StorylineEd>();
+        _s_str_ed = GetComponent<ext_StorylineEditor>();
         _s_tag = GetComponent<global_taglist>();
         return true;
     }
@@ -35,15 +35,15 @@ public class ext_Storyline_replacer : MonoBehaviour
         _list_before_selected_data.Clear();
         _list_after_selected_data.Clear();
 
-        int id_action_next = _s_str_ed._id_action + 1;
+        int id_action_next = _s_str_ed._IDAction + 1;
         string action_next = _s_tag._action + _s_tag._separator + id_action_next;
-        string action_current = _s_tag._action + _s_tag._separator + _s_str_ed._id_action;
+        string action_current = _s_tag._action + _s_tag._separator + _s_str_ed._IDAction;
 
-        for (int i = 0; i < _s_str_ed._actions_to_str.Count; i++)
+        for (int i = 0; i < _s_str_ed._ActionsToStr.Count; i++)
         {
-            if (_s_str_ed._actions_to_str[i] != action_current)
+            if (_s_str_ed._ActionsToStr[i] != action_current)
             {
-                _list_before_selected_data.Add(_s_str_ed._actions_to_str[i]);
+                _list_before_selected_data.Add(_s_str_ed._ActionsToStr[i]);
             }
             else
             {
@@ -53,11 +53,11 @@ public class ext_Storyline_replacer : MonoBehaviour
 
         }
         Selected:
-        for (int r = k; r < _s_str_ed._actions_to_str.Count; r++)
+        for (int r = k; r < _s_str_ed._ActionsToStr.Count; r++)
         {
-            if (_s_str_ed._actions_to_str[r] != action_next)
+            if (_s_str_ed._ActionsToStr[r] != action_next)
             {
-                _list_selected_action_data.Add(_s_str_ed._actions_to_str[r]);
+                _list_selected_action_data.Add(_s_str_ed._ActionsToStr[r]);
             }
             else
             {
@@ -67,9 +67,9 @@ public class ext_Storyline_replacer : MonoBehaviour
             }
         }
         After:
-        for (int l = f; l < _s_str_ed._actions_to_str.Count; l++)
+        for (int l = f; l < _s_str_ed._ActionsToStr.Count; l++)
         {
-            _list_after_selected_data.Add(_s_str_ed._actions_to_str[l]);
+            _list_after_selected_data.Add(_s_str_ed._ActionsToStr[l]);
         }
         return true;
     }
@@ -80,7 +80,7 @@ public class ext_Storyline_replacer : MonoBehaviour
         {
             string step_unit = _s_tag._step + _s_tag._separator + _id_decomposed_steps;
             string step_unit_next = _s_tag._step + _s_tag._separator + (_id_decomposed_steps + 1);
-            string action_unit_next = _s_tag._action + _s_tag._action + (_s_str_ed._id_action + 1);
+            string action_unit_next = _s_tag._action + _s_tag._action + (_s_str_ed._IDAction + 1);
             if (_list_selected_action_data[i] == step_unit)
             {
                 string step_raw = "";
@@ -113,7 +113,7 @@ public class ext_Storyline_replacer : MonoBehaviour
 
             }
         }
-        _s_str_ed.Selected_action_setup();
+        _s_str_ed.SelectedActionSetup();
     }
 
     

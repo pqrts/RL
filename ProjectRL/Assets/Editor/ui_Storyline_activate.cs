@@ -1,21 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor.UIElements;
-using UnityEngine.UIElements;
-using UnityEditor;
 using System;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEngine;
+using UnityEngine.UIElements;
 
 
 public class ui_Storyline_activate : EditorWindow
 {
-    Sprite preview_body;
-    Sprite preview_haircut;
-    Sprite preview_clothes;
-    Sprite preview_makeup;
-    string char_name;
-    string char_descr;
-    public List<GameObject> _list_listview_content = new List<GameObject>();
+    private ext_StorylineEditor _s_StorylineEditor;
+    private ext_StorylineEventSystem _s_StrEvent;
+    private Sprite _preview_Body;
+    private Sprite _preview_Haircut;
+    private Sprite _preview_Clothes;
+    private Sprite _preview_Makeup;
+    private string _CharacterName;
+    private string _CharacterDescription;
+    public List<GameObject> _list_CharactesListview = new List<GameObject>();
     public static ui_Storyline_activate ShowWindow()
     {
         ui_Storyline_activate window_activate = GetWindow<ui_Storyline_activate>();
@@ -25,42 +25,40 @@ public class ui_Storyline_activate : EditorWindow
         return window_activate;
 
     }
-
-    private void Update()
+    private void OnEnable()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        if (s_target._update_ui_activate == true)
-        {
-            CreateGUI();
-        }
+        _s_StrEvent = (ext_StorylineEventSystem)FindObjectOfType(typeof(ext_StorylineEventSystem));
+        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StrEvent.OnStrEdUpdated += OnStrEdUpdated;
     }
-    public void bbbb()
+    private void OnStrEdUpdated()
     {
         CreateGUI();
-       
+        Repaint();
     }
-    public  void CreateGUI()
+
+    private void CreateGUI()
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/char_activation.uxml");
         VisualElement VTuxml = VT.Instantiate();
         var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/charIconTemplate.uxml");
         VisualElement VTlistview_element = VTListview.Instantiate();
         rootVisualElement.Add(VTuxml);
-        Label l_preview = VTuxml.Q<VisualElement>("preview") as Label;
-        l_preview.text = "Character preview";
 
-        Label l_charname = VTuxml.Q<VisualElement>("charname") as Label;
-        l_charname.text = "Runtime Name";
-        Label l_charlist = VTuxml.Q<VisualElement>("list") as Label;
-        l_charlist.text = "Characters list";
+        Label _l_Preview = VTuxml.Q<VisualElement>("preview") as Label;
+        _l_Preview.text = "Character preview";
+        Label _l_CharacterName = VTuxml.Q<VisualElement>("charname") as Label;
+        _l_CharacterName.text = "Runtime Name";
+        Label _l_CharactersList = VTuxml.Q<VisualElement>("list") as Label;
+        _l_CharactersList.text = "Characters list";
+
         //charlist setup
-        var items = new List<GameObject>();
+        var _CharactersListviewItems = new List<GameObject>();
 
-        for (int i = 0; i < s_target._list_required_objects.Count; i++)
-            if (s_target._list_required_objects[i] != null)
+        for (int i = 0; i < _s_StorylineEditor._list_RequiredObjects.Count; i++)
+            if (_s_StorylineEditor._list_RequiredObjects[i] != null)
             {
-                items.Add(s_target._list_required_objects[i]);
+                _CharactersListviewItems.Add(_s_StorylineEditor._list_RequiredObjects[i]);
             }
         Func<VisualElement> makeItem = () => VTListview.CloneTree();
         Label element_name = VTlistview_element.Q<VisualElement>("name") as Label;
@@ -68,116 +66,112 @@ public class ui_Storyline_activate : EditorWindow
         Action<VisualElement, int> bindItem = (e, i) =>
         {
 
-            (e.Q<VisualElement>("name") as Label).text = s_target._list_required_objects[i].name;
-            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = s_target._temp_CharIcon.texture;
+            (e.Q<VisualElement>("name") as Label).text = _s_StorylineEditor._list_RequiredObjects[i].name;
+            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = _s_StorylineEditor._temp_CharIcon.texture;
         };
 
         const int itemHeight = 30;
-        var listView = new ListView(items, itemHeight, makeItem, bindItem);
+        var _listView_Characters = new ListView(_CharactersListviewItems, itemHeight, makeItem, bindItem);
 
-        listView.selectionType = SelectionType.Single;
+        _listView_Characters.selectionType = SelectionType.Single;
 
-        listView.onItemsChosen += obj =>
+        _listView_Characters.onItemsChosen += obj =>
         {
 
-            Debug.Log(listView.selectedItem);
+            Debug.Log(_listView_Characters.selectedItem);
 
-            if (Get_preview_components(listView.selectedIndex))
+            if (GetPreviewComponents(_listView_Characters.selectedIndex))
             {
-                if (preview_body != null && preview_clothes != null && preview_haircut != null && preview_makeup != null)
+                if (_preview_Body != null && _preview_Clothes != null && _preview_Haircut != null && _preview_Makeup != null)
                 {
-                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = preview_body.texture;
-                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = preview_clothes.texture;
-                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = preview_haircut.texture;
-                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = preview_makeup.texture;
+                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_Body.texture;
+                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = _preview_Clothes.texture;
+                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = _preview_Haircut.texture;
+                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = _preview_Makeup.texture;
                     Label l_char_name = VTuxml.Q<VisualElement>("namecontent") as Label;
-                    l_char_name.text = char_name;
+                    l_char_name.text = _CharacterName;
                     Label l_char_descr = VTuxml.Q<VisualElement>("descrcontent") as Label;
-                    l_char_descr.text = char_descr;
+                    l_char_descr.text = _CharacterDescription;
                 }
 
             }
         };
-        listView.onSelectionChange += objects =>
+        _listView_Characters.onSelectionChange += objects =>
         {
-            Debug.Log(objects);
-            Debug.Log(listView.selectedItem);
-            if (Get_preview_components(listView.selectedIndex))
+            if (GetPreviewComponents(_listView_Characters.selectedIndex))
             {
-                if (preview_body != null && preview_clothes != null && preview_haircut != null && preview_makeup != null)
+                if (_preview_Body != null && _preview_Clothes != null && _preview_Haircut != null && _preview_Makeup != null)
                 {
-                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = preview_body.texture;
-                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = preview_clothes.texture;
-                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = preview_haircut.texture;
-                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = preview_makeup.texture;
-                    Label l_char_name = VTuxml.Q<VisualElement>("namecontent") as Label;
-                    l_char_name.text = char_name;
-              
+                    VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_Body.texture;
+                    VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = _preview_Clothes.texture;
+                    VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = _preview_Haircut.texture;
+                    VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = _preview_Makeup.texture;
+                    Label _l_Character_Name = VTuxml.Q<VisualElement>("namecontent") as Label;
+                    _l_Character_Name.text = _CharacterName;
+
                 }
             }
         };
-        listView.style.flexGrow = 1.0f;
-        Button character_activate = new Button(() =>
+        _listView_Characters.style.flexGrow = 1.0f;
+        Button _b_CharacterActivate = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                string p_char_name = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
-                Activate(p_char_name);
-                s_target.Update_editor_windows();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                string TempCharacterName = _listView_Characters.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+                Activate(TempCharacterName);
+                _s_StrEvent.EditorUpdated();
             }
         });
-        character_activate.text = "Activate";
-        Button character_delete = new Button(() =>
+        _b_CharacterActivate.text = "Activate";
+        Button _b_CharacterDelete = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-
                 if (EditorUtility.DisplayDialog("Notice", " Are you sure about this?", "OK", "Cancel"))
                 {
-                    string p_char_name = listView.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
-                    if (s_target.Delete_character(p_char_name))
+                    string p_char_name = _listView_Characters.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+                    if (_s_StorylineEditor.DeleteCharacter(p_char_name))
                     {
-                        CreateGUI();
-                        s_target.Update_editor_windows();
+                        _s_StrEvent.EditorUpdated();
                     }
                 }
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+
             }
         });
 
-        character_delete.text = "Delete";
+        _b_CharacterDelete.text = "Delete";
         //
-        VTuxml.Q<VisualElement>("charlistBackgroung").Add(listView);
-        VTuxml.Q<VisualElement>("buttonHolder2").Add(character_delete);
-        VTuxml.Q<VisualElement>("buttonHolder1").Add(character_activate);
-
-        s_target._update_ui_activate = false;
+        VTuxml.Q<VisualElement>("charlistBackgroung").Add(_listView_Characters);
+        VTuxml.Q<VisualElement>("buttonHolder2").Add(_b_CharacterDelete);
+        VTuxml.Q<VisualElement>("buttonHolder1").Add(_b_CharacterActivate);
     }
-    private void Activate(string char_name)
+    private void Activate(string CharacterName)
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-
-        s_target.Activate_existing_character(char_name);
+        _s_StorylineEditor.ActivatExistingCharacter(CharacterName);
     }
-
-    public Boolean Get_preview_components(int id)
+    public Boolean GetPreviewComponents(int SelectedCharacterID)
     {
-        ext_StorylineEd s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
-        preview_body = s_target._list_required_objects[id].GetComponent<local_character>()._char_body.sprite;
-        preview_clothes = s_target._list_required_objects[id].GetComponent<local_character>()._char_clothes.sprite;
-        preview_haircut = s_target._list_required_objects[id].GetComponent<local_character>()._char_haircut.sprite;
-        preview_makeup = s_target._list_required_objects[id].GetComponent<local_character>()._char_makeup.sprite;
-        char_name = s_target._list_required_objects[id].GetComponent<local_character>()._char_runtime_name;
-
-
+        _preview_Body = _s_StorylineEditor._list_RequiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_body.sprite;
+        _preview_Clothes = _s_StorylineEditor._list_RequiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_clothes.sprite;
+        _preview_Haircut = _s_StorylineEditor._list_RequiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_haircut.sprite;
+        _preview_Makeup = _s_StorylineEditor._list_RequiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_makeup.sprite;
+        _CharacterName = _s_StorylineEditor._list_RequiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_runtime_name;
         return true;
     }
-
+    private Boolean ValidateStoryline()
+    {
+        if (_s_StorylineEditor.CheckStorylineExistence(_s_StorylineEditor._StorylineName))
+        {
+            return true;
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            return false;
+        }
+    }
+    private void OnDisable()
+    {
+        _s_StrEvent.OnStrEdUpdated -= OnStrEdUpdated;
+    }
 }

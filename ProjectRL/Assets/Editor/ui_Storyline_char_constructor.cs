@@ -9,25 +9,25 @@ using StorylineEditor;
 
 public class ui_Storyline_char_constructor : EditorWindow
 {
-    private ext_StorylineEd s_target;
-    private TextField _field_tech_name;
-    private TextField _field_runtime_name;
+    private ext_StorylineEditor _s_StorylineEditor;
+    private TextField _field_TechName;
+    private TextField _field_RuntimeName;
 
-    private Sprite _preview_body;
-    private Sprite _preview_haircut;
-    private Sprite _preview_clothes;
-    private Sprite _preview_makeup;
+    private Sprite _preview_Body;
+    private Sprite _preview_Haircut;
+    private Sprite _preview_Clothes;
+    private Sprite _preview_Makeup;
 
-    private VisualElement _preview_body_holder;
+    private VisualElement _preview_bodyHolder;
 
-    private string _value_runtime_name;
-    private string _value_tech_name;
+    private string _value_RuntimeName;
+    private string _value_TechName;
 
-    private Label l_status_tech_name;
-    private Label l_status_runtime_name;
-    private Label l_status_body;
+    private Label _l_StatusTechName;
+    private Label _l_StatusRuntimeName;
+    private Label _l_StatusBody;
 
-
+    private ext_StorylineEventSystem _s_StrEvent;
 
     public static ui_Storyline_char_constructor ShowWindow()
     {
@@ -36,18 +36,17 @@ public class ui_Storyline_char_constructor : EditorWindow
         window_char_constr.minSize = new Vector2(340, 475f);
         window_char_constr.maxSize = new Vector2(340f, 475f);
         return window_char_constr;
-
     }
     private void OnEnable()
     {
-        s_target = (ext_StorylineEd)FindObjectOfType(typeof(ext_StorylineEd));
+        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StrEvent = (ext_StorylineEventSystem)FindObjectOfType(typeof(ext_StorylineEventSystem));
+        _s_StrEvent.OnStrEdUpdated += OnStrEdUpdated;
     }
-    private void Update()
+    private void OnStrEdUpdated()
     {
-        if (s_target._update_ui_char_contructor == true)
-        {
-            CreateGUI();
-        }
+        CreateGUI();
+        Repaint();
     }
     public void CreateGUI()
     {
@@ -55,163 +54,152 @@ public class ui_Storyline_char_constructor : EditorWindow
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/character_constructor.uxml");
         VisualElement VTuxml = VT.Instantiate();
 
+        _l_StatusRuntimeName = VTuxml.Q<VisualElement>("status_char_runtime_name") as Label;
+        _l_StatusTechName = VTuxml.Q<VisualElement>("status_char_technical_name") as Label;
+        _l_StatusBody = VTuxml.Q<VisualElement>("status_character_body") as Label;
 
-        l_status_runtime_name = VTuxml.Q<VisualElement>("status_char_runtime_name") as Label;
-        l_status_tech_name = VTuxml.Q<VisualElement>("status_char_technical_name") as Label;
-        l_status_body = VTuxml.Q<VisualElement>("status_character_body") as Label;
+        _field_TechName = new TextField();
+        _field_RuntimeName = new TextField();
 
+        _field_TechName.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_field_TechName.value, StrFieldType.TechName));
+        _field_RuntimeName.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_field_RuntimeName.value, StrFieldType.RuntimeName));
 
-        _field_tech_name = new TextField();
-        _field_runtime_name = new TextField();
-
-        _field_tech_name.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Set_values(_field_tech_name.value, StrFieldType.TechName));
-        _field_runtime_name.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => Set_values(_field_runtime_name.value, StrFieldType.RuntimeName));
-
-        Button select_body = new Button(() =>
+        Button _b_SelectBody = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-                string path = EditorUtility.OpenFilePanel("Select sprite", s_target._s_folder._body, "png");
-
-                Set_preview_component(path, StrPreviewComponentType.Body);
-                s_target.Update_editor_windows();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                string path = EditorUtility.OpenFilePanel("Select sprite", _s_StorylineEditor._s_Folder._body, "png");
+                SetPreviewComponent(path, StrPreviewComponentType.Body);
+                _s_StrEvent.EditorUpdated();
             }
         });
-        select_body.text = "Select";
+        _b_SelectBody.text = "Select";
 
-        Button select_clothes = new Button(() =>
+        Button _b_SelectClothes = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-
-                s_target.Update_editor_windows();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                string path = EditorUtility.OpenFilePanel("Select sprite", _s_StorylineEditor._s_Folder._clothes, "png");
+                SetPreviewComponent(path, StrPreviewComponentType.Body);
+                _s_StrEvent.EditorUpdated();
             }
         });
-        select_clothes.text = "Select";
+        _b_SelectClothes.text = "Select";
 
-        Button select_haircut = new Button(() =>
+        Button _b_SelectHaircut = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-
-                s_target.Update_editor_windows();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                _s_StrEvent.EditorUpdated();
             }
         });
-        select_haircut.text = "Select";
+        _b_SelectHaircut.text = "Select";
 
-        Button select_makeup = new Button(() =>
+        Button _b_SelectMakeup = new Button(() =>
         {
-            if (s_target.Check_str_existence(s_target._str_name))
+            if (ValidateStoryline())
             {
-
-                s_target.Update_editor_windows();
-            }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+                _s_StrEvent.EditorUpdated();
             }
         });
-        select_makeup.text = "Select";
+        _b_SelectMakeup.text = "Select";
 
-      
-
-        if (_preview_body != null)
+        if (_preview_Body != null)
         {
-            VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_body.texture;
-       
-            l_status_body.text = _preview_body.name;
+            VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_Body.texture;
+
+            _l_StatusBody.text = _preview_Body.name;
         }
 
-        VTuxml.Q<VisualElement>("tech_name_fieldHolder").Add(_field_tech_name);
-        VTuxml.Q<VisualElement>("runtime_name_fieldHolder").Add(_field_runtime_name);
-        VTuxml.Q<VisualElement>("character_body_buttonHolder").Add(select_body);
-        VTuxml.Q<VisualElement>("character_clothes_buttonHolder").Add(select_clothes);
-        VTuxml.Q<VisualElement>("character_haircut_buttonHolder").Add(select_haircut);
-        VTuxml.Q<VisualElement>("character_makeup_buttonHolder").Add(select_makeup);
-
+        VTuxml.Q<VisualElement>("tech_name_fieldHolder").Add(_field_TechName);
+        VTuxml.Q<VisualElement>("runtime_name_fieldHolder").Add(_field_RuntimeName);
+        VTuxml.Q<VisualElement>("character_body_buttonHolder").Add(_b_SelectBody);
+        VTuxml.Q<VisualElement>("character_clothes_buttonHolder").Add(_b_SelectClothes);
+        VTuxml.Q<VisualElement>("character_haircut_buttonHolder").Add(_b_SelectHaircut);
+        VTuxml.Q<VisualElement>("character_makeup_buttonHolder").Add(_b_SelectMakeup);
         rootVisualElement.Add(VTuxml);
-        s_target._update_ui_char_contructor = false;
     }
 
-
-    private void Set_values(string field_value, StrFieldType field_type)
+    private void SetValues(string FieldValue, StrFieldType FieldType)
     {
-        if (field_value != "")
+        if (FieldValue != "")
         {
-            if (field_type == StrFieldType.RuntimeName)
+            if (FieldType == StrFieldType.RuntimeName)
             {
-
-                _value_runtime_name = field_value;
-
-                l_status_runtime_name.text = _value_runtime_name;
+                _value_RuntimeName = FieldValue;
+                _l_StatusRuntimeName.text = _value_RuntimeName;
             }
-            if (field_type == StrFieldType.TechName)
+            if (FieldType == StrFieldType.TechName)
             {
-                _value_tech_name = field_value;
-                l_status_tech_name.text = _value_tech_name;
+                _value_TechName = FieldValue;
+                _l_StatusTechName.text = _value_TechName;
             }
         }
         Repaint();
     }
 
-    private void Set_preview_component(string component_path, StrPreviewComponentType component_type)
+    private void SetPreviewComponent(string ComponentPath, StrPreviewComponentType ComponentType)
     {
 
         string path = null;
-        string preview_component_name = null;
-        string preview_component_resources_path = null;
-        if (component_type == StrPreviewComponentType.Body)
+        string PreviewComponentName = null;
+        string PreviewComponentResourcesPath = null;
+        if (ComponentPath.Length != 0)
         {
-            if (component_path.Length != 0)
+            if (ComponentType == StrPreviewComponentType.Body)
             {
-                preview_component_name = Get_component_name(component_path, "Char_body");
-                preview_component_resources_path = Get_component_resources_path(s_target._s_folder._body, preview_component_name);
-                _preview_body = Create_preview_component(preview_component_resources_path, preview_component_name);
-                Debug.Log(_preview_body.name + "+" + preview_component_name);
-               
+                PreviewComponentName = GetComponentName(ComponentPath, "Char_body");
+                PreviewComponentResourcesPath = GetComponentResourcesPath(_s_StorylineEditor._s_Folder._body, PreviewComponentName);
+                _preview_Body = CreatePreviewComponent(PreviewComponentResourcesPath, PreviewComponentName);
+                Debug.Log(_preview_Body.name + "+" + PreviewComponentName);
                 CreateGUI();
             }
-            else
-            {
-                EditorUtility.DisplayDialog("Notice", "Select sprite", "OK");
-            }
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Notice", "Select sprite", "OK");
         }
 
     }
-    private string Get_component_name(string source_string, string removed_part)
+    private string GetComponentName(string ComponentPath, string RemovedPart)
     {
-        string t = source_string.Replace(s_target._s_folder._root + "/Resources/", "");
-        string t2 = t.Replace(".png", "");
-        string m = "Gamedata/Textures/" + removed_part + "/";
-        string component_name = t2.Replace(m, "");
-        return component_name;
+        string temp = ComponentPath.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+        string temp2 = temp.Replace(".png", "");
+        string ToReplace = "Gamedata/Textures/" + RemovedPart + "/";
+        string ComponentName = temp2.Replace(ToReplace, "");
+        return ComponentName;
     }
-    private string Get_component_resources_path(string component_folder, string component_name)
+    private string GetComponentResourcesPath(string ComponentFolder, string ComponentName)
     {
-        Debug.Log(component_name);
-        string res_path = component_folder.Replace(s_target._s_folder._root + "/Resources/", "") + "/" + component_name;
-        return res_path;
+        Debug.Log(ComponentName);
+        string ResourcesPath = ComponentFolder.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "") + "/" + ComponentName;
+        return ResourcesPath;
     }
-    private Sprite Create_preview_component(string component_resources_path, string component_name)
+    private Sprite CreatePreviewComponent(string ComponentResourcesPath, string ComponentName)
     {
-        Debug.Log(component_resources_path);
+        Debug.Log(ComponentResourcesPath);
         Texture2D tex;
-        tex = Resources.Load(component_resources_path) as Texture2D;
-        Sprite preview_sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
-        preview_sprite.name = component_name;
-        return preview_sprite;
+        tex = Resources.Load(ComponentResourcesPath) as Texture2D;
+        Sprite PreviewSprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
+        PreviewSprite.name = ComponentName;
+        return PreviewSprite;
+    }
+
+    private Boolean ValidateStoryline()
+    {
+        if (_s_StorylineEditor.CheckStorylineExistence(_s_StorylineEditor._StorylineName))
+        {
+            return true;
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
+            return false;
+        }
+    }
+    private void OnDisable()
+    {
+        _s_StrEvent.OnStrEdUpdated -= OnStrEdUpdated;
     }
 }
 
