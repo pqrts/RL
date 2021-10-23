@@ -10,18 +10,18 @@ using StorylineEditor;
 public class ui_Storyline_char_constructor : EditorWindow
 {
     private ext_StorylineEditor _s_StorylineEditor;
-    private TextField _field_TechName;
-    private TextField _field_RuntimeName;
+    private TextField _techNameField;
+    private TextField _runtimeNameField;
 
-    private Sprite _preview_Body;
-    private Sprite _preview_Haircut;
-    private Sprite _preview_Clothes;
-    private Sprite _preview_Makeup;
+    private Sprite _previewBody;
+    private Sprite _previewHaircut;
+    private Sprite _previewClothes;
+    private Sprite _previewMakeup;
 
-    private VisualElement _preview_bodyHolder;
+    private VisualElement _previewBodyHolder;
 
-    private string _value_RuntimeName;
-    private string _value_TechName;
+    private string _runtimeNameFieldValue;
+    private string _techNameFieldValue;
 
     private Label _l_StatusTechName;
     private Label _l_StatusRuntimeName;
@@ -58,11 +58,11 @@ public class ui_Storyline_char_constructor : EditorWindow
         _l_StatusTechName = VTuxml.Q<VisualElement>("status_char_technical_name") as Label;
         _l_StatusBody = VTuxml.Q<VisualElement>("status_character_body") as Label;
 
-        _field_TechName = new TextField();
-        _field_RuntimeName = new TextField();
+        _techNameField = new TextField();
+        _runtimeNameField = new TextField();
 
-        _field_TechName.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_field_TechName.value, StrFieldType.TechName));
-        _field_RuntimeName.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_field_RuntimeName.value, StrFieldType.RuntimeName));
+        _techNameField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_techNameField.value, StrFieldType.TechName));
+        _runtimeNameField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_runtimeNameField.value, StrFieldType.RuntimeName));
 
         Button _b_SelectBody = new Button(() =>
         {
@@ -104,15 +104,15 @@ public class ui_Storyline_char_constructor : EditorWindow
         });
         _b_SelectMakeup.text = "Select";
 
-        if (_preview_Body != null)
+        if (_previewBody != null)
         {
-            VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _preview_Body.texture;
+            VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _previewBody.texture;
 
-            _l_StatusBody.text = _preview_Body.name;
+            _l_StatusBody.text = _previewBody.name;
         }
 
-        VTuxml.Q<VisualElement>("tech_name_fieldHolder").Add(_field_TechName);
-        VTuxml.Q<VisualElement>("runtime_name_fieldHolder").Add(_field_RuntimeName);
+        VTuxml.Q<VisualElement>("tech_name_fieldHolder").Add(_techNameField);
+        VTuxml.Q<VisualElement>("runtime_name_fieldHolder").Add(_runtimeNameField);
         VTuxml.Q<VisualElement>("character_body_buttonHolder").Add(_b_SelectBody);
         VTuxml.Q<VisualElement>("character_clothes_buttonHolder").Add(_b_SelectClothes);
         VTuxml.Q<VisualElement>("character_haircut_buttonHolder").Add(_b_SelectHaircut);
@@ -126,13 +126,13 @@ public class ui_Storyline_char_constructor : EditorWindow
         {
             if (FieldType == StrFieldType.RuntimeName)
             {
-                _value_RuntimeName = FieldValue;
-                _l_StatusRuntimeName.text = _value_RuntimeName;
+                _runtimeNameFieldValue = FieldValue;
+                _l_StatusRuntimeName.text = _runtimeNameFieldValue;
             }
             if (FieldType == StrFieldType.TechName)
             {
-                _value_TechName = FieldValue;
-                _l_StatusTechName.text = _value_TechName;
+                _techNameFieldValue = FieldValue;
+                _l_StatusTechName.text = _techNameFieldValue;
             }
         }
         Repaint();
@@ -150,8 +150,8 @@ public class ui_Storyline_char_constructor : EditorWindow
             {
                 PreviewComponentName = GetComponentName(ComponentPath, "Char_body");
                 PreviewComponentResourcesPath = GetComponentResourcesPath(_s_StorylineEditor._s_Folder._body, PreviewComponentName);
-                _preview_Body = CreatePreviewComponent(PreviewComponentResourcesPath, PreviewComponentName);
-                Debug.Log(_preview_Body.name + "+" + PreviewComponentName);
+                _previewBody = CreatePreviewComponent(PreviewComponentResourcesPath, PreviewComponentName);
+                Debug.Log(_previewBody.name + "+" + PreviewComponentName);
                 CreateGUI();
             }
         }

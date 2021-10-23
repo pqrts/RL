@@ -9,41 +9,41 @@ using System.IO;
 [ExecuteInEditMode]
 public class ext_Storyline_replacer : MonoBehaviour
 {
-    global_taglist _s_tag;
-    ext_StorylineEditor _s_str_ed;
-    private int _id_decomposed_steps;
+    global_taglist _s_Tag;
+    ext_StorylineEditor _s_StorylineEditor;
+    private int _decomposedStepsCount;
 
-    public List<string> _list_before_selected_data = new List<string>();
-    public List<string> _list_after_selected_data = new List<string>();
-    public List<string> _list_selected_action_data = new List<string>();
-    public List<string> _list_selected_action_steps = new List<string>();
+    public List<string> _beforeSelectedData = new List<string>();
+    public List<string> _afterSelectedData = new List<string>();
+    public List<string> _selectedActionData = new List<string>();
+    public List<string> _selectedActionSteps = new List<string>();
 
 
-    public Boolean Get_scripts()
+    public Boolean GetScripts()
     {
-        _s_str_ed = GetComponent<ext_StorylineEditor>();
-        _s_tag = GetComponent<global_taglist>();
+        _s_StorylineEditor = GetComponent<ext_StorylineEditor>();
+        _s_Tag = GetComponent<global_taglist>();
         return true;
     }
-    public Boolean Get_selected_action_data()
+    public Boolean GetSelectedActionData()
     {
 
         int k = 0;
         int f = 0;
-        _list_selected_action_data.Clear();
-        _list_selected_action_steps.Clear();
-        _list_before_selected_data.Clear();
-        _list_after_selected_data.Clear();
+        _selectedActionData.Clear();
+        _selectedActionSteps.Clear();
+        _beforeSelectedData.Clear();
+        _afterSelectedData.Clear();
 
-        int id_action_next = _s_str_ed._IDAction + 1;
-        string action_next = _s_tag._action + _s_tag._separator + id_action_next;
-        string action_current = _s_tag._action + _s_tag._separator + _s_str_ed._IDAction;
+        int nextActionID = _s_StorylineEditor._actionID + 1;
+        string nextActionData = _s_Tag._action + _s_Tag._separator + nextActionID;
+        string currentActionData = _s_Tag._action + _s_Tag._separator + _s_StorylineEditor._actionID;
 
-        for (int i = 0; i < _s_str_ed._ActionsToStr.Count; i++)
+        for (int i = 0; i < _s_StorylineEditor._actionsToStr.Count; i++)
         {
-            if (_s_str_ed._ActionsToStr[i] != action_current)
+            if (_s_StorylineEditor._actionsToStr[i] != currentActionData)
             {
-                _list_before_selected_data.Add(_s_str_ed._ActionsToStr[i]);
+                _beforeSelectedData.Add(_s_StorylineEditor._actionsToStr[i]);
             }
             else
             {
@@ -53,46 +53,46 @@ public class ext_Storyline_replacer : MonoBehaviour
 
         }
         Selected:
-        for (int r = k; r < _s_str_ed._ActionsToStr.Count; r++)
+        for (int r = k; r < _s_StorylineEditor._actionsToStr.Count; r++)
         {
-            if (_s_str_ed._ActionsToStr[r] != action_next)
+            if (_s_StorylineEditor._actionsToStr[r] != nextActionData)
             {
-                _list_selected_action_data.Add(_s_str_ed._ActionsToStr[r]);
+                _selectedActionData.Add(_s_StorylineEditor._actionsToStr[r]);
             }
             else
             {
                 f = r;
-                Decompose_selected_action();
+                DecomposeSelectedAction();
                 goto After;
             }
         }
         After:
-        for (int l = f; l < _s_str_ed._ActionsToStr.Count; l++)
+        for (int l = f; l < _s_StorylineEditor._actionsToStr.Count; l++)
         {
-            _list_after_selected_data.Add(_s_str_ed._ActionsToStr[l]);
+            _afterSelectedData.Add(_s_StorylineEditor._actionsToStr[l]);
         }
         return true;
     }
-    private void Decompose_selected_action()
+    private void DecomposeSelectedAction()
     {
-        _id_decomposed_steps = 1;
-        for (int i = 0; i < _list_selected_action_data.Count; i++)
+        _decomposedStepsCount = 1;
+        for (int i = 0; i < _selectedActionData.Count; i++)
         {
-            string step_unit = _s_tag._step + _s_tag._separator + _id_decomposed_steps;
-            string step_unit_next = _s_tag._step + _s_tag._separator + (_id_decomposed_steps + 1);
-            string action_unit_next = _s_tag._action + _s_tag._action + (_s_str_ed._IDAction + 1);
-            if (_list_selected_action_data[i] == step_unit)
+            string stepData = _s_Tag._step + _s_Tag._separator + _decomposedStepsCount;
+            string nextStepData = _s_Tag._step + _s_Tag._separator + (_decomposedStepsCount + 1);
+            string nextActionData = _s_Tag._action + _s_Tag._action + (_s_StorylineEditor._actionID + 1);
+            if (_selectedActionData[i] == stepData)
             {
                 string step_raw = "";
-                for (int e = i; e < _list_selected_action_data.Count; e++)
+                for (int e = i; e < _selectedActionData.Count; e++)
                 {
-                    if (_list_selected_action_data[e] != step_unit_next || _list_selected_action_data[e] != "}")
+                    if (_selectedActionData[e] != nextStepData || _selectedActionData[e] != "}")
                     {
-                        string temp_tag_skip = "          " + _s_tag._skip;
-                        if (_list_selected_action_data[e] != temp_tag_skip && _list_selected_action_data[e] != step_unit && _list_selected_action_data[e] != "/&endstep" && _list_selected_action_data[e] != "}")
+                        string temp_tag_skip = "          " + _s_Tag._skip;
+                        if (_selectedActionData[e] != temp_tag_skip && _selectedActionData[e] != stepData && _selectedActionData[e] != "/&endstep" && _selectedActionData[e] != "}")
                         {
-                            string t = _list_selected_action_data[e].Replace("          ", "");
-                            step_raw = step_raw + t + _s_tag._separator_vert;
+                            string t = _selectedActionData[e].Replace("          ", "");
+                            step_raw = step_raw + t + _s_Tag._separator_vert;
                         }
                         else
                         {
@@ -105,15 +105,15 @@ public class ext_Storyline_replacer : MonoBehaviour
                     }
                 }
 
-                _list_selected_action_steps.Add(step_raw);
+                _selectedActionSteps.Add(step_raw);
 
 
                 step_raw = "";
-                _id_decomposed_steps += 1;
+                _decomposedStepsCount += 1;
 
             }
         }
-        _s_str_ed.SelectedActionSetup();
+        _s_StorylineEditor.SelectedActionSetup();
     }
 
     

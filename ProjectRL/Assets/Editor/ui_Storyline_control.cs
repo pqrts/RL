@@ -38,7 +38,6 @@ public class ui_Storyline_control : EditorWindow
         window_control.titleContent = new GUIContent("Control panel");
         window_control.minSize = new Vector2(170, 475f);
         window_control.maxSize = new Vector2(170f, 475f);
-
         return window_control;
 
     }
@@ -50,16 +49,9 @@ public class ui_Storyline_control : EditorWindow
     }
     private void OnStrEdUpdated()
     {
-        if (ResetValues())
-        {
-            CreateGUI();
-            Repaint();
-        }
-    }
-    private Boolean ResetValues()
-    {
-        _l_ActionsTotal.text = "Total actions: " + _s_StorylineEditor._IDActionsTotal;
-        _l_ActionCurrent.text = "Current action: " + _s_StorylineEditor._IDAction;
+     
+        _l_ActionsTotal.text = "Total actions: " + _s_StorylineEditor._actionsTotalID;
+        _l_ActionCurrent.text = "Current action: " + _s_StorylineEditor._actionID;
         _l_ActionNumber.text = "Action ¹: ";
         _l_Info.text = "Info";
         _l_MoveTo.text = "Move to action:";
@@ -80,7 +72,7 @@ public class ui_Storyline_control : EditorWindow
             _l_Status1.text = "----";
         }
 
-        if (_s_StorylineEditor._CGSprite != null)
+        if (_s_StorylineEditor._CGsprite != null)
         {
             _l_Status2.text = "Done";
         }
@@ -89,7 +81,7 @@ public class ui_Storyline_control : EditorWindow
             _l_Status2.text = "----";
         }
 
-        if (_s_StorylineEditor._Phrase != "")
+        if (_s_StorylineEditor._phrase != "")
         {
             _l_Status3.text = "Done";
         }
@@ -99,7 +91,7 @@ public class ui_Storyline_control : EditorWindow
         }
 
 
-        if (_s_StorylineEditor._PhraseAuthor != "")
+        if (_s_StorylineEditor._phraseAuthor != "")
         {
             _l_Status4.text = "Done";
         }
@@ -108,9 +100,9 @@ public class ui_Storyline_control : EditorWindow
             _l_Status4.text = "----";
         }
 
-        _l_Status5.text = _s_StorylineEditor._PhraseAuthor;
+        _l_Status5.text = _s_StorylineEditor._phraseAuthor;
 
-        if (_s_StorylineEditor._IDStepsTotal.Count != 0)
+        if (_s_StorylineEditor._stepsTotal.Count != 0)
         {
             _l_Status6.text = "Done";
         }
@@ -122,21 +114,24 @@ public class ui_Storyline_control : EditorWindow
         if (_l_Status1.text == "Done" && _l_Status2.text == "Done" && _l_Status3.text == "Done" && _l_Status4.text == "Done" && _l_Status6.text == "Done")
         {
             _l_StatusCheck.text = "Ready for next action";
-            _s_StorylineEditor._ready_for_next_action = true;
+            _s_StorylineEditor._readyForNextAction = true;
         }
         else
         {
             _l_StatusCheck.text = "Not ready ";
-            _s_StorylineEditor._ready_for_next_action = false;
+            _s_StorylineEditor._readyForNextAction = false;
         }
-        return true;
+        Repaint();
     }
+
     private void CreateGUI()
     {
 
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/control_panel.uxml");
         VisualElement VTuxml = VT.Instantiate();
         TextField _field_ActionNumber = new TextField();
+
+
 
         _l_ActionsTotal = VTuxml.Q<VisualElement>("total_actions") as Label;
         _l_ActionCurrent = VTuxml.Q<VisualElement>("current_action") as Label;
@@ -161,6 +156,8 @@ public class ui_Storyline_control : EditorWindow
         _l_Status5 = VTuxml.Q<VisualElement>("status_5") as Label;
         _l_Status6 = VTuxml.Q<VisualElement>("status_6") as Label;
         ///
+
+        
 
         Button b_MoveTo = new Button(() =>
         {

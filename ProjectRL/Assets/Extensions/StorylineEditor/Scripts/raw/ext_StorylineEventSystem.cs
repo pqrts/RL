@@ -10,7 +10,7 @@ public class ext_StorylineEventSystem : MonoBehaviour
     public void EditorUpdated()
     {
         OnStrEdUpdated?.Invoke();
-        Debug.Log("event");
+      
     }
 }
 
