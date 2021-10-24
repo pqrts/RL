@@ -7,7 +7,7 @@ using System;
 
 using System.IO;
 [ExecuteInEditMode]
-public class ext_Storyline_replacer : MonoBehaviour
+public class extStrEditorReplacer : MonoBehaviour
 {
     global_taglist _s_Tag;
     ext_StorylineEditor _s_StorylineEditor;

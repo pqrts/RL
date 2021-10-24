@@ -8,7 +8,7 @@ using System;
 using StorylineEditor;
 
 
-public class ui_Storyline_choise : EditorWindow
+public class StrEditorChoiseConstructorWindow : EditorWindow
 {
     private ext_StorylineEditor _s_StorylineEditor;
     private ext_StorylineEventSystem _s_StrEvent;
@@ -24,9 +24,9 @@ public class ui_Storyline_choise : EditorWindow
     private TextField _optionTextField;
     private DropdownField _currencyDropdown;
         
-    public static ui_Storyline_choise ShowWindow()
+    public static StrEditorChoiseConstructorWindow ShowWindow()
     {
-        ui_Storyline_choise window_choise = GetWindow<ui_Storyline_choise>();
+        StrEditorChoiseConstructorWindow window_choise = GetWindow<StrEditorChoiseConstructorWindow>();
         window_choise.titleContent = new GUIContent("Choise Constructor");
         window_choise.minSize = new Vector2(340, 475f);
         window_choise.maxSize = new Vector2(340f, 475f);
@@ -213,7 +213,7 @@ public class ui_Storyline_choise : EditorWindow
 
                     if (selected_option_id != 0)
                     {
-                        _s_StorylineEditor.MoveChoiseOption(selected_option_id, StrListDirection.Up);
+                        _s_StorylineEditor.ChangeChoiseOptionPosition(selected_option_id, StrListDirection.Up);
                         _listview_Options.selectedIndex = selected_option_id - 1;
                                            }
                     else
@@ -239,7 +239,7 @@ public class ui_Storyline_choise : EditorWindow
                     int selected_option_id = _listview_Options.selectedIndex;
                     if ((selected_option_id + 1) != _s_StorylineEditor._choiseOptions.Count)
                     {
-                        _s_StorylineEditor.MoveChoiseOption(selected_option_id, StrListDirection.Down);
+                        _s_StorylineEditor.ChangeChoiseOptionPosition(selected_option_id, StrListDirection.Down);
 
                         _listview_Options.selectedIndex = selected_option_id + 1;
                     }

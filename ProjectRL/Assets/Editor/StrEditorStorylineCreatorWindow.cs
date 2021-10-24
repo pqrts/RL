@@ -2,11 +2,11 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor;
 using System;
-public class ui_Storyline_create : EditorWindow
+public class StrEditorStorylineCreatorWindow : EditorWindow
 {
-    public static ui_Storyline_create ShowWindow()
+    public static StrEditorStorylineCreatorWindow ShowWindow()
     {
-        ui_Storyline_create window_new = GetWindow<ui_Storyline_create>();
+        StrEditorStorylineCreatorWindow window_new = GetWindow<StrEditorStorylineCreatorWindow>();
         window_new.titleContent = new GUIContent("New storyline");
         window_new.minSize = new Vector2(390f, 135f);
         window_new.maxSize = new Vector2(390f, 135f);

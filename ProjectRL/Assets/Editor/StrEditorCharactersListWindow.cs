@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-public class ui_Storyline_activate : EditorWindow
+public class StrEditorCharactersListWindow : EditorWindow
 {
     private ext_StorylineEditor _s_StorylineEditor;
     private ext_StorylineEventSystem _s_StrEvent;
@@ -16,9 +16,9 @@ public class ui_Storyline_activate : EditorWindow
     private string _characterName;
     private string _characterDescription;
     public List<GameObject> _CharactesListviewElements = new List<GameObject>();
-    public static ui_Storyline_activate ShowWindow()
+    public static StrEditorCharactersListWindow ShowWindow()
     {
-        ui_Storyline_activate window_activate = GetWindow<ui_Storyline_activate>();
+        StrEditorCharactersListWindow window_activate = GetWindow<StrEditorCharactersListWindow>();
         window_activate.titleContent = new GUIContent("Characters list");
         window_activate.minSize = new Vector2(170, 475f);
         window_activate.maxSize = new Vector2(170f, 475f);

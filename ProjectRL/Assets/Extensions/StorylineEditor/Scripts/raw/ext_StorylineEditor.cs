@@ -21,7 +21,7 @@ public class ext_StorylineEditor : MonoBehaviour
     //scripts
     global_taglist _s_Tag;
     public global_folders _s_Folder;
-    ext_Storyline_replacer _s_replacer;
+    extStrEditorReplacer _s_replacer;
     ext_Storyline_exeptions _s_exeption;
     //metadata
     private string _metaToStr;
@@ -78,7 +78,7 @@ public class ext_StorylineEditor : MonoBehaviour
         _s_StrEvent = GetComponent<ext_StorylineEventSystem>();
         _s_Tag = GetComponent<global_taglist>();
         _s_Folder = GetComponent<global_folders>();
-        _s_replacer = GetComponent<ext_Storyline_replacer>();
+        _s_replacer = GetComponent<extStrEditorReplacer>();
         _CGRectTransform = _CGImage.GetComponent<RectTransform>();
         _s_exeption = GetComponent<ext_Storyline_exeptions>();
         if (_s_Folder.Setup_folders() && _s_Tag.Setup_tags() && GetCGPositionLimits() && _s_replacer.GetScripts())
@@ -255,19 +255,19 @@ public class ext_StorylineEditor : MonoBehaviour
         _initPartToStr.Add(_s_Tag._version);
         _initPartToStr.Add("" + _version);
         _initPartToStr.Add(_s_Tag._required_objects);
-        string RequairedObjects = "";
+        string RequiredObjects = "";
         foreach (GameObject unit in _requiredObjects)
         {
-            RequairedObjects = RequairedObjects + unit.name + _s_Tag._separator;
+            RequiredObjects = RequiredObjects + unit.name + _s_Tag._separator;
         }
-        _initPartToStr.Add(RequairedObjects);
+        _initPartToStr.Add(RequiredObjects);
         _initPartToStr.Add(_s_Tag._required_cg);
-        string RequairedCG = "";
+        string RequiredCG = "";
         foreach (Sprite unit2 in _requiredCG)
         {
-            RequairedCG = RequairedCG + unit2.name + _s_Tag._separator;
+            RequiredCG = RequiredCG + unit2.name + _s_Tag._separator;
         }
-        _initPartToStr.Add(RequairedCG);
+        _initPartToStr.Add(RequiredCG);
         _initPartToStr.Add(_s_Tag._skip + _s_Tag._separator + "********************************************************");
         _initPartToStr.Add(_s_Tag._start);
         _initPartToStr.Add(_s_Tag._skip);
@@ -575,7 +575,7 @@ public class ext_StorylineEditor : MonoBehaviour
         _choiseOptions.Remove(_choiseOptions[option_id]);
         RenumberChoiseOptionsList();
     }
-    public void MoveChoiseOption(int OptionID, StrListDirection Direction)
+    public void ChangeChoiseOptionPosition(int OptionID, StrListDirection Direction)
     {
         string ReplacedOption = null;
         int ReplacedID = 0;
@@ -605,7 +605,6 @@ public class ext_StorylineEditor : MonoBehaviour
                 t += Units[r] + _s_Tag._separator;
             }
             _choiseOptions[i] = t;
-            t = "";
         }
     }
     Boolean CheckCharacterActivation(string CharacterName)
@@ -884,6 +883,8 @@ namespace StorylineEditor
         }
         public static StrPreviewComponentType Body = new StrPreviewComponentType("type_body");
         public static StrPreviewComponentType Clothes = new StrPreviewComponentType("type_clothes");
+        public static StrPreviewComponentType Haircut = new StrPreviewComponentType("type_haircut");
+        public static StrPreviewComponentType Makeup = new StrPreviewComponentType("type_makeup");
     }
     public class StrFieldType
     {
@@ -898,6 +899,7 @@ namespace StorylineEditor
         public static StrFieldType JumpTo = new StrFieldType("type_jump_to");
         public static StrFieldType OptionText = new StrFieldType("type_option_text");
         public static StrFieldType ItemID = new StrFieldType("type_item_id");
+        public static StrFieldType Description = new StrFieldType("type_item_description");
     }
     public class StrListDirection
     {

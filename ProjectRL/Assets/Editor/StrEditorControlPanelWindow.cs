@@ -5,7 +5,7 @@ using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using UnityEditor;
 using System;
-public class ui_Storyline_control : EditorWindow
+public class StrEditorControlPanelWindow : EditorWindow
 {
     private Label _l_ActionsTotal;
     private Label _l_ActionCurrent;
@@ -32,9 +32,9 @@ public class ui_Storyline_control : EditorWindow
     private ext_StorylineEditor _s_StorylineEditor;
     private ext_StorylineEventSystem _s_StrEvent;
 
-    public static ui_Storyline_control ShowWindow()
+    public static StrEditorControlPanelWindow ShowWindow()
     {
-        ui_Storyline_control window_control = GetWindow<ui_Storyline_control>();
+        StrEditorControlPanelWindow window_control = GetWindow<StrEditorControlPanelWindow>();
         window_control.titleContent = new GUIContent("Control panel");
         window_control.minSize = new Vector2(170, 475f);
         window_control.maxSize = new Vector2(170f, 475f);

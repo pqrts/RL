@@ -9,7 +9,7 @@ using StorylineEditor;
 using System.IO;
 
 
-public class ui_StorylineEd_editor : EditorWindow
+public class StrEditorMainWindow : EditorWindow
 {
     public int id_action = 0;
     public int id_step;
@@ -31,9 +31,9 @@ public class ui_StorylineEd_editor : EditorWindow
     private ext_StorylineEditor _s_StorylineEditor;
 
     [MenuItem("Storyline Editor/Open")]
-    public static ui_StorylineEd_editor ShowWindow()
+    public static StrEditorMainWindow ShowWindow()
     {
-        ui_StorylineEd_editor main_window = GetWindow<ui_StorylineEd_editor>();
+        StrEditorMainWindow main_window = GetWindow<StrEditorMainWindow>();
         main_window.titleContent = new GUIContent("Storyline Editor");
         main_window.minSize = new Vector2(845f, 475f);
         main_window.maxSize = new Vector2(845f, 475f);
@@ -239,7 +239,7 @@ public class ui_StorylineEd_editor : EditorWindow
         {
             if (ValidateStoryline())
             {
-                ui_Storyline_activate.ShowWindow();
+                StrEditorCharactersListWindow.ShowWindow();
                 _s_StrEvent.EditorUpdated();
             }
         });
@@ -249,7 +249,7 @@ public class ui_StorylineEd_editor : EditorWindow
         {
             if (ValidateStoryline())
             {
-               ui_Storyline_control.ShowWindow();
+               StrEditorControlPanelWindow.ShowWindow();
                 _s_StrEvent.EditorUpdated();
             }
 
@@ -319,7 +319,7 @@ public class ui_StorylineEd_editor : EditorWindow
         {
             if (ValidateStoryline())
             {
-                ui_Storyline_char_constructor.ShowWindow();
+                StrEditorCharacterConstructorWindow.ShowWindow();
                 _s_StrEvent.EditorUpdated();
             }
         });
@@ -349,7 +349,7 @@ public class ui_StorylineEd_editor : EditorWindow
         {
             if (ValidateStoryline())
             {
-                ui_Storyline_choise.ShowWindow();
+                StrEditorChoiseConstructorWindow.ShowWindow();
                 _s_StrEvent.EditorUpdated();
             }
         });
@@ -379,7 +379,7 @@ public class ui_StorylineEd_editor : EditorWindow
         Button _b_NewFile = new Button(() =>
         {
 
-            ui_Storyline_create.ShowWindow();
+            StrEditorStorylineCreatorWindow.ShowWindow();
             _s_StrEvent.EditorUpdated();
 
         });
