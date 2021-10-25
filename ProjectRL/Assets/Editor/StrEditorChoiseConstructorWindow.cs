@@ -11,7 +11,7 @@ using StorylineEditor;
 public class StrEditorChoiseConstructorWindow : EditorWindow
 {
     private ext_StorylineEditor _s_StorylineEditor;
-    private ext_StorylineEventSystem _s_StrEvent;
+    private StrEditorEvents _s_StrEvent;
     private int _costFieldValue;
     private string _optionTextFieldValue;
     private int _jumToActionFieldValue;
@@ -36,9 +36,9 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     }
     private void OnEnable()
     {
-        _s_StrEvent = (ext_StorylineEventSystem)FindObjectOfType(typeof(ext_StorylineEventSystem));
+        _s_StrEvent = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
         _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
-        _s_StrEvent.OnStrEdUpdated += OnStrEdUpdated;
+        _s_StrEvent.StrEditorUpdated += OnStrEdUpdated;
     }
     private void OnStrEdUpdated()
     {
@@ -120,17 +120,17 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         _listview_Options.style.flexGrow = 1.0f;
 
         _costField = new TextField();
-        _costField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_costField.value, StrFieldType.Cost, true));
+        _costField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_costField.value, StrFieldType.CostField, true));
 
         _optionTextField = new TextField();
         _optionTextField.style.height = 20f;
-        _optionTextField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_optionTextField.value, StrFieldType.OptionText, false));
+        _optionTextField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_optionTextField.value, StrFieldType.OptionTextField, false));
 
         _jumpToActionField = new TextField();
-        _jumpToActionField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_jumpToActionField.value, StrFieldType.JumpTo, true));
+        _jumpToActionField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_jumpToActionField.value, StrFieldType.JumpToField, true));
 
         _itemIDField = new TextField();
-        _itemIDField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_itemIDField.value, StrFieldType.ItemID, true));
+        _itemIDField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_itemIDField.value, StrFieldType.ItemIDField, true));
 
         _currencyDropdown = new DropdownField("", _currencyDropdownChoises, 0);
 
@@ -278,7 +278,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         int out_value = 0;
         if (NeedParsing == false)
         {
-            if (FieldType == StrFieldType.OptionText)
+            if (FieldType == StrFieldType.OptionTextField)
             {
                 _optionTextFieldValue = FieldValue;
             }
@@ -287,12 +287,12 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             if (int.TryParse(FieldValue, out out_value))
             {
-                if (FieldType == StrFieldType.Cost)
+                if (FieldType == StrFieldType.CostField)
                 {
 
                     _costFieldValue = out_value;
                 }
-                if (FieldType == StrFieldType.JumpTo)
+                if (FieldType == StrFieldType.JumpToField)
                 {
                     if (out_value > 0 && out_value <= _s_StorylineEditor._actionsTotalID)
                     {
@@ -307,7 +307,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                         }
                     }
                 }
-                if (FieldType == StrFieldType.ItemID)
+                if (FieldType == StrFieldType.ItemIDField)
                 {
                     _itemIDFieldValue = out_value;
                 }
@@ -315,16 +315,16 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
             else
             {
                 EditorUtility.DisplayDialog("Notice", "Incorrect value", "OK");
-                if (FieldType == StrFieldType.Cost)
+                if (FieldType == StrFieldType.CostField)
                 {
                     _costField.value = "";
 
                 }
-                if (FieldType == StrFieldType.JumpTo)
+                if (FieldType == StrFieldType.JumpToField)
                 {
                     _jumpToActionField.value = "";
                 }
-                if (FieldType == StrFieldType.ItemID)
+                if (FieldType == StrFieldType.ItemIDField)
                 {
                     _itemIDField.value = "";
                 }
@@ -378,6 +378,6 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     }
     private void OnDisable()
     {
-        _s_StrEvent.OnStrEdUpdated -= OnStrEdUpdated;
+        _s_StrEvent.StrEditorUpdated -= OnStrEdUpdated;
     }
 }

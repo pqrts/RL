@@ -69,13 +69,13 @@ public class ext_StorylineEditor : MonoBehaviour
     ///?
     [HideInInspector] public bool _readyForNextAction;
     ///
-    private ext_StorylineEventSystem _s_StrEvent;
+    private StrEditorEvents _s_StrEvent;
 
     public void Init()
     {
 
         _s_CharacterSp = GetComponent<ext_CharacterSp>();
-        _s_StrEvent = GetComponent<ext_StorylineEventSystem>();
+        _s_StrEvent = GetComponent<StrEditorEvents>();
         _s_Tag = GetComponent<global_taglist>();
         _s_Folder = GetComponent<global_folders>();
         _s_replacer = GetComponent<extStrEditorReplacer>();
@@ -870,46 +870,5 @@ public class ext_StorylineEditor : MonoBehaviour
                 }
             }
         }
-    }
-}
-namespace StorylineEditor
-{
-    public class StrPreviewComponentType
-    {
-        private string _type_index;
-        public StrPreviewComponentType(string index)
-        {
-            _type_index = index;
-        }
-        public static StrPreviewComponentType Body = new StrPreviewComponentType("type_body");
-        public static StrPreviewComponentType Clothes = new StrPreviewComponentType("type_clothes");
-        public static StrPreviewComponentType Haircut = new StrPreviewComponentType("type_haircut");
-        public static StrPreviewComponentType Makeup = new StrPreviewComponentType("type_makeup");
-    }
-    public class StrFieldType
-    {
-        private string _type_index;
-        public StrFieldType(string index)
-        {
-            _type_index = index;
-        }
-        public static StrFieldType RuntimeName = new StrFieldType("type_runtime_name");
-        public static StrFieldType TechName = new StrFieldType("type_tech_name");
-        public static StrFieldType Cost = new StrFieldType("type_cost");
-        public static StrFieldType JumpTo = new StrFieldType("type_jump_to");
-        public static StrFieldType OptionText = new StrFieldType("type_option_text");
-        public static StrFieldType ItemID = new StrFieldType("type_item_id");
-        public static StrFieldType Description = new StrFieldType("type_item_description");
-    }
-    public class StrListDirection
-    {
-        private string _type_index;
-        public StrListDirection(string index)
-        {
-            _type_index = index;
-        }
-        public static StrListDirection Up = new StrListDirection("direction_up");
-        public static StrListDirection Down = new StrListDirection("direction_down");
-
     }
 }
