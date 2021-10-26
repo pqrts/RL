@@ -8,16 +8,18 @@ using UnityEngine.UIElements;
 
 public class StrEditorCharacterConstructorWindow : EditorWindow
 {
+    private VisualElement _characterConstructorMainVE;
+    private VisualTreeAsset _characterConstructorVTAsset;
     private ext_StorylineEditor _s_StorylineEditor;
     private TextField _techNameField;
     private TextField _runtimeNameField;
     private TextField _characterDescriptionField;
 
-    private Sprite _previewBody;
-    private Sprite _previewHaircut;
-    private Sprite _previewClothes;
-    private Sprite _previewMakeup;
-
+    private static Sprite _previewBody;
+    private static Sprite _previewHaircut;
+    private static Sprite _previewClothes;
+    private static Sprite _previewMakeup;
+    private static Sprite[] _previewSprites = new Sprite[] { _previewBody, _previewClothes, _previewHaircut, _previewMakeup };
     private string _runtimeNameFieldValue;
     private string _techNameFieldValue;
     private string _characterDescriptionFieldValue;
@@ -41,6 +43,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         window_char_constr.titleContent = new GUIContent("Character Constructor");
         window_char_constr.minSize = new Vector2(340, 475f);
         window_char_constr.maxSize = new Vector2(340f, 475f);
+
         return window_char_constr;
     }
     private void OnEnable()
@@ -48,85 +51,25 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
         _s_StrEvent = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
         _s_StrEvent.StrEditorUpdated += OnStrEditorUpdated;
-       
+        Debug.Log(_requiredFieldsLabels.Count);
     }
     private void OnStrEditorUpdated()
     {
         CreateGUI();
-        Repaint();
     }
-    private void SetupRequiredElementsDictionary()
+    private void CreateGUI()
     {
-
-        if (_requiredFieldsLabels.Count == 0)
+        InstantiateMainVisualElement();
+        if (_characterConstructorMainVE != null)
         {
-            _requiredFieldsLabels.Add(StrFieldType.TechNameField, _statusTechNameLabel);
-            _requiredFieldsLabels.Add(StrFieldType.RuntimeNameField, _statusRuntimeNameLabel);
-            _requiredFieldsLabels.Add(StrFieldType.CharacterDescriptionField, _statusCharacterDescriptionLabel);
+            InstatiateLabels();
+            InstatiateTextFields();
+            SetupRequiredLabelsDictionary();
+            SetupRequiredPreviewElementsDictionary();
         }
-
-        if (_requiredPreviewElementsSprites.Count == 0)
-        {
-            if (_previewBody == null)
-            {
-                _previewBody = _s_StorylineEditor._tempCharIcon;
-            }
-            if (_previewClothes == null)
-            {
-                _previewClothes = _s_StorylineEditor._tempCharIcon;
-            }
-            if (_previewHaircut == null)
-            {
-                _previewHaircut = _s_StorylineEditor._tempCharIcon;
-            }
-            if (_previewMakeup == null)
-            {
-                _previewMakeup = _s_StorylineEditor._tempCharIcon;
-            }
-            _requiredPreviewElementsSprites.Add(StrPreviewElementType.Body, _previewBody);
-            _requiredPreviewElementsSprites.Add(StrPreviewElementType.Clothes, _previewClothes);
-            _requiredPreviewElementsSprites.Add(StrPreviewElementType.Haircut, _previewHaircut);
-            _requiredPreviewElementsSprites.Add(StrPreviewElementType.Makeup, _previewMakeup);
-        }
-
-        foreach (KeyValuePair<StrPreviewElementType, Sprite> unit in _requiredPreviewElementsSprites)
-        {
-            if (unit.Value != null)
-            {
-                Debug.Log(unit.Value.name);
-            }
-        }
-
-
-    }
-    public void CreateGUI()
-    {
-
-        var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/character_constructor.uxml");
-        VisualElement VTuxml = VT.Instantiate();
-
-        _statusRuntimeNameLabel = VTuxml.Q<VisualElement>("status_char_runtime_name") as Label;
-        _statusTechNameLabel = VTuxml.Q<VisualElement>("status_char_technical_name") as Label;
-        _statusCharacterDescriptionLabel = VTuxml.Q<VisualElement>("status_char_description") as Label;
-        _statusBodyLabel = VTuxml.Q<VisualElement>("status_character_body") as Label;
-        _statusClothesLabel = VTuxml.Q<VisualElement>("status_character_clothes") as Label;
-        _statusHaircutLabel = VTuxml.Q<VisualElement>("status_character_haircut") as Label;
-        _statusMakeupLabel = VTuxml.Q<VisualElement>("status_character_makeup") as Label;
-
-        _techNameField = new TextField();
-        _runtimeNameField = new TextField();
-        _characterDescriptionField = new TextField();
-        _characterDescriptionField.style.height = 110f;
-        _characterDescriptionField.multiline = true;
-        _characterDescriptionField.maxLength = 145;
-        _characterDescriptionField.style.whiteSpace = WhiteSpace.Normal;
-
-        _techNameField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_techNameField.value, StrFieldType.TechNameField));
-        _runtimeNameField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_runtimeNameField.value, StrFieldType.RuntimeNameField));
-        _characterDescriptionField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValues(_characterDescriptionField.value, StrFieldType.CharacterDescriptionField));
-
-
-
+        _techNameField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetUIElementsValues(_techNameField.value, StrFieldType.TechNameField));
+        _runtimeNameField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetUIElementsValues(_runtimeNameField.value, StrFieldType.RuntimeNameField));
+        _characterDescriptionField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetUIElementsValues(_characterDescriptionField.value, StrFieldType.CharacterDescriptionField));
         Button selectBodyButton = new Button(() =>
         {
             if (ValidateStoryline())
@@ -173,27 +116,27 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         });
         selectMakeupButton.text = "Select";
 
-        if (_previewBody != null)
+        if (_previewSprites[0] != null)
         {
-            VTuxml.Q<VisualElement>("previewHolder").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Body].texture;
+            _characterConstructorMainVE.Q<VisualElement>("previewHolder").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Body].texture;
 
             _statusBodyLabel.text = _requiredPreviewElementsSprites[StrPreviewElementType.Body].name;
         }
-        if (_previewClothes != null)
+        if (_previewSprites[1] != null)
         {
-            VTuxml.Q<VisualElement>("previewHolder2").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Clothes].texture;
+            _characterConstructorMainVE.Q<VisualElement>("previewHolder2").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Clothes].texture;
 
             _statusClothesLabel.text = _requiredPreviewElementsSprites[StrPreviewElementType.Clothes].name;
         }
-        if (_previewHaircut != null)
+        if (_previewSprites[2] != null)
         {
-            VTuxml.Q<VisualElement>("previewHolder3").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Haircut].texture;
+            _characterConstructorMainVE.Q<VisualElement>("previewHolder3").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Haircut].texture;
 
             _statusHaircutLabel.text = _requiredPreviewElementsSprites[StrPreviewElementType.Haircut].name;
         }
-        if (_previewMakeup != null)
+        if (_previewSprites[3] != null)
         {
-            VTuxml.Q<VisualElement>("previewHolder4").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Makeup].texture;
+            _characterConstructorMainVE.Q<VisualElement>("previewHolder4").style.backgroundImage = _requiredPreviewElementsSprites[StrPreviewElementType.Makeup].texture;
 
             _statusMakeupLabel.text = _requiredPreviewElementsSprites[StrPreviewElementType.Makeup].name;
         }
@@ -211,30 +154,90 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         });
         exportToFileButton.text = "Export to file";
 
-        VTuxml.Q<VisualElement>("tech_name_fieldHolder").Add(_techNameField);
-        VTuxml.Q<VisualElement>("runtime_name_fieldHolder").Add(_runtimeNameField);
-        VTuxml.Q<VisualElement>("description_fieldHolder").Add(_characterDescriptionField);
-        VTuxml.Q<VisualElement>("character_body_buttonHolder").Add(selectBodyButton);
-        VTuxml.Q<VisualElement>("character_clothes_buttonHolder").Add(selectClothesButton);
-        VTuxml.Q<VisualElement>("character_haircut_buttonHolder").Add(selectHaircutButton);
-        VTuxml.Q<VisualElement>("character_makeup_buttonHolder").Add(selectMakeupButton);
-        VTuxml.Q<VisualElement>("buttonHolder1").Add(exportToFileButton);
-        SetupRequiredElementsDictionary();
-        rootVisualElement.Add(VTuxml);
+        _characterConstructorMainVE.Q<VisualElement>("tech_name_fieldHolder").Add(_techNameField);
+        _characterConstructorMainVE.Q<VisualElement>("runtime_name_fieldHolder").Add(_runtimeNameField);
+        _characterConstructorMainVE.Q<VisualElement>("description_fieldHolder").Add(_characterDescriptionField);
+        _characterConstructorMainVE.Q<VisualElement>("character_body_buttonHolder").Add(selectBodyButton);
+        _characterConstructorMainVE.Q<VisualElement>("character_clothes_buttonHolder").Add(selectClothesButton);
+        _characterConstructorMainVE.Q<VisualElement>("character_haircut_buttonHolder").Add(selectHaircutButton);
+        _characterConstructorMainVE.Q<VisualElement>("character_makeup_buttonHolder").Add(selectMakeupButton);
+        _characterConstructorMainVE.Q<VisualElement>("buttonHolder1").Add(exportToFileButton);
+        SetupRequiredPreviewElementsDictionary();
+        rootVisualElement.Add(_characterConstructorMainVE);
     }
 
-    private void SetValues(string fieldValue, StrFieldType fieldType)
+    private void InstantiateMainVisualElement()
+    {
+        _characterConstructorVTAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/character_constructor.uxml");
+        _characterConstructorMainVE = _characterConstructorVTAsset.Instantiate();
+    }
+    private void InstatiateLabels()
+    {
+        _statusRuntimeNameLabel = _characterConstructorMainVE.Q<VisualElement>("status_char_runtime_name") as Label;
+        _statusTechNameLabel = _characterConstructorMainVE.Q<VisualElement>("status_char_technical_name") as Label;
+        _statusCharacterDescriptionLabel = _characterConstructorMainVE.Q<VisualElement>("status_char_description") as Label;
+        _statusBodyLabel = _characterConstructorMainVE.Q<VisualElement>("status_character_body") as Label;
+        _statusClothesLabel = _characterConstructorMainVE.Q<VisualElement>("status_character_clothes") as Label;
+        _statusHaircutLabel = _characterConstructorMainVE.Q<VisualElement>("status_character_haircut") as Label;
+        _statusMakeupLabel = _characterConstructorMainVE.Q<VisualElement>("status_character_makeup") as Label;
+    }
+    private void InstatiateTextFields()
+    {
+        _techNameField = new TextField();
+        _runtimeNameField = new TextField();
+        _characterDescriptionField = new TextField();
+        _characterDescriptionField.style.height = 110f;
+        _characterDescriptionField.multiline = true;
+        _characterDescriptionField.maxLength = 145;
+        _characterDescriptionField.style.whiteSpace = WhiteSpace.Normal;
+    }
+    private void SetupRequiredLabelsDictionary()
+    {
+
+        if (_requiredFieldsLabels.Count == 0)
+        {
+            _requiredFieldsLabels.Add(StrFieldType.TechNameField, _statusTechNameLabel);
+            _requiredFieldsLabels.Add(StrFieldType.RuntimeNameField, _statusRuntimeNameLabel);
+            _requiredFieldsLabels.Add(StrFieldType.CharacterDescriptionField, _statusCharacterDescriptionLabel);
+        }
+    }
+    private void SetupRequiredPreviewElementsDictionary()
+    {
+        if (_requiredPreviewElementsSprites.Count == 0)
+        {
+            if (ValidatePreviewSpritesArray())
+            {
+                _requiredPreviewElementsSprites.Add(StrPreviewElementType.Body, _previewSprites[0]);
+                _requiredPreviewElementsSprites.Add(StrPreviewElementType.Clothes, _previewSprites[1]);
+                _requiredPreviewElementsSprites.Add(StrPreviewElementType.Haircut, _previewSprites[2]);
+                _requiredPreviewElementsSprites.Add(StrPreviewElementType.Makeup, _previewSprites[3]);
+            }
+        }
+    }
+    private Boolean ValidatePreviewSpritesArray()
+    {
+        for (int i = 0; i < _previewSprites.Length; i++)
+        {
+            if (_previewSprites[i] == null)
+            {
+                SetupPreviewPlaceholder(i);
+            }
+        }
+        return true;
+    }
+    private void SetupPreviewPlaceholder(int previewSpriteIndex)
+    {
+        Texture2D tempTexture = new Texture2D(1, 1);
+        Sprite previewPlaceholder = Sprite.Create(tempTexture, new Rect(0, 0, tempTexture.width, tempTexture.height), new Vector2(tempTexture.width / 2, tempTexture.height / 2));
+        previewPlaceholder.name = _placeholderText;
+        _previewSprites.SetValue(previewPlaceholder, previewSpriteIndex);
+    }
+
+    private void SetUIElementsValues(string fieldValue, StrFieldType fieldType)
     {
         if (fieldValue != "")
         {
-            if (_requiredFieldsLabels[fieldType] != null)
-            {
-                _requiredFieldsLabels[fieldType].text = fieldValue;
-            }
-            else 
-            {
-                Debug.Log("null");
-            }
+         _requiredFieldsLabels[fieldType].text = fieldValue;
         }
         Repaint();
     }
