@@ -19,14 +19,26 @@ namespace StorylineEditor
     public class StrPreviewElementType
     {
         private string _typeIndex;
-        public StrPreviewElementType(string index)
+        private string _typeAssociatedFolder;
+
+
+        public StrPreviewElementType(string index, string associatedFolder)
         {
             _typeIndex = index;
-                }
-        public static StrPreviewElementType Body = new StrPreviewElementType("type_body");
-        public static StrPreviewElementType Clothes = new StrPreviewElementType("type_clothes");
-        public static StrPreviewElementType Haircut = new StrPreviewElementType("type_haircut");
-        public static StrPreviewElementType Makeup = new StrPreviewElementType("type_makeup");
+            _typeAssociatedFolder = associatedFolder;
+        }
+        public string GetFieldTypeIndex()
+        {
+            return _typeIndex;
+        }
+        public string GetFieldTypeAssociatedFolder()
+        {
+            return _typeAssociatedFolder;
+        }
+        public static StrPreviewElementType Body = new StrPreviewElementType("PreviewElementBody", "Char_body");
+        public static StrPreviewElementType Clothes = new StrPreviewElementType("PreviewElementClothes", "Char_clothes");
+        public static StrPreviewElementType Haircut = new StrPreviewElementType("PreviewElementHaircut", "Char_haircut");
+        public static StrPreviewElementType Makeup = new StrPreviewElementType("PreviewElementMakeup", "Char_makeup");
     }
     public class StrFieldType
     {
@@ -35,14 +47,17 @@ namespace StorylineEditor
         {
             _typeIndex = index;
         }
-        public static StrFieldType RuntimeNameField = new StrFieldType("type_runtime_name_field");
-        public static StrFieldType TechNameField = new StrFieldType("type_tech_name_field");
-        public static StrFieldType CostField = new StrFieldType("type_cost_field");
-        public static StrFieldType JumpToField = new StrFieldType("type_jump_to_field");
-        public static StrFieldType OptionTextField = new StrFieldType("type_option_text_field");
-        public static StrFieldType ItemIDField = new StrFieldType("type_item_id_field");
-        public static StrFieldType CharacterDescriptionField = new StrFieldType("type_character_description_field");
-        
+        public string GetFieldTypeIndex()
+        {
+            return _typeIndex;
+        }
+        public static StrFieldType RuntimeNameField = new StrFieldType("FieldTypeRuntimeName");
+        public static StrFieldType TechNameField = new StrFieldType("FieldTypeTechName");
+        public static StrFieldType CostField = new StrFieldType("FieldTypeCost");
+        public static StrFieldType JumpToField = new StrFieldType("FieldTypeJumpTo");
+        public static StrFieldType OptionTextField = new StrFieldType("FieldTypeOptionText");
+        public static StrFieldType ItemIDField = new StrFieldType("FieldTypeItemId");
+        public static StrFieldType CharacterDescriptionField = new StrFieldType("FieldTypeCharacterDescription");
     }
     public class StrListDirection
     {
@@ -51,30 +66,18 @@ namespace StorylineEditor
         {
             _typeIndex = index;
         }
-        public static StrListDirection Up = new StrListDirection("direction_up");
-        public static StrListDirection Down = new StrListDirection("direction_down");
+        public static StrListDirection Up = new StrListDirection("DirectionUp");
+        public static StrListDirection Down = new StrListDirection("DirectionDown");
 
     }
-
-    public  class StrPreviewElementsFolders
+    public struct StrConstantValues
     {
-        private static Dictionary<StrPreviewElementType, string> _elementsAndFolderInterrelation;
-        public StrPreviewElementsFolders()
-        {
-            _elementsAndFolderInterrelation = new Dictionary<StrPreviewElementType, string>
-            {
-                [StrPreviewElementType.Body] = "Char_body",
-                [StrPreviewElementType.Clothes] = "Char_clothes",
-                [StrPreviewElementType.Haircut] = "Char_haircut",
-                [StrPreviewElementType.Makeup] = "Char_makeup"
-            };
-        }
-        public static string GetPreviewElementFolder(StrPreviewElementType key)
-        {
-            string folderName = _elementsAndFolderInterrelation[key];
-            return folderName;
-        }
-        public static StrPreviewElementsFolders PreviewFolders = new StrPreviewElementsFolders();
+        public const string PlaceholderText = "----";
+    }
 
+    public struct StrUXMLElementsNames
+    {
+        public const string PreviewHolder = "previewHolder";
+        public const string StatusLabel = "labelStatus";
     }
 }
