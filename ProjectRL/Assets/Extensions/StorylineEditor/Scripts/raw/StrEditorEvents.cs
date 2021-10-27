@@ -1,17 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using StorylineEditor;
+using System;
 
 public class StrEditorEvents : MonoBehaviour
 {
     public delegate void OnStrEditorUpdated();
     public event OnStrEditorUpdated StrEditorUpdated;
 
+    public delegate void OnChoiseOptionCreated(StrChoiseOption choiseOption);
+    public event OnChoiseOptionCreated StrEditorChoiseOptionCreated;
+
+    public delegate StrChoiseOption OnChoiseOptionRequested(int choiseOptionIndex);
+    public event OnChoiseOptionRequested StrEditorChoiseOptionRequested;
+    
+ 
     public void EditorUpdated()
     {
         StrEditorUpdated?.Invoke();
-
     }
+    public void CreateChoiseOption(StrChoiseOption choiseOption)
+    {
+        StrEditorChoiseOptionCreated?.Invoke(choiseOption);
+            }
+   
+ 
 }
 
 namespace StorylineEditor
@@ -79,5 +93,13 @@ namespace StorylineEditor
     {
         public const string PreviewHolder = "previewHolder";
         public const string StatusLabel = "labelStatus";
+    }
+    public struct StrChoiseOption
+    {
+        public string CurrencyType;
+        public int CostValue;
+        public int JumpToActionID;
+        public int GivedItemID;
+        public string OptionText;
     }
 }

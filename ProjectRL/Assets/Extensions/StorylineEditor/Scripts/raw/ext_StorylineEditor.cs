@@ -70,10 +70,16 @@ public class ext_StorylineEditor : MonoBehaviour
     [HideInInspector] public bool _readyForNextAction;
     ///
     private StrEditorEvents _s_StrEvent;
-
+    private void OnEnable()
+    {
+        _s_StrEvent.StrEditorChoiseOptionCreated += OnStrChoiseOptionCreated;
+    }
+    private void OnStrChoiseOptionCreated(StrChoiseOption choiseOption)
+    {
+        CreateChoiseOption(choiseOption);
+    }
     public void Init()
     {
-
         _s_CharacterSp = GetComponent<ext_CharacterSp>();
         _s_StrEvent = GetComponent<StrEditorEvents>();
         _s_Tag = GetComponent<global_taglist>();
@@ -559,10 +565,15 @@ public class ext_StorylineEditor : MonoBehaviour
 
     // >> check class
 
-    public void CreateChoiseOption(string CurrencyType, int CostValue, int JumpToActionID, int GiveItemID, string OptionText)
+    public void CreateChoiseOption(StrChoiseOption choiseOption)
     {
-        int OptionNumber = _choiseOptions.Count + 1;
-        string option = OptionNumber.ToString() + _s_Tag._separator + CurrencyType + _s_Tag._separator + CostValue + _s_Tag._separator + JumpToActionID + _s_Tag._separator + GiveItemID + _s_Tag._separator + OptionText;
+        int optionNumber = _choiseOptions.Count + 1;
+        string currencyType = choiseOption.CurrencyType;
+        int costValue = choiseOption.CostValue;
+        int jumpToActionID = choiseOption.JumpToActionID;
+        int givedItemID = choiseOption.GivedItemID;
+        string optionText = choiseOption.OptionText;
+        string option = optionNumber.ToString() + _s_Tag._separator + currencyType + _s_Tag._separator + costValue + _s_Tag._separator + jumpToActionID + _s_Tag._separator + givedItemID + _s_Tag._separator + optionText;
         _choiseOptions.Add(option);
     }
     public string[] GetChoiseOption(int OptionID)
@@ -848,7 +859,6 @@ public class ext_StorylineEditor : MonoBehaviour
                 }
                 DestroyImmediate(tempObject);
                 CheckForExeptions();
-                tempObject = null;
             }
 
         }
@@ -870,5 +880,9 @@ public class ext_StorylineEditor : MonoBehaviour
                 }
             }
         }
+    }
+    private void OnDisable()
+    {
+        _s_StrEvent.StrEditorChoiseOptionCreated -= OnStrChoiseOptionCreated;
     }
 }

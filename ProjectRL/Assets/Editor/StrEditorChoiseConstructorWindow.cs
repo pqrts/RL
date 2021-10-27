@@ -10,20 +10,27 @@ using StorylineEditor;
 
 public class StrEditorChoiseConstructorWindow : EditorWindow
 {
+    private VisualElement _choiseConstructorMainVE;
+    private VisualTreeAsset _choiseConstructorVTAsset;
+
+    private VisualElement _choiseOptionListviewItemVE;
+    private VisualTreeAsset _choiseOptionListviewItemVTAsset;
+
     private ext_StorylineEditor _s_StorylineEditor;
     private StrEditorEvents _s_StrEvent;
     private int _costFieldValue;
     private string _optionTextFieldValue;
-    private int _jumToActionFieldValue;
+    private int _jumpToActionFieldValue;
     private int _itemIDFieldValue;
     private List<string> _currencyDropdownChoises = new List<string> { "Free", "Diamonds", "Hearts" };
 
+    private ListView _optionsListview;
     private TextField _costField;
     private TextField _jumpToActionField;
     private TextField _itemIDField;
     private TextField _optionTextField;
     private DropdownField _currencyDropdown;
-        
+
     public static StrEditorChoiseConstructorWindow ShowWindow()
     {
         StrEditorChoiseConstructorWindow window_choise = GetWindow<StrEditorChoiseConstructorWindow>();
@@ -45,79 +52,20 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         CreateGUI();
         Repaint();
     }
-        public void CreateGUI()
+    public void CreateGUI()
     {
+        if (InstantiateMainVisualElement())
+        {
+            if (InstatiateChoiseOptionsListviewItemVE())
+            {
+                InstatiateChoiseOptionsListview();
+            }
+        }
 
-        var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/choise_constructor.uxml");
-        VisualElement VTuxml = VT.Instantiate();
 
-        var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/ChoiseOptionTemplate.uxml");
-        VisualElement VTlistview_element = VTListview.Instantiate();
+
         /// optionslist setup
-        var items = new List<string>();
 
-        for (int i = 0; i < _s_StorylineEditor._choiseOptions.Count; i++)
-            if (_s_StorylineEditor._choiseOptions[i] != null)
-            {
-                items.Add(_s_StorylineEditor._choiseOptions[i]);
-            }
-        Func<VisualElement> makeItem = () => VTListview.CloneTree();
-
-        Label l_element_number = VTlistview_element.Q<VisualElement>("number") as Label;
-        Label l_element_status_number = VTlistview_element.Q<VisualElement>("status_number") as Label;
-
-        Label l_element_currency = VTlistview_element.Q<VisualElement>("currency_type") as Label;
-        Label l_element_status_currency = VTlistview_element.Q<VisualElement>("status_currency_type") as Label;
-
-        Label l_element_jump_to = VTlistview_element.Q<VisualElement>("jump_to") as Label;
-        Label l_element_status_jump_to = VTlistview_element.Q<VisualElement>("status_jump_to") as Label;
-
-        Label l_element_itemID = VTlistview_element.Q<VisualElement>("item_ID") as Label;
-        Label l_element_status_itemID = VTlistview_element.Q<VisualElement>("status_itemID") as Label;
-
-        Label l_element_status_opt_text = VTlistview_element.Q<VisualElement>("status_opt_text") as Label;
-
-
-        Action<VisualElement, int> bindItem = (e, i) =>
-        {
-            string[] _option = _s_StorylineEditor.GetChoiseOption(i);
-            foreach (string unit in _option)
-            {
-                Debug.Log(unit);
-            }
-
-            (e.Q<VisualElement>("number") as Label).text = "¹: ";
-            (e.Q<VisualElement>("status_number") as Label).text = _option[0];
-
-            (e.Q<VisualElement>("currency_type") as Label).text = "Currency type: ";
-            (e.Q<VisualElement>("status_currency_type") as Label).text = _option[1];
-
-            (e.Q<VisualElement>("cost") as Label).text = "Cost: ";
-            (e.Q<VisualElement>("status_cost") as Label).text = _option[2];
-
-            (e.Q<VisualElement>("jump_to") as Label).text = "Jump to: ";
-            (e.Q<VisualElement>("status_jump_to") as Label).text = _option[3];
-
-            (e.Q<VisualElement>("item_ID") as Label).text = "Item ID: ";
-            (e.Q<VisualElement>("status_itemID") as Label).text = _option[4];
-
-            (e.Q<VisualElement>("status_opt_text") as Label).text = _option[5];
-
-        };
-
-        const int itemHeight = 30;
-        var _listview_Options = new ListView(items, itemHeight, makeItem, bindItem);
-
-        _listview_Options.selectionType = SelectionType.Single;
-
-        _listview_Options.onItemsChosen += obj =>
-        {
-
-        };
-        _listview_Options.onSelectionChange += objects =>
-        {
-        };
-        _listview_Options.style.flexGrow = 1.0f;
 
         _costField = new TextField();
         _costField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SetValue(_costField.value, StrFieldType.CostField, true));
@@ -134,34 +82,34 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
 
         _currencyDropdown = new DropdownField("", _currencyDropdownChoises, 0);
 
-        Label _l_Options = VTuxml.Q<VisualElement>("options") as Label;
+        Label _l_Options = _choiseConstructorMainVE.Q<VisualElement>("options") as Label;
         _l_Options.text = "Options: ";
 
-        Label _l_Currency = VTuxml.Q<VisualElement>("currency") as Label;
+        Label _l_Currency = _choiseConstructorMainVE.Q<VisualElement>("currency") as Label;
         _l_Currency.text = "Currency type: ";
 
-        Label _l_Cost = VTuxml.Q<VisualElement>("cost") as Label;
+        Label _l_Cost = _choiseConstructorMainVE.Q<VisualElement>("cost") as Label;
         _l_Cost.text = "Cost: ";
 
-        Label _l_CostValue = VTuxml.Q<VisualElement>("cost_label") as Label;
+        Label _l_CostValue = _choiseConstructorMainVE.Q<VisualElement>("cost_label") as Label;
         _l_CostValue.text = "Cost: ";
 
-        Label _l_OptionText = VTuxml.Q<VisualElement>("opt_text") as Label;
+        Label _l_OptionText = _choiseConstructorMainVE.Q<VisualElement>("opt_text") as Label;
         _l_OptionText.text = "Text: ";
 
-        Label _l_JumpToAction = VTuxml.Q<VisualElement>("jump_to") as Label;
+        Label _l_JumpToAction = _choiseConstructorMainVE.Q<VisualElement>("jump_to") as Label;
         _l_JumpToAction.text = "Jump to action: ";
 
-        Label _l_JumpActionNumber = VTuxml.Q<VisualElement>("jump_label") as Label;
+        Label _l_JumpActionNumber = _choiseConstructorMainVE.Q<VisualElement>("jump_label") as Label;
         _l_JumpActionNumber.text = "Action ¹: ";
 
-        Label _l_GiveItem = VTuxml.Q<VisualElement>("give_item") as Label;
+        Label _l_GiveItem = _choiseConstructorMainVE.Q<VisualElement>("give_item") as Label;
         _l_GiveItem.text = "Give item: ";
 
-        Label _l_ItemID = VTuxml.Q<VisualElement>("give_label") as Label;
+        Label _l_ItemID = _choiseConstructorMainVE.Q<VisualElement>("give_label") as Label;
         _l_ItemID.text = "Item ID: ";
 
-        Label _l_EditingOptions = VTuxml.Q<VisualElement>("edit_opt") as Label;
+        Label _l_EditingOptions = _choiseConstructorMainVE.Q<VisualElement>("edit_opt") as Label;
         _l_EditingOptions.text = "Editing options: ";
 
         Button _b_AddOption = new Button(() =>
@@ -179,9 +127,9 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                if (_listview_Options.selectedItem != null)
+                if (_optionsListview.selectedItem != null)
                 {
-                    DeleteOption(_listview_Options.selectedIndex);
+                    DeleteOption(_optionsListview.selectedIndex);
                     _s_StrEvent.EditorUpdated();
                 }
                 else
@@ -207,15 +155,15 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                if (_listview_Options.selectedItem != null)
+                if (_optionsListview.selectedItem != null)
                 {
-                    int selected_option_id = _listview_Options.selectedIndex;
+                    int selected_option_id = _optionsListview.selectedIndex;
 
                     if (selected_option_id != 0)
                     {
                         _s_StorylineEditor.ChangeChoiseOptionPosition(selected_option_id, StrListDirection.Up);
-                        _listview_Options.selectedIndex = selected_option_id - 1;
-                                           }
+                        _optionsListview.selectedIndex = selected_option_id - 1;
+                    }
                     else
                     {
                         EditorUtility.DisplayDialog("Notice", "Option already on top", "OK");
@@ -234,14 +182,14 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                if (_listview_Options.selectedItem != null)
+                if (_optionsListview.selectedItem != null)
                 {
-                    int selected_option_id = _listview_Options.selectedIndex;
+                    int selected_option_id = _optionsListview.selectedIndex;
                     if ((selected_option_id + 1) != _s_StorylineEditor._choiseOptions.Count)
                     {
                         _s_StorylineEditor.ChangeChoiseOptionPosition(selected_option_id, StrListDirection.Down);
 
-                        _listview_Options.selectedIndex = selected_option_id + 1;
+                        _optionsListview.selectedIndex = selected_option_id + 1;
                     }
                     else
                     {
@@ -258,21 +206,94 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         });
         _b_MoveOptionDown.text = "Move down";
 
-        VTuxml.Q<VisualElement>("buttonHolder1").Add(_b_AddOption);
-        VTuxml.Q<VisualElement>("buttonHolder2").Add(_b_DeleteOption);
-        VTuxml.Q<VisualElement>("buttonHolder3").Add(_b_AddOptionToAction);
-        VTuxml.Q<VisualElement>("buttonHolder4").Add(_b_MoveOptionUp);
-        VTuxml.Q<VisualElement>("buttonHolder5").Add(_b_MoveOptionDown);
-        VTuxml.Q<VisualElement>("cost_fieldHolder").Add(_costField);
-        VTuxml.Q<VisualElement>("options_text_Holder").Add(_optionTextField);
-        VTuxml.Q<VisualElement>("jump_fieldHolder").Add(_jumpToActionField);
-        VTuxml.Q<VisualElement>("give_fieldHolder").Add(_itemIDField);
-        VTuxml.Q<VisualElement>("currency_DropHolder").Add(_currencyDropdown);
-        VTuxml.Q<VisualElement>("options_list_Holder").Add(_listview_Options);
-        rootVisualElement.Add(VTuxml);
-       
-    }
+        _choiseConstructorMainVE.Q<VisualElement>("buttonHolder1").Add(_b_AddOption);
+        _choiseConstructorMainVE.Q<VisualElement>("buttonHolder2").Add(_b_DeleteOption);
+        _choiseConstructorMainVE.Q<VisualElement>("buttonHolder3").Add(_b_AddOptionToAction);
+        _choiseConstructorMainVE.Q<VisualElement>("buttonHolder4").Add(_b_MoveOptionUp);
+        _choiseConstructorMainVE.Q<VisualElement>("buttonHolder5").Add(_b_MoveOptionDown);
+        _choiseConstructorMainVE.Q<VisualElement>("cost_fieldHolder").Add(_costField);
+        _choiseConstructorMainVE.Q<VisualElement>("options_text_Holder").Add(_optionTextField);
+        _choiseConstructorMainVE.Q<VisualElement>("jump_fieldHolder").Add(_jumpToActionField);
+        _choiseConstructorMainVE.Q<VisualElement>("give_fieldHolder").Add(_itemIDField);
+        _choiseConstructorMainVE.Q<VisualElement>("currency_DropHolder").Add(_currencyDropdown);
+        _choiseConstructorMainVE.Q<VisualElement>("options_list_Holder").Add(_optionsListview);
+        rootVisualElement.Add(_choiseConstructorMainVE);
 
+    }
+    private Boolean InstantiateMainVisualElement()
+    {
+        try
+        {
+            _choiseConstructorVTAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Extensions/StorylineEditor/UXML/ChoiseConstructorWindow.uxml");
+            _choiseConstructorMainVE = _choiseConstructorVTAsset.Instantiate();
+            rootVisualElement.Add(_choiseConstructorMainVE);
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex);
+            return false;
+        }
+        return true;
+    }
+    private Boolean InstatiateChoiseOptionsListviewItemVE()
+    {
+        try
+        {
+            _choiseOptionListviewItemVTAsset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/ChoiseOptionTemplate.uxml");
+            _choiseOptionListviewItemVE = _choiseOptionListviewItemVTAsset.Instantiate();
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex);
+            return false;
+        }
+        return true;
+    }
+    private void InstatiateChoiseOptionsListview()
+    {
+        var choiseOptionsListviewItems = new List<string>();
+
+        for (int i = 0; i < _s_StorylineEditor._choiseOptions.Count; i++)
+            if (_s_StorylineEditor._choiseOptions[i] != null)
+            {
+                choiseOptionsListviewItems.Add(_s_StorylineEditor._choiseOptions[i]);
+            }
+        Func<VisualElement> makeItem = () => _choiseOptionListviewItemVTAsset.CloneTree();
+
+        Action<VisualElement, int> bindItem = (e, i) =>
+        {
+            string[] _option = _s_StorylineEditor.GetChoiseOption(i);
+
+            (e.Q<VisualElement>("number") as Label).text = "¹: ";
+            (e.Q<VisualElement>("status_number") as Label).text = _option[0];
+
+            (e.Q<VisualElement>("currency_type") as Label).text = "Currency type: ";
+            (e.Q<VisualElement>("status_currency_type") as Label).text = _option[1];
+
+            (e.Q<VisualElement>("cost") as Label).text = "Cost: ";
+            (e.Q<VisualElement>("status_cost") as Label).text = _option[2];
+
+            (e.Q<VisualElement>("jump_to") as Label).text = "Jump to: ";
+            (e.Q<VisualElement>("status_jump_to") as Label).text = _option[3];
+
+            (e.Q<VisualElement>("item_ID") as Label).text = "Item ID: ";
+            (e.Q<VisualElement>("status_itemID") as Label).text = _option[4];
+
+            (e.Q<VisualElement>("status_opt_text") as Label).text = _option[5];
+
+        };
+        const int ItemHeight = 30;
+        _optionsListview = new ListView(choiseOptionsListviewItems, ItemHeight, makeItem, bindItem);
+        _optionsListview.selectionType = SelectionType.Single;
+        _optionsListview.onItemsChosen += obj =>
+        {
+
+        };
+        _optionsListview.onSelectionChange += objects =>
+        {
+        };
+        _optionsListview.style.flexGrow = 1.0f;
+    }
     private void SetValue(string FieldValue, StrFieldType FieldType, bool NeedParsing)
     {
         int out_value = 0;
@@ -296,7 +317,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                 {
                     if (out_value > 0 && out_value <= _s_StorylineEditor._actionsTotalID)
                     {
-                        _jumToActionFieldValue = out_value;
+                        _jumpToActionFieldValue = out_value;
                     }
                     else
                     {
@@ -341,13 +362,17 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
             {
                 _costFieldValue = 0;
                 _costField.value = "0";
-                _s_StorylineEditor.CreateChoiseOption(_currencyDropdown.value, _costFieldValue, _jumToActionFieldValue, _itemIDFieldValue, _optionTextFieldValue);
+                StrChoiseOption choiseOption = SetChoiseOptionValues();
+                _s_StrEvent.CreateChoiseOption(choiseOption);
+                _s_StrEvent.EditorUpdated();
             }
             else
             {
                 if (_costFieldValue != 0)
                 {
-                    _s_StorylineEditor.CreateChoiseOption(_currencyDropdown.value, _costFieldValue, _jumToActionFieldValue, _itemIDFieldValue, _optionTextFieldValue);
+                    StrChoiseOption choiseOption = SetChoiseOptionValues();
+                    _s_StrEvent.CreateChoiseOption(choiseOption);
+                    _s_StrEvent.EditorUpdated();
                 }
                 else
                 {
@@ -359,6 +384,16 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             EditorUtility.DisplayDialog("Notice", "Fill all fields", "OK");
         }
+    }
+    private StrChoiseOption SetChoiseOptionValues()
+    {
+        StrChoiseOption option = new StrChoiseOption();
+        option.CurrencyType = _currencyDropdown.value;
+        option.CostValue = _costFieldValue;
+        option.JumpToActionID = _jumpToActionFieldValue;
+        option.GivedItemID = _itemIDFieldValue;
+        option.OptionText = _optionTextFieldValue;
+        return option;
     }
     private void DeleteOption(int SelectedOptionID)
     {
