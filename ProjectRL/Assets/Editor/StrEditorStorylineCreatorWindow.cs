@@ -49,7 +49,7 @@ public class StrEditorStorylineCreatorWindow : EditorWindow
             {
                 string file_name = "storyline_" + number.value + "_" + "part_" + part.value + ".str";
                 string s_user = t_user.value;
-                ext_StorylineEditor s_target = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+                StrEditorGodObject s_target = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
 
                 if (!s_target.CheckStorylineExistence(file_name))
                 {

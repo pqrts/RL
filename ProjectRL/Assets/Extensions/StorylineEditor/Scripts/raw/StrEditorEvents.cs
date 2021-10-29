@@ -3,39 +3,60 @@ using System.Collections.Generic;
 using UnityEngine;
 using StorylineEditor;
 using System;
-
-public class StrEditorEvents : MonoBehaviour
+[RequireComponent(typeof(StrEditorGodObject))]
+[ExecuteInEditMode]
+public class StrEditorEvents : MonoBehaviour, IStrEventSystem
 {
     public delegate void OnStrEditorUpdated();
     public event OnStrEditorUpdated StrEditorUpdated;
-
-    public delegate void OnChoiseOptionCreated(StrChoiseOption choiseOption);
-    public event OnChoiseOptionCreated StrEditorChoiseOptionCreated;
-
-    public delegate StrChoiseOption OnChoiseOptionRequested(int choiseOptionIndex);
-    public event OnChoiseOptionRequested StrEditorChoiseOptionRequested;
-    
- 
+    public delegate void OnStrEditorRootObjectRequested();
+    public event OnStrEditorRootObjectRequested StrEditorRootObjectRequested;
+    public delegate void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject);
+    public event OnStrEditorRootObjectDeclared StrEditorRootObjectDeclared;
     public void EditorUpdated()
     {
         StrEditorUpdated?.Invoke();
     }
-    public void CreateChoiseOption(StrChoiseOption choiseOption)
+    public void RequestStrEditorRootObject()
     {
-        StrEditorChoiseOptionCreated?.Invoke(choiseOption);
-            }
-   
- 
+        StrEditorRootObjectRequested?.Invoke();
+    }
+    public void DeclareStrEditorRootObject(StrEditorGodObject StrEditorRootObject)
+    {
+        if (StrEditorRootObject is IStrEditorRoot)
+        {
+            StrEditorRootObjectDeclared?.Invoke(StrEditorRootObject);
+        }
+        else
+        {
+            throw new ArgumentException("'StrEditorRootObject' must implement the 'IStrEditor' interface");
+        }
+    }
 }
 
 namespace StorylineEditor
 {
+
+    interface IStrEditorRoot
+    {
+        public Boolean ValidateStoryline();
+
+        public List<string> GetChoiseOptionsList();
+        public void CreateChoiseOption(StrChoiseOption choiseOption);
+        public void DeleteChoiseOption(int optionIndex);
+        public void ChangeChoiseOptionPosition(int optionIndex, StrListDirection direction);
+        public void RenumberChoiseOptionsList();
+    }
+    public interface IStrEventSystem
+    {
+
+        public void DeclareStrEditorRootObject(StrEditorGodObject StrEditorRootObject);
+    }
+
     public class StrPreviewElementType
     {
         private string _typeIndex;
         private string _typeAssociatedFolder;
-
-
         public StrPreviewElementType(string index, string associatedFolder)
         {
             _typeIndex = index;
@@ -87,6 +108,7 @@ namespace StorylineEditor
     public struct StrConstantValues
     {
         public const string PlaceholderText = "----";
+        public const int StandartListviewItemHeight = 30;
     }
 
     public struct StrUXMLElementsNames

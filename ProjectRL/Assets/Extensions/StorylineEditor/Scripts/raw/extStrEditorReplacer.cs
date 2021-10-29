@@ -10,7 +10,7 @@ using System.IO;
 public class extStrEditorReplacer : MonoBehaviour
 {
     global_taglist _s_Tag;
-    ext_StorylineEditor _s_StorylineEditor;
+    StrEditorGodObject _s_StorylineEditor;
     private int _decomposedStepsCount;
 
     public List<string> _beforeSelectedData = new List<string>();
@@ -21,7 +21,7 @@ public class extStrEditorReplacer : MonoBehaviour
 
     public Boolean GetScripts()
     {
-        _s_StorylineEditor = GetComponent<ext_StorylineEditor>();
+        _s_StorylineEditor = GetComponent<StrEditorGodObject>();
         _s_Tag = GetComponent<global_taglist>();
         return true;
     }

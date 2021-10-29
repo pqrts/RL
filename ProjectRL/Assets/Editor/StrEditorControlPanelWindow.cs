@@ -29,7 +29,7 @@ public class StrEditorControlPanelWindow : EditorWindow
     private Label _l_Status5;
     private Label _l_Status6;
 
-    private ext_StorylineEditor _s_StorylineEditor;
+    private StrEditorGodObject _s_StorylineEditor;
     private StrEditorEvents _s_StrEvent;
 
     public static StrEditorControlPanelWindow ShowWindow()
@@ -44,7 +44,7 @@ public class StrEditorControlPanelWindow : EditorWindow
     private void OnEnable()
     {
         _s_StrEvent = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
-        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StorylineEditor = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
         _s_StrEvent.StrEditorUpdated += OnStrEdUpdated;
     }
     private void OnStrEdUpdated()

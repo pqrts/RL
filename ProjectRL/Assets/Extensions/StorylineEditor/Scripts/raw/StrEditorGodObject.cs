@@ -8,8 +8,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [ExecuteInEditMode]
-public class ext_StorylineEditor : MonoBehaviour
+[RequireComponent(typeof(StrEditorEvents))]
+public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
 {
+    private bool _isStrEditorRootObjectInitialized;
     public Sprite _tempCharIcon;
     public GameObject _canvas;
     [SerializeField] private int _refereceResolutionWidht;
@@ -19,7 +21,7 @@ public class ext_StorylineEditor : MonoBehaviour
     public int _stepID;
     [SerializeField] private int _assemblyStagesCount = 4;
     //scripts
-    global_taglist _s_Tag;
+    public global_taglist _s_Tag;
     public global_folders _s_Folder;
     extStrEditorReplacer _s_replacer;
     ext_Storyline_exeptions _s_exeption;
@@ -66,17 +68,19 @@ public class ext_StorylineEditor : MonoBehaviour
     [HideInInspector] public RectTransform _CGRectTransform;
     [HideInInspector] public float _leftCGEdgePosition;
     [HideInInspector] public float _rightCGEdgePosition;
-    ///?
     [HideInInspector] public bool _readyForNextAction;
-    ///
+
     private StrEditorEvents _s_StrEvent;
     private void OnEnable()
     {
-        _s_StrEvent.StrEditorChoiseOptionCreated += OnStrChoiseOptionCreated;
+        _s_StrEvent.StrEditorRootObjectRequested += OnStrEditorRootObjectRequested;
     }
-    private void OnStrChoiseOptionCreated(StrChoiseOption choiseOption)
+    private void OnStrEditorRootObjectRequested()
     {
-        CreateChoiseOption(choiseOption);
+        if (_isStrEditorRootObjectInitialized == true)
+        {
+            _s_StrEvent.DeclareStrEditorRootObject(this);
+        }
     }
     public void Init()
     {
@@ -90,14 +94,17 @@ public class ext_StorylineEditor : MonoBehaviour
         if (_s_Folder.Setup_folders() && _s_Tag.Setup_tags() && GetCGPositionLimits() && _s_replacer.GetScripts())
         {
             _initStatus = "successful";
+            _isStrEditorRootObjectInitialized = true;
             _s_StrEvent.EditorUpdated();
         }
         else
         {
+            _isStrEditorRootObjectInitialized = false;
             _initStatus = "failed";
         }
+
     }
-    Boolean GetCGPositionLimits()
+    private Boolean GetCGPositionLimits()
     {
         float CGWidht = _CGRectTransform.rect.width;
         _leftCameraBorderPosition = 0 - (_refereceResolutionWidht / 2);
@@ -576,31 +583,30 @@ public class ext_StorylineEditor : MonoBehaviour
         string option = optionNumber.ToString() + _s_Tag._separator + currencyType + _s_Tag._separator + costValue + _s_Tag._separator + jumpToActionID + _s_Tag._separator + givedItemID + _s_Tag._separator + optionText;
         _choiseOptions.Add(option);
     }
-    public string[] GetChoiseOption(int OptionID)
+    public List<string> GetChoiseOptionsList()
     {
-        string[] units = _choiseOptions[OptionID].Split(_s_Tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        return units;
+        return _choiseOptions;
     }
-    public void DeleteChoiseOption(int option_id)
+    public void DeleteChoiseOption(int optionIndex)
     {
-        _choiseOptions.Remove(_choiseOptions[option_id]);
+        _choiseOptions.Remove(_choiseOptions[optionIndex]);
         RenumberChoiseOptionsList();
     }
-    public void ChangeChoiseOptionPosition(int OptionID, StrListDirection Direction)
+    public void ChangeChoiseOptionPosition(int optionIndex, StrListDirection direction)
     {
         string ReplacedOption = null;
         int ReplacedID = 0;
-        if (Direction == StrListDirection.Up)
+        if (direction == StrListDirection.Up)
         {
-            ReplacedID = OptionID - 1;
+            ReplacedID = optionIndex - 1;
         }
-        if (Direction == StrListDirection.Down)
+        if (direction == StrListDirection.Down)
         {
-            ReplacedID = OptionID + 1;
+            ReplacedID = optionIndex + 1;
         }
         ReplacedOption = _choiseOptions[ReplacedID];
-        _choiseOptions[ReplacedID] = _choiseOptions[OptionID];
-        _choiseOptions[OptionID] = ReplacedOption;
+        _choiseOptions[ReplacedID] = _choiseOptions[optionIndex];
+        _choiseOptions[optionIndex] = ReplacedOption;
         RenumberChoiseOptionsList();
 
     }
@@ -763,6 +769,14 @@ public class ext_StorylineEditor : MonoBehaviour
         }
         return true;
     }
+    public Boolean ValidateStoryline()
+    {
+        if (_StorylineName == "" || _StorylineName != null)
+        {
+            return false;
+        }
+        return true;
+    }
     public void SetAuthor(string AuthorObjectName)
     {
         string temp = AuthorObjectName.ToString().Replace(" (UnityEngine.GameObject)", "");
@@ -883,6 +897,7 @@ public class ext_StorylineEditor : MonoBehaviour
     }
     private void OnDisable()
     {
-        _s_StrEvent.StrEditorChoiseOptionCreated -= OnStrChoiseOptionCreated;
+
+
     }
 }

@@ -28,7 +28,7 @@ public class StrEditorMainWindow : EditorWindow
     private RectTransform _SelectedCharacterRectTransform;
 
     private StrEditorEvents _s_StrEvent;
-    private ext_StorylineEditor _s_StorylineEditor;
+    private StrEditorGodObject _s_StorylineEditor;
 
     [MenuItem("Storyline Editor/Open")]
     public static StrEditorMainWindow ShowWindow()
@@ -42,7 +42,7 @@ public class StrEditorMainWindow : EditorWindow
     void OnEnable()
     {
         _s_StrEvent = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
-        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StorylineEditor = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
         _s_StrEvent.StrEditorUpdated += OnStrEdUpdated;
         if (_s_StorylineEditor != null)
         {

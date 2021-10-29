@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 
 public class StrEditorCharactersListWindow : EditorWindow
 {
-    private ext_StorylineEditor _s_StorylineEditor;
+    private StrEditorGodObject _s_StorylineEditor;
     private StrEditorEvents _s_StrEvent;
     private Sprite _previewBody;
     private Sprite _previewHaircut;
@@ -28,13 +28,12 @@ public class StrEditorCharactersListWindow : EditorWindow
     private void OnEnable()
     {
         _s_StrEvent = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
-        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StorylineEditor = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
         _s_StrEvent.StrEditorUpdated += OnStrEdUpdated;
     }
     private void OnStrEdUpdated()
     {
         CreateGUI();
-        Repaint();
     }
 
     private void CreateGUI()

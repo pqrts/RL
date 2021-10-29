@@ -10,7 +10,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
 {
     private VisualElement _characterConstructorMainVE;
     private VisualTreeAsset _characterConstructorVTAsset;
-    private ext_StorylineEditor _s_StorylineEditor;
+    private StrEditorGodObject _s_StorylineEditor;
     private TextField _techNameField;
     private TextField _runtimeNameField;
     private TextField _characterDescriptionField;
@@ -55,7 +55,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     }
     private void OnEnable()
     {
-        _s_StorylineEditor = (ext_StorylineEditor)FindObjectOfType(typeof(ext_StorylineEditor));
+        _s_StorylineEditor = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
         _s_StrEvent = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
         _s_StrEvent.StrEditorUpdated += OnStrEditorUpdated;
     }
@@ -65,20 +65,18 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     }
     private void CreateGUI()
     {
-        if (InstantiateMainVisualElement())
-        {
-            InstatiateTextFields();
-            RegisterTextFieldsCallback();
-            InstatiateButtons();
-            SetupRequiredLabelsDictionaries();
-            SetupRequiredPreviewElementsDictionary();
-            SetupPrevievElementsFoldersPaths();
-            SetupPreview();
-            SetPreviewStatusLabelsValues();
-            AddInstatiatedUIElementsToMainVE();
-        }
+        InstantiateMainVisualElement();
+        InstatiateTextFields();
+        RegisterTextFieldsCallback();
+        InstatiateButtons();
+        SetupRequiredLabelsDictionaries();
+        SetupRequiredPreviewElementsDictionary();
+        SetupPrevievElementsFoldersPaths();
+        SetupPreview();
+        SetPreviewStatusLabelsValues();
+        AddInstatiatedUIElementsToMainVE();
     }
-    private Boolean InstantiateMainVisualElement()
+    private void InstantiateMainVisualElement()
     {
         try
         {
@@ -89,9 +87,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         catch (Exception ex)
         {
             Debug.Log(ex);
-            return false;
         }
-        return true;
     }
     private void InstatiateTextFields()
     {
