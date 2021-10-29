@@ -14,16 +14,13 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     private TextField _techNameField;
     private TextField _runtimeNameField;
     private TextField _characterDescriptionField;
-
     private Sprite _previewBody;
     private Sprite _previewHaircut;
     private Sprite _previewClothes;
     private Sprite _previewMakeup;
-
     private string _runtimeNameFieldValue;
     private string _techNameFieldValue;
     private string _characterDescriptionFieldValue;
-
     private Label _statusTechNameLabel;
     private Label _statusRuntimeNameLabel;
     private Label _statusCharacterDescriptionLabel;
@@ -31,13 +28,11 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     private Label _statusClothesLabel;
     private Label _statusHaircutLabel;
     private Label _statusMakeupLabel;
-
     private Button _selectBodyButton;
     private Button _selectClothesButton;
     private Button _selectHaircutButton;
     private Button _selectMakeupButton;
     private Button _exportToFileButton;
-
     private static List<string> _characterComponentsToFile = new List<string>();
     private Dictionary<StrFieldType, Label> _associatedWithFieldsStatusLabels = new Dictionary<StrFieldType, Label>();
     private Dictionary<StrPreviewElementType, Sprite> _previewElements = new Dictionary<StrPreviewElementType, Sprite>();
@@ -109,30 +104,10 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     {
         if (ValidateStoryline())
         {
-            _selectBodyButton = new Button(() =>
-            {
-                OpenElementFolderInFilePanel(StrPreviewElementType.Body);
-            });
-            _selectBodyButton.text = "Select";
-
-            _selectClothesButton = new Button(() =>
-            {
-                OpenElementFolderInFilePanel(StrPreviewElementType.Clothes);
-            });
-            _selectClothesButton.text = "Select";
-
-            _selectHaircutButton = new Button(() =>
-            {
-                OpenElementFolderInFilePanel(StrPreviewElementType.Haircut);
-
-            });
-            _selectHaircutButton.text = "Select";
-
-            _selectMakeupButton = new Button(() =>
-            {
-                OpenElementFolderInFilePanel(StrPreviewElementType.Makeup);
-            });
-            _selectMakeupButton.text = "Select";
+            _selectBodyButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Body));
+            _selectClothesButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Clothes));
+            _selectHaircutButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Haircut));
+            _selectMakeupButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Makeup));
             _exportToFileButton = new Button(() =>
             {
                 if (EditorUtility.DisplayDialog("Notice", " Are you sure about this?", "OK", "Cancel"))
@@ -141,6 +116,10 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
                     _s_StrEvent.EditorUpdated();
                 }
             });
+            _selectBodyButton.text = "Select";
+            _selectClothesButton.text = "Select";
+            _selectHaircutButton.text = "Select";
+            _selectMakeupButton.text = "Select";
             _exportToFileButton.text = "Export to file";
         }
     }
@@ -247,11 +226,9 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     {
         if (componentPath.Length != 0)
         {
-            string previewComponentName;
-            string previewComponentResourcesPath;
             string removedFolder = componentType.GetFieldTypeAssociatedFolder();
-            previewComponentName = ÑomposePreviewComponentName(componentPath, removedFolder);
-            previewComponentResourcesPath = ÑomposePreviewComponentResourcesPath(componentPath);
+            string previewComponentName = ÑomposePreviewComponentName(componentPath, removedFolder);
+            string previewComponentResourcesPath = ÑomposePreviewComponentResourcesPath(componentPath);
             _previewElements[componentType] = CreatePreviewComponent(previewComponentResourcesPath, previewComponentName);
             CreateGUI();
         }
@@ -349,6 +326,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         }
         return true;
     }
+ 
     private void OnDisable()
     {
         _s_StrEvent.StrEditorUpdated -= OnStrEditorUpdated;

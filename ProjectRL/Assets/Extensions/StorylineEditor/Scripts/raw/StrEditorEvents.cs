@@ -40,7 +40,6 @@ namespace StorylineEditor
     interface IStrEditorRoot
     {
         public Boolean ValidateStoryline();
-
         public List<string> GetChoiseOptionsList();
         public void CreateChoiseOption(StrChoiseOption choiseOption);
         public void DeleteChoiseOption(int optionIndex);

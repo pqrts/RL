@@ -7,7 +7,6 @@ using UnityEditor;
 using System;
 using StorylineEditor;
 
-
 public class StrEditorChoiseConstructorWindow : EditorWindow
 {
     private List<string> _choiseOptions = new List<string>();
@@ -61,7 +60,6 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
             throw new ArgumentException("'StrEditorEvents' must implement the 'IStrEventSystem' interface");
         }
     }
-
     private void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject)
     {
         StrEditorRoot = StrEditorRootObject;
@@ -130,41 +128,11 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     {
         if (ValidateStoryline())
         {
-            _addOptionButton = new Button(() =>
-            {
-                CreateOption();
-                StrEvents.EditorUpdated();
-            });
-
-            _deleteOptionButton = new Button(() =>
-            {
-                if (_optionsListview.selectedItem != null)
-                {
-                    DeleteOption(_optionsListview.selectedIndex);
-                    StrEvents.EditorUpdated();
-                }
-                else
-                {
-                    EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
-                }
-            });
-
-            _addOptionToActionButton = new Button(() =>
-            {
-                StrEvents.EditorUpdated();
-            });
-
-            _moveOptionUpButton = new Button(() =>
-            {
-                MoveChioseOption(StrListDirection.Up);
-                StrEvents.EditorUpdated();
-            });
-
-            _moveOptionDownButton = new Button(() =>
-            {
-                MoveChioseOption(StrListDirection.Down);
-                StrEvents.EditorUpdated();
-            });
+            _addOptionButton = new Button(() => CreateOption());
+            _deleteOptionButton = new Button(() => DeleteOption());
+            _addOptionToActionButton = new Button(() => StrEvents.EditorUpdated());
+            _moveOptionUpButton = new Button(() => MoveChoiseOption(StrListDirection.Up));
+            _moveOptionDownButton = new Button(() => MoveChoiseOption(StrListDirection.Down));
             _addOptionButton.text = "Add option";
             _deleteOptionButton.text = "Delete selected option";
             _addOptionToActionButton.text = "Add choise to Action";
@@ -217,14 +185,14 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     private void SetupUIElementsOfChoiseOptionTemplate(VisualElement choiseOptionTemplateVE, string[] decomposedOption)
     {
         (choiseOptionTemplateVE.Q<VisualElement>("number") as Label).text = "¹: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("status_number") as Label).text = decomposedOption[0];
         (choiseOptionTemplateVE.Q<VisualElement>("currency_type") as Label).text = "Currency type: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("status_currency_type") as Label).text = decomposedOption[1];
         (choiseOptionTemplateVE.Q<VisualElement>("cost") as Label).text = "Cost: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("status_cost") as Label).text = decomposedOption[2];
         (choiseOptionTemplateVE.Q<VisualElement>("jump_to") as Label).text = "Jump to: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("status_jump_to") as Label).text = decomposedOption[3];
         (choiseOptionTemplateVE.Q<VisualElement>("item_ID") as Label).text = "Item ID: ";
+        (choiseOptionTemplateVE.Q<VisualElement>("status_number") as Label).text = decomposedOption[0];
+        (choiseOptionTemplateVE.Q<VisualElement>("status_currency_type") as Label).text = decomposedOption[1];
+        (choiseOptionTemplateVE.Q<VisualElement>("status_cost") as Label).text = decomposedOption[2];
+        (choiseOptionTemplateVE.Q<VisualElement>("status_jump_to") as Label).text = decomposedOption[3];
         (choiseOptionTemplateVE.Q<VisualElement>("status_itemID") as Label).text = decomposedOption[4];
         (choiseOptionTemplateVE.Q<VisualElement>("status_opt_text") as Label).text = decomposedOption[5];
     }
@@ -331,6 +299,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             EditorUtility.DisplayDialog("Notice", "Fill all fields", "OK");
         }
+        StrEvents.EditorUpdated();
     }
     private StrChoiseOption SetChoiseOptionValues()
     {
@@ -342,11 +311,19 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         option.OptionText = _optionTextFieldValue;
         return option;
     }
-    private void DeleteOption(int SelectedOptionID)
+    private void DeleteOption()
     {
-        StrEditorRoot.DeleteChoiseOption(SelectedOptionID);
+        if (_optionsListview.selectedItem != null)
+        {
+            StrEditorRoot.DeleteChoiseOption(_optionsListview.selectedIndex);
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
+        }
+        StrEvents.EditorUpdated();
     }
-    private void MoveChioseOption(StrListDirection moveDirection)
+    private void MoveChoiseOption(StrListDirection moveDirection)
     {
         if (_optionsListview.selectedItem != null)
         {
@@ -375,12 +352,12 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                     EditorUtility.DisplayDialog("Notice", "Option already on top", "OK");
                 }
             }
-
         }
         else
         {
             EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
         }
+        StrEvents.EditorUpdated();
     }
     private Boolean ValidateStoryline()
     {
@@ -398,6 +375,6 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     private void OnDisable()
     {
         StrEvents.StrEditorUpdated -= OnStrEdUpdated;
-  
+
     }
 }
