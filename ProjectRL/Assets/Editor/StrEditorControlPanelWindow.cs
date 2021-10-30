@@ -50,7 +50,7 @@ public class StrEditorControlPanelWindow : EditorWindow
     private void OnStrEdUpdated()
     {
      
-        _l_ActionsTotal.text = "Total actions: " + _s_StorylineEditor._actionsTotalID;
+        _l_ActionsTotal.text = "Total actions: " + _s_StorylineEditor._totalActions;
         _l_ActionCurrent.text = "Current action: " + _s_StorylineEditor._actionID;
         _l_ActionNumber.text = "Action ¹: ";
         _l_Info.text = "Info";
@@ -102,7 +102,7 @@ public class StrEditorControlPanelWindow : EditorWindow
 
         _l_Status5.text = _s_StorylineEditor._phraseAuthor;
 
-        if (_s_StorylineEditor._stepsTotal.Count != 0)
+        if (_s_StorylineEditor._totalStepsCount.Count != 0)
         {
             _l_Status6.text = "Done";
         }

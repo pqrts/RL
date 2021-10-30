@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StorylineEditor;
 using System;
+using UnityEngine.UI;
 [RequireComponent(typeof(StrEditorGodObject))]
 [ExecuteInEditMode]
 public class StrEditorEvents : MonoBehaviour, IStrEventSystem
@@ -107,7 +108,10 @@ namespace StorylineEditor
     public struct StrConstantValues
     {
         public const string PlaceholderText = "----";
+        public const string StrFileStepGap = "          ";
         public const int StandartListviewItemHeight = 30;
+        public const int StepComposeStagesCount = 5;
+        public const int ActionComposeStagesCount = 4;
     }
 
     public struct StrUXMLElementsNames
@@ -123,4 +127,22 @@ namespace StorylineEditor
         public int GivedItemID;
         public string OptionText;
     }
+    public struct StrUncomposedStorylineParameters
+    {
+        public string User;
+        public float Version;
+        public int ActionID;
+        public int StepID;
+        public string Phrase;
+        public string PhraseAuthor;
+        public Image CGImage;
+        public RectTransform CGRectTransform;
+        public List<GameObject> ActiveCharacters;
+        public List<RectTransform> ActiveRectTransforms;
+        public List<string> ActivatedCharacters;
+        public List<string> InactivatedCharacters;
+        public List<string> StepsOfCurrentAction;
+        public List<GameObject> RequiredObjects;
+        public List<Sprite> RequiredCG;
+        }
 }

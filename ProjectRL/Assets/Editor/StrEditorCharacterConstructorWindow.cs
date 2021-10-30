@@ -171,10 +171,10 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     {
         if (_associatedWithPreviewElementsFoldersPaths.Count == 0)
         {
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Body, _s_StorylineEditor._s_Folder._body);
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Clothes, _s_StorylineEditor._s_Folder._clothes);
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Haircut, _s_StorylineEditor._s_Folder._haircut);
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Makeup, _s_StorylineEditor._s_Folder._makeup);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Body, _s_StorylineEditor._folders._body);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Clothes, _s_StorylineEditor._folders._clothes);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Haircut, _s_StorylineEditor._folders._haircut);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Makeup, _s_StorylineEditor._folders._makeup);
 
         }
     }
@@ -239,7 +239,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     }
     private string ÑomposePreviewComponentName(string componentPath, string removedFolder)
     {
-        string temp = componentPath.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+        string temp = componentPath.Replace(_s_StorylineEditor._folders._root + "/Resources/", "");
         string temp2 = temp.Replace(".png", "");
         string ToReplace = "Gamedata/Textures/" + removedFolder + "/";
         string componentName = temp2.Replace(ToReplace, "");
@@ -247,7 +247,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     }
     private string ÑomposePreviewComponentResourcesPath(string componentPath)
     {
-        string temp = componentPath.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+        string temp = componentPath.Replace(_s_StorylineEditor._folders._root + "/Resources/", "");
         string resourcesPath = temp.Replace(".png", "");
         return resourcesPath;
     }
@@ -313,7 +313,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         try
         {
             string fileName = _characterComponentsToFile[0] + ".char";
-            StreamWriter SW = new StreamWriter(_s_StorylineEditor._s_Folder._characters + "/" + fileName, true, encoding: System.Text.Encoding.Unicode);
+            StreamWriter SW = new StreamWriter(_s_StorylineEditor._folders._characters + "/" + fileName, true, encoding: System.Text.Encoding.Unicode);
             foreach (string unit in _characterComponentsToFile)
             {
                 SW.WriteLine(unit);

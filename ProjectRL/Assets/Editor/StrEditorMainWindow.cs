@@ -24,10 +24,10 @@ public class StrEditorMainWindow : EditorWindow
     private string _characterSprite;
     private string _storylineTitle;
     private string _phraseFieldValue;
-     
+
     private RectTransform _SelectedCharacterRectTransform;
 
-    private StrEditorEvents _s_StrEvent;
+    private StrEditorEvents _StrEvents;
     private StrEditorGodObject _s_StorylineEditor;
 
     [MenuItem("Storyline Editor/Open")]
@@ -41,9 +41,9 @@ public class StrEditorMainWindow : EditorWindow
     }
     void OnEnable()
     {
-        _s_StrEvent = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
+        _StrEvents = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
         _s_StorylineEditor = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
-        _s_StrEvent.StrEditorUpdated += OnStrEdUpdated;
+        _StrEvents.StrEditorUpdated += OnStrEdUpdated;
         if (_s_StorylineEditor != null)
         {
             _s_StorylineEditor.Init();
@@ -53,7 +53,7 @@ public class StrEditorMainWindow : EditorWindow
     private void OnStrEdUpdated()
     {
         CreateGUI();
-       
+
     }
     private void CreateGUI()
     {
@@ -135,7 +135,7 @@ public class StrEditorMainWindow : EditorWindow
         // steplist setup
         var items2 = new List<int>();
 
-        for (int i = 0; i < _s_StorylineEditor._stepsTotal.Count; i++)
+        for (int i = 0; i < _s_StorylineEditor._totalStepsCount.Count; i++)
             items2.Add(i);
         Func<VisualElement> makeItem2 = () => VTListview.CloneTree();
         Label element_name2 = VTlistview_element.Q<VisualElement>("name") as Label;
@@ -192,7 +192,7 @@ public class StrEditorMainWindow : EditorWindow
         Label _l_Status = VTuxml.Q<VisualElement>("status") as Label;
         _l_Status.text = "Initialization : " + _s_StorylineEditor._initStatus + "      Current file : " + _s_StorylineEditor._StorylineName;
         Label _l_Status2 = VTuxml.Q<VisualElement>("status2") as Label;
-        _l_Status2.text = "Action: " + _s_StorylineEditor._actionID + " (Total: " + _s_StorylineEditor._actionsTotal.Count + ") / Step: " + _s_StorylineEditor._stepID + " (Total: " + _s_StorylineEditor._stepsTotal.Count + ")";
+        _l_Status2.text = "Action: " + _s_StorylineEditor._actionID + " (Total: " + _s_StorylineEditor._actionsTotal.Count + ") / Step: " + _s_StorylineEditor._stepID + " (Total: " + _s_StorylineEditor._totalStepsCount.Count + ")";
 
         Label _l_StepsList = VTuxml.Q<VisualElement>("steplist") as Label;
         _l_StepsList.text = "Steps list";
@@ -216,7 +216,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 SelectCharacter();
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_CharacterAdd.text = "Add character";
@@ -229,7 +229,7 @@ public class StrEditorMainWindow : EditorWindow
                 if (_s_StorylineEditor.DeactivateCharacter(temp))
                 {
                     EditorUtility.DisplayDialog("Notice", "Character deactivated", "OK");
-                    _s_StrEvent.EditorUpdated();
+                    _StrEvents.EditorUpdated();
                 }
             }
         });
@@ -240,7 +240,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 StrEditorCharactersListWindow.ShowWindow();
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_CharacterActivate.text = "Open Characters list";
@@ -249,8 +249,8 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-               StrEditorControlPanelWindow.ShowWindow();
-                _s_StrEvent.EditorUpdated();
+                StrEditorControlPanelWindow.ShowWindow();
+                _StrEvents.EditorUpdated();
             }
 
         });
@@ -263,7 +263,7 @@ public class StrEditorMainWindow : EditorWindow
                 if (_listview_Characters.selectedItem != null)
                 {
                     _s_StorylineEditor.SetAuthor(_listview_Characters.selectedItem.ToString());
-                    _s_StrEvent.EditorUpdated();
+                    _StrEvents.EditorUpdated();
                 }
                 else
                 {
@@ -279,11 +279,9 @@ public class StrEditorMainWindow : EditorWindow
             {
                 if (_s_StorylineEditor._readyForNextAction == true)
                 {
-                    if (_s_StorylineEditor.NewAction())
-                    {
-                        EditorUtility.DisplayDialog("Notice", "New action created", "OK");
-                        _s_StrEvent.EditorUpdated();
-                    }
+                    _s_StorylineEditor.CreateNewAction();
+                    _StrEvents.EditorUpdated();
+                    EditorUtility.DisplayDialog("Notice", "New action created", "OK");
                 }
                 else
                 {
@@ -298,7 +296,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 SelectCG();
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_SelectCG.text = "Select CG";
@@ -307,10 +305,9 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                if (_s_StorylineEditor.CreateStep())
-                {
-                    _s_StrEvent.EditorUpdated();
-                }
+                _s_StorylineEditor.CreateNewStep();
+                _StrEvents.EditorUpdated();
+
             }
         });
         _b_NewStep.text = "New Step";
@@ -320,7 +317,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 StrEditorCharacterConstructorWindow.ShowWindow();
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_CharacterEditor.text = "Character Editor";
@@ -330,7 +327,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 Debug.Log(" doing nothing");
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_Save.text = "Save";
@@ -339,7 +336,7 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
                 EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
             }
         });
@@ -350,7 +347,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 StrEditorChoiseConstructorWindow.ShowWindow();
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_AddChoise.text = "Add choise";
@@ -359,8 +356,8 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                Debug.Log(" doing nothing");
-                _s_StrEvent.EditorUpdated();
+                _s_StorylineEditor.CreateNewStep();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_JumpTo.text = "Add jump marker";
@@ -369,8 +366,8 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                Debug.Log(" doing nothing");
-                _s_StrEvent.EditorUpdated();
+
+                _StrEvents.EditorUpdated();
             }
         });
 
@@ -380,7 +377,7 @@ public class StrEditorMainWindow : EditorWindow
         {
 
             StrEditorStorylineCreatorWindow.ShowWindow();
-            _s_StrEvent.EditorUpdated();
+            _StrEvents.EditorUpdated();
 
         });
         _b_NewFile.text = "New .str";
@@ -390,7 +387,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 Debug.Log(" doing nothing");
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
         });
         _b_AddEffect.text = "Add effect";
@@ -398,7 +395,7 @@ public class StrEditorMainWindow : EditorWindow
         Button _b_OpenFile = new Button(() =>
         {
             SelectStoryline();
-            _s_StrEvent.EditorUpdated();
+            _StrEvents.EditorUpdated();
         });
         _b_OpenFile.text = "Open .str";
 
@@ -407,7 +404,7 @@ public class StrEditorMainWindow : EditorWindow
             if (ValidateStoryline())
             {
                 Debug.Log(" doing nothing");
-                _s_StrEvent.EditorUpdated();
+                _StrEvents.EditorUpdated();
             }
             SelectStoryline();
         });
@@ -477,7 +474,7 @@ public class StrEditorMainWindow : EditorWindow
         _s_StorylineEditor.MoveCG(CGPosisitionX);
 
     }
-    
+
     void SetSelectedCharacterParent()
     {
         _SelectedCharacterRectTransform.transform.SetParent(_s_StorylineEditor._CGRectTransform.transform, true);
@@ -485,10 +482,10 @@ public class StrEditorMainWindow : EditorWindow
     void SelectCG()
     {
         Texture2D tex = new Texture2D(1, 1);
-        string Path = EditorUtility.OpenFilePanel("Select CG", _s_StorylineEditor._s_Folder._CG, "png");
+        string Path = EditorUtility.OpenFilePanel("Select CG", _s_StorylineEditor._folders._CG, "png");
         if (Path.Length != 0)
         {
-            string temp = Path.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+            string temp = Path.Replace(_s_StorylineEditor._folders._root + "/Resources/", "");
             string temp2 = temp.Replace(".png", "");
             string temp3 = temp2.Replace("Gamedata/Textures/CG/", "");
             if (_s_StorylineEditor.AddCG(temp2, temp3))
@@ -502,10 +499,10 @@ public class StrEditorMainWindow : EditorWindow
     {
         if (EditorUtility.DisplayDialog("Notice", "Usaved progress will be lost. Continue?", "OK", "Cancel"))
         {
-            string Path = EditorUtility.OpenFilePanel("Select storyline", _s_StorylineEditor._s_Folder._storylines, "str");
+            string Path = EditorUtility.OpenFilePanel("Select storyline", _s_StorylineEditor._folders._storylines, "str");
             if (Path.Length != 0)
             {
-                string temp = Path.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+                string temp = Path.Replace(_s_StorylineEditor._folders._root + "/Resources/", "");
                 string temp2 = temp.Replace(".str", "");
                 string temp3 = temp.Replace("Gamedata/Storylines/", "");
                 if (_s_StorylineEditor.OpenStoryline(temp3))
@@ -517,14 +514,14 @@ public class StrEditorMainWindow : EditorWindow
     }
     private void SelectCharacter()
     {
-        string Path = EditorUtility.OpenFilePanel("Select Character", _s_StorylineEditor._s_Folder._characters, "char");
+        string Path = EditorUtility.OpenFilePanel("Select Character", _s_StorylineEditor._folders._characters, "char");
         if (Path.Length != 0)
         {
-            string temp = Path.Replace(_s_StorylineEditor._s_Folder._root + "/Resources/", "");
+            string temp = Path.Replace(_s_StorylineEditor._folders._root + "/Resources/", "");
             string temp2 = temp.Replace(".char", "");
             string temp3 = temp2.Replace("Gamedata/Ñharacters/", "");
             _s_StorylineEditor.AddCharacter(Path, temp3);
-             }
+        }
     }
     private string SelectPhrase(string PhraseText)
     {
@@ -556,6 +553,6 @@ public class StrEditorMainWindow : EditorWindow
     }
     private void OnDisable()
     {
-        _s_StrEvent.StrEditorUpdated -= OnStrEdUpdated;
+        _StrEvents.StrEditorUpdated -= OnStrEdUpdated;
     }
 }

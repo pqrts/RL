@@ -19,7 +19,7 @@ public class extStrEditorReplacer : MonoBehaviour
     public List<string> _selectedActionSteps = new List<string>();
 
 
-    public Boolean GetScripts()
+    public Boolean GetRequieredComponents()
     {
         _s_StorylineEditor = GetComponent<StrEditorGodObject>();
         _s_Tag = GetComponent<global_taglist>();

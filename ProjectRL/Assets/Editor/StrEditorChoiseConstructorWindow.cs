@@ -179,7 +179,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     }
     private string[] DecomposeChoiseOption(int OptionIndex)
     {
-        string[] decomposedChoiseOption = _choiseOptions[OptionIndex].Split(StrEditorRoot._s_Tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        string[] decomposedChoiseOption = _choiseOptions[OptionIndex].Split(StrEditorRoot._tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         return decomposedChoiseOption;
     }
     private void SetupUIElementsOfChoiseOptionTemplate(VisualElement choiseOptionTemplateVE, string[] decomposedOption)
@@ -231,7 +231,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                 }
                 if (FieldType == StrFieldType.JumpToField)
                 {
-                    if (out_value > 0 && out_value <= StrEditorRoot._actionsTotalID)
+                    if (out_value > 0 && out_value <= StrEditorRoot._totalActions)
                     {
                         _jumpToActionFieldValue = out_value;
                     }
