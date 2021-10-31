@@ -112,8 +112,12 @@ namespace StorylineEditor
         public const int StandartListviewItemHeight = 30;
         public const int StepComposeStagesCount = 5;
         public const int ActionComposeStagesCount = 3;
-    }
 
+    }
+    public struct StrExtensions
+    {
+        public const string FinalStr = ".str";
+    }
     public struct StrUXMLElementsNames
     {
         public const string PreviewHolder = "previewHolder";

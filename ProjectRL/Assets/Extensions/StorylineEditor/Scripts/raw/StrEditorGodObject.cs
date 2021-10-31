@@ -210,7 +210,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             fileContent = fileContent + storylineLine+ _tags._lineSeparator;
         }
-        _encryptor.EncryptContent(fileContent);
+        _encryptor.ExportToFile(_StorylineName, fileContent);
     }
     private StrStorylineParameters SetStrUncomposedStorylineParameters()
     {
