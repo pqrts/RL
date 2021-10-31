@@ -42,7 +42,7 @@ public class global_scene : MonoBehaviour
     private global_stats _s_global_stats;
     private global_char_spawner _s_g_char_spawner;
     private global_str_reader _s_g_str_reader;
-    private global_taglist _s_tag;
+    private TaglistReader _s_tag;
     private global_folders _s_folder;
     //for Initialization
     private GameObject _temp_character;
@@ -65,7 +65,7 @@ public class global_scene : MonoBehaviour
         _s_g_char_spawner = GetComponent<global_char_spawner>();
         _s_g_str_reader = GetComponent<global_str_reader>();
         _s_ui_scaler = GetComponent<ui_scaler>();
-        _s_tag = GetComponent<global_taglist>();
+        _s_tag = GetComponent<TaglistReader>();
         _s_folder = GetComponent<global_folders>();
         _CG_RT = _CG_Image.GetComponent<RectTransform>();
         _CG_LM = _CG_Image.GetComponent<local_moving>();
@@ -325,7 +325,7 @@ public class global_scene : MonoBehaviour
                             if (_list_action_raw[e] != temp_tag_skip && _list_action_raw[e] != step_unit)
                             {
                                 string t = _list_action_raw[e].Replace("          ", "");
-                                step_raw = step_raw + t + _s_tag._separator_vert;
+                                step_raw = step_raw + t + _s_tag._separatorVertical;
                             }
                             else
                             {
@@ -368,7 +368,7 @@ public class global_scene : MonoBehaviour
                         if (_list_action_raw[e] != endstep)
                         {
                             string t = _list_action_raw[e].Replace("          ", "");
-                            step_raw = step_raw + t + _s_tag._separator_vert;
+                            step_raw = step_raw + t + _s_tag._separatorVertical;
                         }
                         else
                         {
@@ -390,7 +390,7 @@ public class global_scene : MonoBehaviour
     private Boolean Execute_step(int step_id)
     {
         string step_raw = _list_current_action_steps[step_id - 1];
-        string[] units = step_raw.Split(_s_tag._separator_vert.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        string[] units = step_raw.Split(_s_tag._separatorVertical.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < units.Length; i++)
         {
             if (units[i] == _s_tag._activate)
@@ -418,7 +418,7 @@ public class global_scene : MonoBehaviour
                 }
             }
  
-            if (units[i] == _s_tag._character_relocated)
+            if (units[i] == _s_tag._characterRelocated)
             {
                 if (units[i + 1] != _s_tag._null)
                 {
@@ -450,7 +450,7 @@ public class global_scene : MonoBehaviour
                     Rescale_objects(p_char_name, p_sca_x, p_sca_y, p_sca_z);
                 }
             }
-            if (units[i] == _s_tag._cg_position)
+            if (units[i] == _s_tag._stepsEnd)
             {
                 if (units[i + 1] != _s_tag._null)
                 {

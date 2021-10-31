@@ -10,6 +10,7 @@ using UnityEngine.UI;
 [ExecuteInEditMode]
 [RequireComponent(typeof(StrEditorEvents))]
 [RequireComponent(typeof(StrEditorStorylineComposer))]
+[RequireComponent(typeof(StrEditorEncryptor))]
 public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
 {
     private bool _isStrEditorRootObjectInitialized;
@@ -22,11 +23,12 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     public int _stepID;
 
     //scripts
-    public global_taglist _tags;
+    public TaglistReader _tags;
     public global_folders _folders;
     extStrEditorReplacer _replacer;
     ext_Storyline_exeptions _exeptions;
     private StrEditorStorylineComposer _composer;
+    private StrEditorEncryptor _encryptor;
     //metadata
     private string _metaToStr;
     [SerializeField] public string _editorUser;
@@ -43,15 +45,17 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     private List<string> _activatedObjects = new List<string>();
     public List<string> _inactivatedObjects = new List<string>();
     public List<string> _choiseOptions = new List<string>();
+    [SerializeField] private List<string> _composedStoryline = new List<string>();
 
     private string _toActivation;
     private string _toInactivation;
     public string _StorylineName;
     //for str form
-    public List<string> _initPartToStr = new List<string>();
-    public List<string> _actionsToStr = new List<string>();
-    private List<string> _stepsToAction = new List<string>();
+    public List<string> _initPart = new List<string>();
+    public List<string> _storylineActions = new List<string>();
+    private List<string> _curretActionSteps = new List<string>();
     [HideInInspector] public List<string> _totalStepsCount = new List<string>();
+
     [HideInInspector] public List<List<string>> _actionsTotal = new List<List<string>>();
     //scene
     [HideInInspector] public Sprite _CGsprite;
@@ -88,13 +92,14 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     {
         _characterSpawner = GetComponent<ext_CharacterSp>();
         _StrEvents = GetComponent<StrEditorEvents>();
-        _tags = GetComponent<global_taglist>();
+        _tags = GetComponent<TaglistReader>();
         _folders = GetComponent<global_folders>();
         _replacer = GetComponent<extStrEditorReplacer>();
         _CGRectTransform = _CGImage.GetComponent<RectTransform>();
         _exeptions = GetComponent<ext_Storyline_exeptions>();
         _composer = GetComponent<StrEditorStorylineComposer>();
-        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents())
+        _encryptor = GetComponent<StrEditorEncryptor>();
+        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents() && _encryptor.GetRequieredComponents())
         {
             _initStatus = "successful";
             _isStrEditorRootObjectInitialized = true;
@@ -146,13 +151,13 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         try
         {
             StreamWriter SW = new StreamWriter(_folders._storylines + "/" + _StorylineName, true, encoding: System.Text.Encoding.Unicode);
-            for (int i = 0; i < _actionsToStr.Count; i++)
+            for (int i = 0; i < _storylineActions.Count; i++)
             {
-                string t = _actionsToStr[i];
+                string t = _storylineActions[i];
                 SW.WriteLine(t);
             }
             SW.Close();
-            _actionsToStr.Clear();
+            _storylineActions.Clear();
         }
         catch (Exception ex)
         {
@@ -162,35 +167,54 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     public void UpdateInitPart()
     {
-        _initPartToStr.Clear();
-        StrUncomposedStorylineParameters uncomposedStoryline = SetStrUncomposedStorylineParameters();
-        _initPartToStr = _composer.ComposeInitPart(uncomposedStoryline);
+        _initPart.Clear();
+        StrStorylineParameters uncomposedStoryline = SetStrUncomposedStorylineParameters();
+        _initPart = _composer.ComposeInitPart(uncomposedStoryline);
     }
     public void CreateNewStep()
     {
-        StrUncomposedStorylineParameters uncomposedStoryline = SetStrUncomposedStorylineParameters();
-        _stepsToAction = _composer.ComposeStep(uncomposedStoryline);
-        _stepID += 1;
-        _totalStepsCount.Add(_stepID.ToString());
+        if (_totalStepsCount.Count < 1)
+        {
+            StrStorylineParameters uncomposedStoryline = SetStrUncomposedStorylineParameters();
+            _curretActionSteps = _composer.ComposeStep(uncomposedStoryline);
+            _stepID += 1;
+            _totalStepsCount.Add(_stepID.ToString());
+        }
+        else
+        {
+            EditorUtility.DisplayDialog("Notice", "Cannot create more than 1 step in the current version", "OK");
+        }
     }
     public void CreateNewAction()
     {
-        StrUncomposedStorylineParameters uncomposedStoryline = SetStrUncomposedStorylineParameters();
+        StrStorylineParameters uncomposedStoryline = SetStrUncomposedStorylineParameters();
         List<string> createdAction = _composer.ComposeAction(uncomposedStoryline);
         if (createdAction.Count != 0)
         {
             foreach (string actionUnit in createdAction)
             {
-                _actionsToStr.Add(actionUnit);
+                _storylineActions.Add(actionUnit);
             }
+            ClearActionAssociatedData();
             _actionID += 1;
             _stepID = 1;
             _totalActions += 1;
         }
     }
-    private StrUncomposedStorylineParameters SetStrUncomposedStorylineParameters()
+    public void ExportStorylineToStrFile()
     {
-        StrUncomposedStorylineParameters tempStrStruct;
+        StrUncomposedStorylineParts storylineParts = SetUncomposedStorylineParts();
+        _composedStoryline = _composer.ComposeStoryline(storylineParts);
+        string fileContent = "";
+        foreach (string storylineLine in _composedStoryline)
+        {
+            fileContent = fileContent + storylineLine+ _tags._lineSeparator;
+        }
+        _encryptor.EncryptContent(fileContent);
+    }
+    private StrStorylineParameters SetStrUncomposedStorylineParameters()
+    {
+        StrStorylineParameters tempStrStruct;
         tempStrStruct.User = _editorUser;
         tempStrStruct.Version = _version;
         tempStrStruct.ActionID = _actionID;
@@ -203,10 +227,18 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         tempStrStruct.ActiveRectTransforms = _activeRectTransforms;
         tempStrStruct.ActivatedCharacters = _activatedCharacters;
         tempStrStruct.InactivatedCharacters = _inactivatedCharacters;
-        tempStrStruct.StepsOfCurrentAction = _stepsToAction;
+        tempStrStruct.StepsOfCurrentAction = _curretActionSteps;
         tempStrStruct.RequiredObjects = _requiredObjects;
         tempStrStruct.RequiredCG = _requiredCG;
+        tempStrStruct.ChoiseOptions = _choiseOptions;
         return tempStrStruct;
+    }
+    private StrUncomposedStorylineParts SetUncomposedStorylineParts()
+    {
+        StrUncomposedStorylineParts storylineParts;
+        storylineParts.InitPart = _initPart;
+        storylineParts.StorylineActions = _storylineActions;
+        return storylineParts;
     }
     private void ClearStepAssociatedData()
     {
@@ -215,7 +247,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     private void ClearActionAssociatedData()
     {
-        _stepsToAction.Clear();
+        _curretActionSteps.Clear();
         _totalStepsCount.Clear();
     }
     public Boolean AddCG(string CGPath, string CGName)
@@ -315,7 +347,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     public void SelectedActionSetup()
     {
         string StepRaw = _replacer._selectedActionSteps[_stepID - 1];
-        string[] units = StepRaw.Split(_tags._separator_vert.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        string[] units = StepRaw.Split(_tags._separatorVertical.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < units.Length; i++)
         {
             if (units[i] == _tags._activate)
@@ -343,7 +375,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                 }
             }
 
-            if (units[i] == _tags._character_relocated)
+            if (units[i] == _tags._characterRelocated)
             {
                 if (units[i + 1] != _tags._null)
                 {
@@ -375,7 +407,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                     // Rescale_objects(p_char_name, p_sca_x, p_sca_y, p_sca_z);
                 }
             }
-            if (units[i] == _tags._cg_position)
+            if (units[i] == _tags._stepsEnd)
             {
                 if (units[i + 1] != _tags._null)
                 {
@@ -647,15 +679,17 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _inactivatedCharacters.Clear();
         _activatedCharacters.Clear();
         _requiredCG.Clear();
-        _actionsToStr.Clear();
-        _initPartToStr.Clear();
+        _storylineActions.Clear();
+        _initPart.Clear();
         _actionsTotal.Clear();
         _totalStepsCount.Clear();
+        _choiseOptions.Clear();
         _CGImage.sprite = null;
         _CGsprite = null;
         _phraseAuthor = "";
         _stepID = 1;
         _actionID = 1;
+        _totalActions = 0;
         foreach (GameObject destroy in _requiredObjects)
         {
             DestroyImmediate(destroy);
@@ -727,39 +761,39 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                         _activatedCharacters.Remove(_activatedCharacters[i7]);
                     }
                 }
-                if (_initPartToStr.Count != 0)
+                if (_initPart.Count != 0)
                 {
-                    for (int i8 = 0; i8 < _initPartToStr.Count; i8++)
+                    for (int i8 = 0; i8 < _initPart.Count; i8++)
                     {
-                        if (_initPartToStr[i8] != null)
+                        if (_initPart[i8] != null)
                         {
                             string y = CharacterName + _tags._separator;
-                            string m = _initPartToStr[i8].Replace(y, "");
+                            string m = _initPart[i8].Replace(y, "");
 
-                            _initPartToStr[i8] = m;
+                            _initPart[i8] = m;
 
                         }
                     }
                 }
-                if (_actionsToStr.Count != 0)
+                if (_storylineActions.Count != 0)
                 {
-                    for (int i9 = 0; i9 < _actionsToStr.Count; i9++)
+                    for (int i9 = 0; i9 < _storylineActions.Count; i9++)
                     {
-                        if (_actionsToStr[i9] != null)
+                        if (_storylineActions[i9] != null)
                         {
                             string y = CharacterName + _tags._separator;
-                            if (_actionsToStr[i9] == CharacterName)
+                            if (_storylineActions[i9] == CharacterName)
                             {
-                                _actionsToStr[i9] = "";
+                                _storylineActions[i9] = "";
                             }
-                            if (_actionsToStr[i9].StartsWith("          " + y) && _actionsToStr[i9 - 1] == _tags._character_relocated)
+                            if (_storylineActions[i9].StartsWith("          " + y) && _storylineActions[i9 - 1] == _tags._characterRelocated)
                             {
-                                _actionsToStr.Remove(_actionsToStr[i9]);
+                                _storylineActions.Remove(_storylineActions[i9]);
                             }
                             else
                             {
-                                string m = _actionsToStr[i9].Replace(y, "");
-                                _actionsToStr[i9] = m;
+                                string m = _storylineActions[i9].Replace(y, "");
+                                _storylineActions[i9] = m;
                             }
                         }
                     }
@@ -774,14 +808,14 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     private void CheckForExeptions()
     {
-        for (int i = 0; i < _actionsToStr.Count; i++)
+        for (int i = 0; i < _storylineActions.Count; i++)
         {
 
-            if (_actionsToStr[i].StartsWith(_tags._author))
+            if (_storylineActions[i].StartsWith(_tags._author))
             {
-                if (_actionsToStr[i + 1] == "")
+                if (_storylineActions[i + 1] == "")
                 {
-                    string[] units = _actionsToStr[i].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    string[] units = _storylineActions[i].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                     int action_id = int.Parse(units[1]);
                     _exeptions.Set_no_author(action_id);
                 }
@@ -790,7 +824,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     private void OnDisable()
     {
-
+        _StrEvents.StrEditorRootObjectRequested -= OnStrEditorRootObjectRequested;
 
     }
 }

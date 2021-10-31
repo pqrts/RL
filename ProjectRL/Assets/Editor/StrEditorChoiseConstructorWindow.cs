@@ -107,7 +107,11 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     }
     private void SetChoiseOptionsList()
     {
-        _choiseOptions = StrEditorRoot.GetChoiseOptionsList();
+        List<string> tempChoiseOptions = StrEditorRoot.GetChoiseOptionsList();
+        if (tempChoiseOptions.Count != 0)
+        {
+            _choiseOptions = tempChoiseOptions;
+        }
     }
     private void InstatiateTextFields()
     {
@@ -226,8 +230,15 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
             {
                 if (FieldType == StrFieldType.CostField)
                 {
-
-                    _costFieldValue = out_value;
+                    if (out_value >= 0)
+                    {
+                        _costFieldValue = out_value;
+                    }
+                    else 
+                    {
+                        _costField.value = "";
+                        EditorUtility.DisplayDialog("Notice", "Cost value cant be negative", "OK");
+                    }
                 }
                 if (FieldType == StrFieldType.JumpToField)
                 {

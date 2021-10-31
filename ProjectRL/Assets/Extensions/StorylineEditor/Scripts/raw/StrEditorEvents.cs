@@ -111,7 +111,7 @@ namespace StorylineEditor
         public const string StrFileStepGap = "          ";
         public const int StandartListviewItemHeight = 30;
         public const int StepComposeStagesCount = 5;
-        public const int ActionComposeStagesCount = 4;
+        public const int ActionComposeStagesCount = 3;
     }
 
     public struct StrUXMLElementsNames
@@ -127,7 +127,7 @@ namespace StorylineEditor
         public int GivedItemID;
         public string OptionText;
     }
-    public struct StrUncomposedStorylineParameters
+    public struct StrStorylineParameters
     {
         public string User;
         public float Version;
@@ -144,5 +144,11 @@ namespace StorylineEditor
         public List<string> StepsOfCurrentAction;
         public List<GameObject> RequiredObjects;
         public List<Sprite> RequiredCG;
-        }
+        public List<string> ChoiseOptions;
+    }
+    public struct StrUncomposedStorylineParts
+    {
+        public List<string> InitPart;
+        public List<string> StorylineActions;
+    }
 }

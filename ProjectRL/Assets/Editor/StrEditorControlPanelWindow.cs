@@ -50,8 +50,8 @@ public class StrEditorControlPanelWindow : EditorWindow
     private void OnStrEdUpdated()
     {
      
-        _l_ActionsTotal.text = "Total actions: " + _s_StorylineEditor._totalActions;
-        _l_ActionCurrent.text = "Current action: " + _s_StorylineEditor._actionID;
+        _l_ActionsTotal.text = "Total actions: " + _s_StorylineEditor._totalActions.ToString();
+        _l_ActionCurrent.text = "Current action: " + _s_StorylineEditor._actionID.ToString();
         _l_ActionNumber.text = "Action ¹: ";
         _l_Info.text = "Info";
         _l_MoveTo.text = "Move to action:";

@@ -336,6 +336,7 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
+                _s_StorylineEditor.ExportStorylineToStrFile();
                 _StrEvents.EditorUpdated();
                 EditorUtility.DisplayDialog("Notice", ".str writed.", "OK");
             }

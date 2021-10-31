@@ -3,7 +3,7 @@ using UnityEngine;
 using System.IO;
 using System;
 [ExecuteAlways]
-public class global_taglist : MonoBehaviour
+public class TaglistReader : MonoBehaviour
 {
     private global_folders _s_folder;
     public string _version;
@@ -13,18 +13,22 @@ public class global_taglist : MonoBehaviour
     public string _phrase;
     public string _CG;
     public string _init;
-    public string _required_objects;
-    public string _required_cg;
+    public string _requiredObjects;
+    public string _requiredCG;
     public string _skip;
     public string _step;
-    public string _character_relocated;
+    public string _characterRelocated;
     public string _activate;
     public string _inactivate;
     public string _author;
     public string _rescale;
     public string _null;
-    public string _separator_vert;
-    public string _cg_position;
+    public string _separatorVertical;
+    public string _CGposition;
+    public string _stepsEnd;
+    public string _choise;
+    public string _actionEnd;
+    public string _lineSeparator;
 
     void Start()
     {
@@ -71,11 +75,11 @@ public class global_taglist : MonoBehaviour
                     count += 1;
                     break;
                 case 7:
-                    _required_objects = line;
+                    _requiredObjects = line;
                     count += 1;
                     break;
                 case 8:
-                    _required_cg = line;
+                    _requiredCG = line;
                     count += 1;
                     break;
                 case 9:
@@ -87,7 +91,7 @@ public class global_taglist : MonoBehaviour
                     count += 1;
                     break;
                 case 11:
-                    _character_relocated = line;
+                    _characterRelocated = line;
                     count += 1;
                     break;
                 case 12:
@@ -111,11 +115,27 @@ public class global_taglist : MonoBehaviour
                     count += 1;
                     break;
                 case 17:
-                    _separator_vert = line;
+                    _separatorVertical = line;
                     count += 1;
                     break;
                 case 18:
-                    _cg_position = line;
+                    _CGposition = line;
+                    count += 1;
+                    break;
+                case 19:
+                    _stepsEnd = line;
+                    count += 1 ;
+                    break;
+                case 20:
+                    _choise = line;
+                    count += 1;
+                    break;
+                case 21:
+                    _actionEnd = line;
+                    count += 1;
+                    break;
+                case 22:
+                    _lineSeparator = line;
                     count = 0;
                     break;
             }

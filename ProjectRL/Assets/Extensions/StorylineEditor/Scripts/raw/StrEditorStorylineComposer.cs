@@ -7,12 +7,13 @@ using StorylineEditor;
 [RequireComponent(typeof(StrEditorEvents))]
 [RequireComponent(typeof(StrEditorGodObject))]
 [RequireComponent(typeof(extStrEditorReplacer))]
-[RequireComponent(typeof(global_taglist))]
+[RequireComponent(typeof(TaglistReader))]
+[RequireComponent(typeof(StrEditorEncryptor))]
 [ExecuteInEditMode]
 
 public class StrEditorStorylineComposer : MonoBehaviour
 {
-    private global_taglist _tags;
+    private TaglistReader _tags;
     private StrEditorGodObject _StrRootObject;
     public Boolean GetRequieredComponents()
     {
@@ -25,10 +26,10 @@ public class StrEditorStorylineComposer : MonoBehaviour
         {
             throw new ArgumentException("'StrEditorRoot' must implement the 'IStrEditorRoot' interface");
         }
-        _tags = GetComponent<global_taglist>();
+        _tags = GetComponent<TaglistReader>();
         return true;
     }
-    public List<string> ComposeStep(StrUncomposedStorylineParameters uncomposedStoryline)
+    public List<string> ComposeStep(StrStorylineParameters uncomposedStoryline)
     {
         List<string> stepsOfCurrentAction = new List<string>();
         string _charactersToActivation = "";
@@ -72,7 +73,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     }
                     break;
                 case 2:
-                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._cg_position);
+                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._stepsEnd);
                     float CGPositionX = Mathf.Round(_CGRectTransform.localPosition.x);
                     float CGPositionY = _CGRectTransform.localPosition.y;
                     float CGPositionZ = _CGRectTransform.localPosition.z;
@@ -97,7 +98,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     }
                     break;
                 case 3:
-                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._character_relocated);
+                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._characterRelocated);
                     for (int e = 0; e < activeCharacters.Count; e++)
                     {
                         string char_name = activeCharacters[e].ToString().Replace(" (UnityEngine.GameObject)", "");
@@ -114,7 +115,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         }
         return stepsOfCurrentAction;
     }
-    public List<string> ComposeInitPart(StrUncomposedStorylineParameters uncomposedStoryline)
+    public List<string> ComposeInitPart(StrStorylineParameters uncomposedStoryline)
     {
         List<string> initPart = new List<string>();
         DateTime date = System.DateTime.Now;
@@ -131,14 +132,14 @@ public class StrEditorStorylineComposer : MonoBehaviour
         initPart.Add(_tags._skip);
         initPart.Add(_tags._version);
         initPart.Add("" + version);
-        initPart.Add(_tags._required_objects);
+        initPart.Add(_tags._requiredObjects);
         string RequiredObjects = "";
         foreach (GameObject requiredObject in requiredObjects)
         {
             RequiredObjects = RequiredObjects + requiredObject.name + _tags._separator;
         }
         initPart.Add(RequiredObjects);
-        initPart.Add(_tags._required_cg);
+        initPart.Add(_tags._requiredCG);
         string RequiredCG = "";
         foreach (Sprite requiredSprite in requiredCG)
         {
@@ -151,26 +152,20 @@ public class StrEditorStorylineComposer : MonoBehaviour
 
         return initPart;
     }
-    public List<string> ComposeAction(StrUncomposedStorylineParameters uncomposedStoryline)
+    public List<string> ComposeAction(StrStorylineParameters uncomposedStoryline)
     {
         List<string> currentAction = new List<string>();
         List<string> stepsOfCurrentAction = uncomposedStoryline.StepsOfCurrentAction;
+        List<string> choiseOptions = uncomposedStoryline.ChoiseOptions;
         int actionID = uncomposedStoryline.ActionID;
         string phrase = uncomposedStoryline.Phrase;
         string phraseAuthor = uncomposedStoryline.PhraseAuthor;
         string CGSpriteName = uncomposedStoryline.CGImage.sprite.ToString().Replace(" (UnityEngine.Sprite)", "");
-        string endstep = "/&endstep";
         for (int i = 0; i <= StrConstantValues.ActionComposeStagesCount; i++)
         {
             switch (i)
             {
                 case 0:
-
-                    break;
-                case 1:
-
-                    break;
-                case 2:
                     currentAction.Add(_tags._action + _tags._separator + actionID);
                     currentAction.Add("{");
                     currentAction.Add(_tags._phrase + _tags._separator + actionID);
@@ -180,7 +175,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     currentAction.Add(_tags._CG);
                     currentAction.Add(CGSpriteName);
                     break;
-                case 3:
+                case 1:
                     if (stepsOfCurrentAction.Count != 0)
                     {
                         foreach (var step in stepsOfCurrentAction)
@@ -188,14 +183,51 @@ public class StrEditorStorylineComposer : MonoBehaviour
                             currentAction.Add(step);
                         }
                     }
-                    currentAction.Add(endstep);
+                    currentAction.Add(_tags._stepsEnd);
                     break;
-                case 4:
+                case 2:
+                    currentAction.Add(_tags._choise);
+                    if (choiseOptions.Count != 0)
+                    {
+                        foreach (string choiseOption in choiseOptions)
+                        {
+                            currentAction.Add(choiseOption);
+                        }
+                    }
+                    else
+                    {
+                        currentAction.Add(_tags._null);
+                    }
+                    break;
+                case 3:
+                    currentAction.Add(_tags._actionEnd);
                     currentAction.Add("}");
                     currentAction.Add(_tags._skip);
                     break;
+
             }
         }
         return currentAction;
+    }
+    public List<string> ComposeStoryline(StrUncomposedStorylineParts storylineParts)
+    {
+        List<string> composedStoryline = new List<string>();
+        List<string> initPart = storylineParts.InitPart;
+        List<string> storylineActions = storylineParts.StorylineActions;
+        if (initPart.Count != 0)
+        {
+            foreach (string initPartLine in initPart)
+            {
+                composedStoryline.Add(initPartLine);
+            }
+        }
+        if (storylineActions.Count != 0)
+        {
+            foreach (string storylineActionsLine in storylineActions)
+            {
+                composedStoryline.Add(storylineActionsLine);
+            }
+        }
+        return composedStoryline;
     }
 }

@@ -6,7 +6,7 @@ public class global_str_reader : MonoBehaviour
 {
         //scripts
     [SerializeField] private string _storyline_name;
-    global_taglist _s_tag;
+    TaglistReader _s_tag;
     global_folders _s_folder;
     //for reading
     public string _str_version;
@@ -22,7 +22,7 @@ public class global_str_reader : MonoBehaviour
     void Start()
     {
         _s_folder = GetComponent<global_folders>();
-        _s_tag = GetComponent<global_taglist>();
+        _s_tag = GetComponent<TaglistReader>();
         _read_complete = false;
         if (Read_meta())
         {
@@ -100,7 +100,7 @@ public class global_str_reader : MonoBehaviour
                 {
                     _str_version = _list_init_data[i + 1];
                 }
-                if (t == _s_tag._required_objects)
+                if (t == _s_tag._requiredObjects)
                 {
                     string line = _list_init_data[i + 1];
                     string[] units = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
@@ -109,7 +109,7 @@ public class global_str_reader : MonoBehaviour
                         _list_required_objects.Add(unit);
                     }
                 }
-                if (t == _s_tag._required_cg)
+                if (t == _s_tag._requiredCG)
                 {
                     string line = _list_init_data[i + 1];
                     string[] units = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);

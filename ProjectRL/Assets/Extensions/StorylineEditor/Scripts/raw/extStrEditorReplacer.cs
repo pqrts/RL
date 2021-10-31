@@ -9,7 +9,7 @@ using System.IO;
 [ExecuteInEditMode]
 public class extStrEditorReplacer : MonoBehaviour
 {
-    global_taglist _s_Tag;
+    TaglistReader _s_Tag;
     StrEditorGodObject _s_StorylineEditor;
     private int _decomposedStepsCount;
 
@@ -22,7 +22,7 @@ public class extStrEditorReplacer : MonoBehaviour
     public Boolean GetRequieredComponents()
     {
         _s_StorylineEditor = GetComponent<StrEditorGodObject>();
-        _s_Tag = GetComponent<global_taglist>();
+        _s_Tag = GetComponent<TaglistReader>();
         return true;
     }
     public Boolean GetSelectedActionData()
@@ -39,11 +39,11 @@ public class extStrEditorReplacer : MonoBehaviour
         string nextActionData = _s_Tag._action + _s_Tag._separator + nextActionID;
         string currentActionData = _s_Tag._action + _s_Tag._separator + _s_StorylineEditor._actionID;
 
-        for (int i = 0; i < _s_StorylineEditor._actionsToStr.Count; i++)
+        for (int i = 0; i < _s_StorylineEditor._storylineActions.Count; i++)
         {
-            if (_s_StorylineEditor._actionsToStr[i] != currentActionData)
+            if (_s_StorylineEditor._storylineActions[i] != currentActionData)
             {
-                _beforeSelectedData.Add(_s_StorylineEditor._actionsToStr[i]);
+                _beforeSelectedData.Add(_s_StorylineEditor._storylineActions[i]);
             }
             else
             {
@@ -53,11 +53,11 @@ public class extStrEditorReplacer : MonoBehaviour
 
         }
         Selected:
-        for (int r = k; r < _s_StorylineEditor._actionsToStr.Count; r++)
+        for (int r = k; r < _s_StorylineEditor._storylineActions.Count; r++)
         {
-            if (_s_StorylineEditor._actionsToStr[r] != nextActionData)
+            if (_s_StorylineEditor._storylineActions[r] != nextActionData)
             {
-                _selectedActionData.Add(_s_StorylineEditor._actionsToStr[r]);
+                _selectedActionData.Add(_s_StorylineEditor._storylineActions[r]);
             }
             else
             {
@@ -67,9 +67,9 @@ public class extStrEditorReplacer : MonoBehaviour
             }
         }
         After:
-        for (int l = f; l < _s_StorylineEditor._actionsToStr.Count; l++)
+        for (int l = f; l < _s_StorylineEditor._storylineActions.Count; l++)
         {
-            _afterSelectedData.Add(_s_StorylineEditor._actionsToStr[l]);
+            _afterSelectedData.Add(_s_StorylineEditor._storylineActions[l]);
         }
         return true;
     }
@@ -92,7 +92,7 @@ public class extStrEditorReplacer : MonoBehaviour
                         if (_selectedActionData[e] != temp_tag_skip && _selectedActionData[e] != stepData && _selectedActionData[e] != "/&endstep" && _selectedActionData[e] != "}")
                         {
                             string t = _selectedActionData[e].Replace("          ", "");
-                            step_raw = step_raw + t + _s_Tag._separator_vert;
+                            step_raw = step_raw + t + _s_Tag._separatorVertical;
                         }
                         else
                         {
