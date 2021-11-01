@@ -234,7 +234,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                     {
                         _costFieldValue = out_value;
                     }
-                    else 
+                    else
                     {
                         _costField.value = "";
                         EditorUtility.DisplayDialog("Notice", "Cost value cant be negative", "OK");
@@ -386,6 +386,6 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     private void OnDisable()
     {
         StrEvents.StrEditorUpdated -= OnStrEdUpdated;
-
+        StrEvents.StrEditorRootObjectDeclared -= OnStrEditorRootObjectDeclared;
     }
 }

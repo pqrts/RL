@@ -357,7 +357,7 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                _s_StorylineEditor.CreateNewStep();
+                StrEditorJumpMarkerWindow.ShowWindow();
                 _StrEvents.EditorUpdated();
             }
         });

@@ -517,6 +517,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _choiseOptions.Remove(_choiseOptions[optionIndex]);
         RenumberChoiseOptionsList();
     }
+
     public void ChangeChoiseOptionPosition(int optionIndex, StrListDirection direction)
     {
         string ReplacedOption = null;
@@ -548,6 +549,10 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             }
             _choiseOptions[i] = t;
         }
+    }
+    public void CreateJumpMarker(int targetActionIndex)
+    {
+        Debug.Log("Marker index " + targetActionIndex);
     }
     Boolean CheckCharacterActivation(string CharacterName)
     {

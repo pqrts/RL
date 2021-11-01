@@ -117,6 +117,9 @@ namespace StorylineEditor
     public struct StrExtensions
     {
         public const string FinalStr = ".str";
+        public const string RawStr = ".rsrtr";
+        public const string Key = ".strk";
+        public const string iv = ".striv";
     }
     public struct StrUXMLElementsNames
     {

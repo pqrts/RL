@@ -1,0 +1,11 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:VisualElement name="back" style="top: 0; position: absolute; width: 170px; left: 0; height: 60px; background-color: rgb(135, 135, 135); color: rgb(142, 142, 142);" />
+    <ui:VisualElement name="label_jump_to" style="top: 5px; position: absolute; width: 160px; left: 5px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
+        <ui:Label text="Jump to action: " display-tooltip-when-elided="true" name="jump_to" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="junpto_Holder" style="width: 60px; height: 20px; position: absolute; left: 5px; top: 15px; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);">
+        <ui:Label text="Action №:" display-tooltip-when-elided="true" name="jump_label" style="color: rgb(0, 0, 0);" />
+        <ui:VisualElement name="jump_fieldHolder" style="width: 100px; height: 20px; position: absolute; left: 60px; top: 0; color: rgb(195, 195, 195); background-color: rgb(185, 185, 185);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="buttonHolder1" style="top: 35px; position: absolute; width: 160px; left: 5px; height: 20px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);" />
+</ui:UXML>

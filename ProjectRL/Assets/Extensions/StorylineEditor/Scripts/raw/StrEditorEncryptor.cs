@@ -33,23 +33,23 @@ public class StrEditorEncryptor : MonoBehaviour
     }
     public void ExportToFile(string storylineName, string composedStoryline)
     {
-        string convertedName = ConvertI(storylineName);
-        string mod = Modificate(convertedName);
-        string convertedExtension = ConvertI(StrExtensions.FinalStr);
-        string modExtension = Modificate(convertedExtension);
-        Debug.Log(convertedName);
-        Debug.Log(mod+"."+modExtension);
-
-        string filePath = _StrRootObject._folders._storylines + "/" + convertedName;
+        string convertedName = ConvertString(storylineName);
+        string modificatedName = Modificate(convertedName);
+        string convertedFinalExtension = ConvertString(StrExtensions.FinalStr);
+        string modificatedFinalExtension = Modificate(convertedFinalExtension);
+        string convertedKeyExtension = ConvertString(StrExtensions.Key);
+        string modificatedKeyExtension = Modificate(convertedKeyExtension);
+        string convertedIVExtension = ConvertString(StrExtensions.iv);
+        string modificatedIVExtension = Modificate(convertedIVExtension);
+        string modificatedFinalFilePath = _StrRootObject._folders._storylines + "/" + modificatedName + "." + modificatedFinalExtension;
+        string modificatedKeyFilePath = _StrRootObject._folders._storylines + "/" + modificatedName + "." + modificatedKeyExtension;
+        string modificatedIVFilePath = _StrRootObject._folders._storylines + "/" + modificatedName + "." + modificatedIVExtension;
+        EncryptContent(composedStoryline, modificatedFinalFilePath, modificatedKeyFilePath, modificatedIVFilePath);
     }
-    public string ConvertI(string original)
+    public string ConvertString(string original)
     {
-
         byte[] unconverted = Encoding.UTF8.GetBytes(original);
         string tempConverted = BitConverter.ToString(unconverted);
-        //  string converted = tempConverted.Replace("-", "_");
-
-        Unconvert(tempConverted);
         return tempConverted;
     }
     public void Unconvert(string toUnconvert)
@@ -61,12 +61,12 @@ public class StrEditorEncryptor : MonoBehaviour
     public byte[] FromHex(string hex)
     {
         hex = hex.Replace("-", "");
-        byte[] raw = new byte[hex.Length / 2];
-        for (int i = 0; i < raw.Length; i++)
+        byte[] fromHex = new byte[hex.Length / 2];
+        for (int i = 0; i < fromHex.Length; i++)
         {
-            raw[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+            fromHex[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
         }
-        return raw;
+        return fromHex;
     }
     public string Modificate(string unmodificated)
     {
@@ -90,18 +90,18 @@ public class StrEditorEncryptor : MonoBehaviour
         }
         return result;
     }
-    public void EncryptContent(string content)
+    public void EncryptContent(string fileContent, string finalFilePath, string keyFilePath, string ivFilePath)
     {
         using (Aes myAes = Aes.Create())
         {
-            byte[] encrypted = EncryptStringToBytes_Aes(content, myAes.Key, myAes.IV);
-            string roundtrip = DecryptStringFromBytes_Aes(encrypted, myAes.Key, myAes.IV);
-            string path = "Assets/Resources/Gamedata/Storylines/str1.str.txt";
-            File.WriteAllBytes(path, encrypted);
-            Debug.Log(roundtrip);
+            byte[] encrypted = EncryptString(fileContent, myAes.Key, myAes.IV);
+            string roundtrip = DecryptString(encrypted, myAes.Key, myAes.IV);
+            File.WriteAllBytes(finalFilePath, encrypted);
+            File.WriteAllBytes(keyFilePath, myAes.Key);
+            File.WriteAllBytes(ivFilePath, myAes.IV);
         }
     }
-    static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV)
+    static byte[] EncryptString(string plainText, byte[] Key, byte[] IV)
     {
         if (plainText == null || plainText.Length <= 0)
             throw new ArgumentNullException("plainText");
@@ -129,7 +129,7 @@ public class StrEditorEncryptor : MonoBehaviour
         }
         return encrypted;
     }
-    static string DecryptStringFromBytes_Aes(byte[] cipherText, byte[] Key, byte[] IV)
+    static string DecryptString(byte[] cipherText, byte[] Key, byte[] IV)
     {
         if (cipherText == null || cipherText.Length <= 0)
             throw new ArgumentNullException("cipherText");
@@ -155,9 +155,5 @@ public class StrEditorEncryptor : MonoBehaviour
             }
         }
         return plaintext;
-    }
-    public void WriteStrFile(string path, byte[] fileContent)
-    {
-        File.WriteAllBytes(path, fileContent);
     }
 }
