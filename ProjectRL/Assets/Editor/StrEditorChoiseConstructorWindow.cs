@@ -59,10 +59,11 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             throw new ArgumentException("'StrEditorEvents' must implement the 'IStrEventSystem' interface");
         }
+        StrEditorRoot = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
     }
     private void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject)
     {
-        StrEditorRoot = StrEditorRootObject;
+      
     }
     private void OnStrEdUpdated()
     {

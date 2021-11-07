@@ -68,8 +68,8 @@ public class global_char_spawner : MonoBehaviour
                 if (Create_makeup(res_p_makeup))
                 {
                     _char_GO.tag = "character";
-                    _char_GO.AddComponent<local_character>();
-                    _char_GO.GetComponent<local_character>().reset_param(_char_runtime_name, _char_body, _char_haircut, _char_clothes, _char_makeup);
+                    _char_GO.AddComponent<Character>();
+                   // _char_GO.GetComponent<Character>().SetCharacterParameters(_char_runtime_name, _char_body, _char_haircut, _char_clothes, _char_makeup);
                     _char_GO.name = char_name;
                 }
               

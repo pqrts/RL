@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Globalization;
 using System;
-
+using StorylineEditor;
 public class global_scene : MonoBehaviour
 {
     [SerializeField] private GameObject _Canvas;
@@ -55,7 +55,7 @@ public class global_scene : MonoBehaviour
     private List<string> _list_current_action_steps = new List<string>();
     private List<string> _list_step_objects_pos = new List<string>();
     private List<RectTransform> _list_existing_RT = new List<RectTransform>();
-    private List<local_character> _list_existing_LC = new List<local_character>();
+    private List<Character> _list_existing_LC = new List<Character>();
     //for scene
     private List<GameObject> _list_active_objects = new List<GameObject>();
 
@@ -193,7 +193,7 @@ public class global_scene : MonoBehaviour
         {
             RectTransform RT = _list_existing_characters[i].GetComponent<RectTransform>();
             _list_existing_RT.Add(RT);
-            local_character LC = _list_existing_characters[i].GetComponent<local_character>();
+            Character LC = _list_existing_characters[i].GetComponent<Character>();
             _list_existing_LC.Add(LC);
 
         }
@@ -550,7 +550,8 @@ public class global_scene : MonoBehaviour
         {
             if (_list_existing_characters[i].name == author)
             {
-                string author_name = _list_existing_LC[i]._char_runtime_name;
+                StrCharacter tempStrCharacter = _list_existing_LC[i].GetCharacterParameters();
+                string author_name = tempStrCharacter.CharacterRuntimeName;
                 _phrase_text_name.text = author_name;
             }
         }

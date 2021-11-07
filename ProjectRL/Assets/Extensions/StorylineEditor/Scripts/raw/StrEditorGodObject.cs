@@ -67,7 +67,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     [HideInInspector] public string _phraseAuthor;
     //characters spawn
     public GameObject _ñharacter;
-    ext_CharacterSp _characterSpawner;
+    StrEditorCharacterSpawner _characterSpawner;
     [HideInInspector] public float _ñanvasMovingPool;
     [HideInInspector] public float _cgMovingPool;
     [HideInInspector] public float _cgPositionX;
@@ -76,6 +76,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     [HideInInspector] public float _rightCGEdgePosition;
     [HideInInspector] public bool _readyForNextAction;
 
+     public  string _jumpMarker = null;
     private StrEditorEvents _StrEvents;
     private void OnEnable()
     {
@@ -90,7 +91,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     public void Init()
     {
-        _characterSpawner = GetComponent<ext_CharacterSp>();
+        _characterSpawner = GetComponent<StrEditorCharacterSpawner>();
         _StrEvents = GetComponent<StrEditorEvents>();
         _tags = GetComponent<TaglistReader>();
         _folders = GetComponent<global_folders>();
@@ -99,7 +100,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _exeptions = GetComponent<ext_Storyline_exeptions>();
         _composer = GetComponent<StrEditorStorylineComposer>();
         _encryptor = GetComponent<StrEditorEncryptor>();
-        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents() && _encryptor.GetRequieredComponents())
+        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents() && _encryptor.GetRequieredComponents() && _characterSpawner.GetRequieredComponents())
         {
             _initStatus = "successful";
             _isStrEditorRootObjectInitialized = true;
@@ -231,6 +232,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         tempStrStruct.RequiredObjects = _requiredObjects;
         tempStrStruct.RequiredCG = _requiredCG;
         tempStrStruct.ChoiseOptions = _choiseOptions;
+        tempStrStruct.JumpMarker = _jumpMarker;
         return tempStrStruct;
     }
     private StrUncomposedStorylineParts SetUncomposedStorylineParts()
@@ -249,6 +251,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     {
         _curretActionSteps.Clear();
         _totalStepsCount.Clear();
+        _jumpMarker = "";
     }
     public Boolean AddCG(string CGPath, string CGName)
     {
@@ -290,7 +293,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             if (_requiredObjects.Count == 0)
             {
-                _ñharacter = _characterSpawner.Spawn(_canvas, _folders._root, _folders._body, _folders._haircut, _folders._clothes, _folders._makeup, CharacterPath, CharacterName);
+                _ñharacter = _characterSpawner.Spawn(_canvas, CharacterPath, CharacterName);
                 SetupCharacter(_ñharacter);
                 UpdateInitPart();
                 _ñharacter = null;
@@ -299,7 +302,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             {
                 if (CheckCharacterExistence(CharacterName))
                 {
-                    _ñharacter = _characterSpawner.Spawn(_canvas, _folders._root, _folders._body, _folders._haircut, _folders._clothes, _folders._makeup, CharacterPath, CharacterName);
+                    _ñharacter = _characterSpawner.Spawn(_canvas, CharacterPath, CharacterName);
                     SetupCharacter(_ñharacter);
                     UpdateInitPart();
                     _ñharacter = null;
@@ -499,14 +502,21 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
 
     public void CreateChoiseOption(StrChoiseOption choiseOption)
     {
-        int optionNumber = _choiseOptions.Count + 1;
-        string currencyType = choiseOption.CurrencyType;
-        int costValue = choiseOption.CostValue;
-        int jumpToActionID = choiseOption.JumpToActionID;
-        int givedItemID = choiseOption.GivedItemID;
-        string optionText = choiseOption.OptionText;
-        string option = optionNumber.ToString() + _tags._separator + currencyType + _tags._separator + costValue + _tags._separator + jumpToActionID + _tags._separator + givedItemID + _tags._separator + optionText;
-        _choiseOptions.Add(option);
+        if (_jumpMarker == null)
+        {
+            int optionNumber = _choiseOptions.Count + 1;
+            string currencyType = choiseOption.CurrencyType;
+            int costValue = choiseOption.CostValue;
+            int jumpToActionID = choiseOption.JumpToActionID;
+            int givedItemID = choiseOption.GivedItemID;
+            string optionText = choiseOption.OptionText;
+            string option = optionNumber.ToString() + _tags._separator + currencyType + _tags._separator + costValue + _tags._separator + jumpToActionID + _tags._separator + givedItemID + _tags._separator + optionText;
+            _choiseOptions.Add(option);
+        }
+        else 
+        {
+            EditorUtility.DisplayDialog("Notice", "This action already has a redirect.", "OK");
+        }
     }
     public List<string> GetChoiseOptionsList()
     {
@@ -552,7 +562,15 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     public void CreateJumpMarker(int targetActionIndex)
     {
-        Debug.Log("Marker index " + targetActionIndex);
+        if (_choiseOptions.Count == 0)
+        {
+            _jumpMarker = targetActionIndex.ToString();
+        }
+        else
+        {
+            _jumpMarker = null;
+            EditorUtility.DisplayDialog("Notice", "This action already has a redirect.", "OK"); 
+        }
     }
     Boolean CheckCharacterActivation(string CharacterName)
     {
@@ -674,6 +692,10 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     public Boolean OpenStoryline(string file_name)
     {
         // >> clearing method
+        foreach (GameObject destroy in _requiredObjects)
+        {
+            DestroyImmediate(destroy);
+        }
         _StorylineName = file_name;
         _replacer._selectedActionData.Clear();
         _replacer._selectedActionSteps.Clear();
@@ -695,10 +717,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _stepID = 1;
         _actionID = 1;
         _totalActions = 0;
-        foreach (GameObject destroy in _requiredObjects)
-        {
-            DestroyImmediate(destroy);
-        }
+        
         return true;
     }
     public Boolean ValidateStoryline()

@@ -29,6 +29,7 @@ public class TaglistReader : MonoBehaviour
     public string _choise;
     public string _actionEnd;
     public string _lineSeparator;
+    public string _jumpMarker;
 
     void Start()
     {
@@ -136,6 +137,10 @@ public class TaglistReader : MonoBehaviour
                     break;
                 case 22:
                     _lineSeparator = line;
+                    count += 1;
+                    break;
+                case 23:
+                    _jumpMarker = line;
                     count = 0;
                     break;
             }

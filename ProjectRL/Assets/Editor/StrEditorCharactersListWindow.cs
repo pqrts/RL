@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
+using StorylineEditor;
 
 
 public class StrEditorCharactersListWindow : EditorWindow
@@ -150,11 +151,12 @@ public class StrEditorCharactersListWindow : EditorWindow
     }
     public Boolean GetPreviewComponents(int SelectedCharacterID)
     {
-        _previewBody = _s_StorylineEditor._requiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_body.sprite;
-        _previewClothes = _s_StorylineEditor._requiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_clothes.sprite;
-        _previewHaircut = _s_StorylineEditor._requiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_haircut.sprite;
-        _previewMakeup = _s_StorylineEditor._requiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_makeup.sprite;
-        _characterName = _s_StorylineEditor._requiredObjects[SelectedCharacterID].GetComponent<local_character>()._char_runtime_name;
+        StrCharacter tempStrCharacter = _s_StorylineEditor._requiredObjects[SelectedCharacterID].GetComponent<Character>().GetCharacterParameters();
+        _previewBody = tempStrCharacter.CharacterBody.sprite;
+        _previewClothes = tempStrCharacter.CharacterClothes.sprite;
+        _previewHaircut = tempStrCharacter.CharacterHaircut.sprite;
+        _previewMakeup = tempStrCharacter.CharacterHaircut.sprite;
+        _characterName = tempStrCharacter.CharacterRuntimeName;
         return true;
     }
     private Boolean ValidateStoryline()

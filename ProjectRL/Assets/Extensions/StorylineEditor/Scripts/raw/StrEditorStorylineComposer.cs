@@ -161,6 +161,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         string phrase = uncomposedStoryline.Phrase;
         string phraseAuthor = uncomposedStoryline.PhraseAuthor;
         string CGSpriteName = uncomposedStoryline.CGImage.sprite.ToString().Replace(" (UnityEngine.Sprite)", "");
+        string _jumpMarker = uncomposedStoryline.JumpMarker;
         for (int i = 0; i <= StrConstantValues.ActionComposeStagesCount; i++)
         {
             switch (i)
@@ -196,6 +197,16 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     }
                     else
                     {
+                        currentAction.Add(_tags._null);
+                    }
+                    if (_jumpMarker != "")
+                    {
+                        currentAction.Add(_tags._jumpMarker);
+                        currentAction.Add(_jumpMarker);
+                    }
+                    else
+                    {
+                        currentAction.Add(_tags._jumpMarker);
                         currentAction.Add(_tags._null);
                     }
                     break;

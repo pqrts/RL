@@ -53,11 +53,11 @@ namespace StorylineEditor
         public void DeclareStrEditorRootObject(StrEditorGodObject StrEditorRootObject);
     }
 
-    public class StrPreviewElementType
+    public class StrCharacterElementType
     {
         private string _typeIndex;
         private string _typeAssociatedFolder;
-        public StrPreviewElementType(string index, string associatedFolder)
+        public StrCharacterElementType(string index, string associatedFolder)
         {
             _typeIndex = index;
             _typeAssociatedFolder = associatedFolder;
@@ -70,10 +70,10 @@ namespace StorylineEditor
         {
             return _typeAssociatedFolder;
         }
-        public static StrPreviewElementType Body = new StrPreviewElementType("PreviewElementBody", "Char_body");
-        public static StrPreviewElementType Clothes = new StrPreviewElementType("PreviewElementClothes", "Char_clothes");
-        public static StrPreviewElementType Haircut = new StrPreviewElementType("PreviewElementHaircut", "Char_haircut");
-        public static StrPreviewElementType Makeup = new StrPreviewElementType("PreviewElementMakeup", "Char_makeup");
+        public static StrCharacterElementType Body = new StrCharacterElementType("PreviewElementBody", "Char_body");
+        public static StrCharacterElementType Clothes = new StrCharacterElementType("PreviewElementClothes", "Char_clothes");
+        public static StrCharacterElementType Haircut = new StrCharacterElementType("PreviewElementHaircut", "Char_haircut");
+        public static StrCharacterElementType Makeup = new StrCharacterElementType("PreviewElementMakeup", "Char_makeup");
     }
     public class StrFieldType
     {
@@ -112,6 +112,9 @@ namespace StorylineEditor
         public const int StandartListviewItemHeight = 30;
         public const int StepComposeStagesCount = 5;
         public const int ActionComposeStagesCount = 3;
+        public const float StandartCharacterHeight = 1280f;
+        public const float StandartCharacterWidht = 720f;
+
 
     }
     public struct StrExtensions
@@ -152,10 +155,22 @@ namespace StorylineEditor
         public List<GameObject> RequiredObjects;
         public List<Sprite> RequiredCG;
         public List<string> ChoiseOptions;
+        public string JumpMarker;
     }
     public struct StrUncomposedStorylineParts
     {
         public List<string> InitPart;
         public List<string> StorylineActions;
+    }
+    public struct StrCharacter
+    {
+   
+        public string CharacterTechName;
+        public string CharacterRuntimeName;
+        public string CharacterDescription;
+        public Image CharacterBody;
+        public Image CharacterHaircut;
+        public Image CharacterClothes;
+        public Image CharacterMakeup;
     }
 }

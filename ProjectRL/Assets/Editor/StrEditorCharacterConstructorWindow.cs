@@ -35,9 +35,9 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     private Button _exportToFileButton;
     private static List<string> _characterComponentsToFile = new List<string>();
     private Dictionary<StrFieldType, Label> _associatedWithFieldsStatusLabels = new Dictionary<StrFieldType, Label>();
-    private Dictionary<StrPreviewElementType, Sprite> _previewElements = new Dictionary<StrPreviewElementType, Sprite>();
-    private Dictionary<StrPreviewElementType, Label> _associatedWithPreviewElementsStatusLabels = new Dictionary<StrPreviewElementType, Label>();
-    private Dictionary<StrPreviewElementType, string> _associatedWithPreviewElementsFoldersPaths = new Dictionary<StrPreviewElementType, string>();
+    private Dictionary<StrCharacterElementType, Sprite> _previewElements = new Dictionary<StrCharacterElementType, Sprite>();
+    private Dictionary<StrCharacterElementType, Label> _associatedWithPreviewElementsStatusLabels = new Dictionary<StrCharacterElementType, Label>();
+    private Dictionary<StrCharacterElementType, string> _associatedWithPreviewElementsFoldersPaths = new Dictionary<StrCharacterElementType, string>();
     private StrEditorEvents _s_StrEvent;
 
     public static StrEditorCharacterConstructorWindow ShowWindow()
@@ -104,10 +104,10 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     {
         if (ValidateStoryline())
         {
-            _selectBodyButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Body));
-            _selectClothesButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Clothes));
-            _selectHaircutButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Haircut));
-            _selectMakeupButton = new Button(() => OpenElementFolderInFilePanel(StrPreviewElementType.Makeup));
+            _selectBodyButton = new Button(() => OpenElementFolderInFilePanel(StrCharacterElementType.Body));
+            _selectClothesButton = new Button(() => OpenElementFolderInFilePanel(StrCharacterElementType.Clothes));
+            _selectHaircutButton = new Button(() => OpenElementFolderInFilePanel(StrCharacterElementType.Haircut));
+            _selectMakeupButton = new Button(() => OpenElementFolderInFilePanel(StrCharacterElementType.Makeup));
             _exportToFileButton = new Button(() =>
             {
                 if (EditorUtility.DisplayDialog("Notice", " Are you sure about this?", "OK", "Cancel"))
@@ -134,7 +134,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         _characterConstructorMainVE.Q<VisualElement>("character_makeup_buttonHolder").Add(_selectMakeupButton);
         _characterConstructorMainVE.Q<VisualElement>("buttonHolder1").Add(_exportToFileButton);
     }
-    private void OpenElementFolderInFilePanel(StrPreviewElementType elementType)
+    private void OpenElementFolderInFilePanel(StrCharacterElementType elementType)
     {
         string targetFolder = _associatedWithPreviewElementsFoldersPaths[elementType];
         string path = EditorUtility.OpenFilePanel("Select sprite", targetFolder, "png");
@@ -151,30 +151,30 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         }
         if (_associatedWithPreviewElementsStatusLabels.Count == 0)
         {
-            _associatedWithPreviewElementsStatusLabels.Add(StrPreviewElementType.Body, _statusBodyLabel);
-            _associatedWithPreviewElementsStatusLabels.Add(StrPreviewElementType.Clothes, _statusClothesLabel);
-            _associatedWithPreviewElementsStatusLabels.Add(StrPreviewElementType.Haircut, _statusHaircutLabel);
-            _associatedWithPreviewElementsStatusLabels.Add(StrPreviewElementType.Makeup, _statusMakeupLabel);
+            _associatedWithPreviewElementsStatusLabels.Add(StrCharacterElementType.Body, _statusBodyLabel);
+            _associatedWithPreviewElementsStatusLabels.Add(StrCharacterElementType.Clothes, _statusClothesLabel);
+            _associatedWithPreviewElementsStatusLabels.Add(StrCharacterElementType.Haircut, _statusHaircutLabel);
+            _associatedWithPreviewElementsStatusLabels.Add(StrCharacterElementType.Makeup, _statusMakeupLabel);
         }
     }
     private void SetupRequiredPreviewElementsDictionary()
     {
         if (_previewElements.Count == 0)
         {
-            _previewElements.Add(StrPreviewElementType.Body, _previewBody);
-            _previewElements.Add(StrPreviewElementType.Clothes, _previewClothes);
-            _previewElements.Add(StrPreviewElementType.Haircut, _previewHaircut);
-            _previewElements.Add(StrPreviewElementType.Makeup, _previewHaircut);
+            _previewElements.Add(StrCharacterElementType.Body, _previewBody);
+            _previewElements.Add(StrCharacterElementType.Clothes, _previewClothes);
+            _previewElements.Add(StrCharacterElementType.Haircut, _previewHaircut);
+            _previewElements.Add(StrCharacterElementType.Makeup, _previewHaircut);
         }
     }
     private void SetupPrevievElementsFoldersPaths()
     {
         if (_associatedWithPreviewElementsFoldersPaths.Count == 0)
         {
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Body, _s_StorylineEditor._folders._body);
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Clothes, _s_StorylineEditor._folders._clothes);
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Haircut, _s_StorylineEditor._folders._haircut);
-            _associatedWithPreviewElementsFoldersPaths.Add(StrPreviewElementType.Makeup, _s_StorylineEditor._folders._makeup);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrCharacterElementType.Body, _s_StorylineEditor._folders._body);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrCharacterElementType.Clothes, _s_StorylineEditor._folders._clothes);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrCharacterElementType.Haircut, _s_StorylineEditor._folders._haircut);
+            _associatedWithPreviewElementsFoldersPaths.Add(StrCharacterElementType.Makeup, _s_StorylineEditor._folders._makeup);
 
         }
     }
@@ -194,7 +194,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     private void SetupPreview()
     {
 
-        foreach (KeyValuePair<StrPreviewElementType, Sprite> previewElement in _previewElements)
+        foreach (KeyValuePair<StrCharacterElementType, Sprite> previewElement in _previewElements)
         {
             if (previewElement.Value != null)
             {
@@ -208,7 +208,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
     }
     private void SetPreviewStatusLabelsValues()
     {
-        foreach (KeyValuePair<StrPreviewElementType, Sprite> previewElementSprite in _previewElements)
+        foreach (KeyValuePair<StrCharacterElementType, Sprite> previewElementSprite in _previewElements)
         {
             if (previewElementSprite.Value != null)
             {
@@ -222,7 +222,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
         }
     }
 
-    private void SetupPreviewComponent(string componentPath, StrPreviewElementType componentType)
+    private void SetupPreviewComponent(string componentPath, StrCharacterElementType componentType)
     {
         if (componentPath.Length != 0)
         {
@@ -286,7 +286,7 @@ public class StrEditorCharacterConstructorWindow : EditorWindow
                 break;
             }
         }
-        foreach (KeyValuePair<StrPreviewElementType, Label> previewElementLabel in _associatedWithPreviewElementsStatusLabels)
+        foreach (KeyValuePair<StrCharacterElementType, Label> previewElementLabel in _associatedWithPreviewElementsStatusLabels)
         {
             if (previewElementLabel.Value != null && previewElementLabel.Value.text != StrConstantValues.PlaceholderText)
             {

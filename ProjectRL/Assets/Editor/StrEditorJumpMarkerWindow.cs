@@ -42,10 +42,11 @@ public class StrEditorJumpMarkerWindow : EditorWindow
         {
             throw new ArgumentException("'StrEditorEvents' must implement the 'IStrEventSystem' interface");
         }
+        StrEditorRoot = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
     }
     private void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject)
     {
-        StrEditorRoot = StrEditorRootObject;
+      
     }
     private void OnStrEdUpdated()
     {
@@ -58,10 +59,7 @@ public class StrEditorJumpMarkerWindow : EditorWindow
         RegisterTextFieldsCallback();
         InstatiateButtons();
         AddInstatiatedUIElementsToMainVE();
-
-
-
-    }
+            }
     private void InstantiateMainVisualElement()
     {
         try
