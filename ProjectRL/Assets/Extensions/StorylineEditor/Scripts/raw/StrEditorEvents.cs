@@ -162,9 +162,21 @@ namespace StorylineEditor
         public List<string> InitPart;
         public List<string> StorylineActions;
     }
+    public struct StrDecomposedAction
+    {
+        public string Phrase;
+        public string PhraseAuthor;
+        public string CGImageName;
+        public Vector3 CGPosition;
+        public List<string> ActiveCharacters;
+        public Dictionary<string, Vector3> ActiveCharactersPositions;
+        public Dictionary<string, Vector3> ActiveCharactersScales;
+        public List<string> ChoiseOptions;
+        public string JumpToAction;
+    }
     public struct StrCharacter
     {
-   
+
         public string CharacterTechName;
         public string CharacterRuntimeName;
         public string CharacterDescription;

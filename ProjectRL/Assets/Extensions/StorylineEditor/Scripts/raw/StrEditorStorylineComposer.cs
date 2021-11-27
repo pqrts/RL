@@ -6,7 +6,7 @@ using StorylineEditor;
 
 [RequireComponent(typeof(StrEditorEvents))]
 [RequireComponent(typeof(StrEditorGodObject))]
-[RequireComponent(typeof(extStrEditorReplacer))]
+[RequireComponent(typeof(StrEditorReplacer))]
 [RequireComponent(typeof(TaglistReader))]
 [RequireComponent(typeof(StrEditorEncryptor))]
 [ExecuteInEditMode]
@@ -32,7 +32,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
     public List<string> ComposeStep(StrStorylineParameters uncomposedStoryline)
     {
         List<string> stepsOfCurrentAction = new List<string>();
-        string _charactersToActivation = "";
+        string _activeCharacters = "";
         string _charactersToInactivation = "";
         int stepID = uncomposedStoryline.StepID;
         RectTransform _CGRectTransform = uncomposedStoryline.CGRectTransform;
@@ -49,53 +49,29 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._skip);
                     break;
                 case 1:
-                    foreach (string activatedCharacter in activatedCharacters)
+                    
+                    foreach (GameObject temp in uncomposedStoryline.ActiveCharacters)
                     {
-                        if (activatedCharacter != null)
-                        {
-                            _charactersToActivation = _charactersToActivation + activatedCharacter + _tags._separator;
-                        }
-                        else
-                        {
-                            stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._skip);
-                        }
+                        _activeCharacters = _activeCharacters + temp.name + _tags._separator;
                     }
-                    foreach (string inactivatedCharacter in inactivatedCharacters)
-                    {
-                        if (inactivatedCharacter != null)
-                        {
-                            _charactersToInactivation = _charactersToInactivation + inactivatedCharacter + _tags._separator;
-                        }
-                        else
-                        {
-                            stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._skip);
-                        }
-                    }
+          
                     break;
                 case 2:
-                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._stepsEnd);
+                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._CGposition);
                     float CGPositionX = Mathf.Round(_CGRectTransform.localPosition.x);
                     float CGPositionY = _CGRectTransform.localPosition.y;
                     float CGPositionZ = _CGRectTransform.localPosition.z;
                     stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + CGPositionX + _tags._separator + CGPositionY + _tags._separator + CGPositionZ + _tags._separator);
                     stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._activate);
-                    if (_charactersToActivation != "")
+                    if (_activeCharacters != "")
                     {
-                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _charactersToActivation);
+                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _activeCharacters);
                     }
                     else
                     {
                         stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._null);
                     }
-                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._inactivate);
-                    if (_charactersToInactivation != "")
-                    {
-                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _charactersToInactivation);
-                    }
-                    else
-                    {
-                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._null);
-                    }
+                
                     break;
                 case 3:
                     stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._characterRelocated);

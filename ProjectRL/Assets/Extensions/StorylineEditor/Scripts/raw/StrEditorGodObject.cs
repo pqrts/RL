@@ -11,6 +11,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(StrEditorEvents))]
 [RequireComponent(typeof(StrEditorStorylineComposer))]
 [RequireComponent(typeof(StrEditorEncryptor))]
+[RequireComponent(typeof(StrEditorDecomposer))]
 public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
 {
     private bool _isStrEditorRootObjectInitialized;
@@ -25,7 +26,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     //scripts
     public TaglistReader _tags;
     public global_folders _folders;
-    extStrEditorReplacer _replacer;
+    private StrEditorReplacer _replacer;
+    private StrEditorDecomposer _decompositor;
     ext_Storyline_exeptions _exeptions;
     private StrEditorStorylineComposer _composer;
     private StrEditorEncryptor _encryptor;
@@ -76,7 +78,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     [HideInInspector] public float _rightCGEdgePosition;
     [HideInInspector] public bool _readyForNextAction;
 
-     public  string _jumpMarker = null;
+    public string _jumpMarker = null;
     private StrEditorEvents _StrEvents;
     private void OnEnable()
     {
@@ -95,12 +97,13 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _StrEvents = GetComponent<StrEditorEvents>();
         _tags = GetComponent<TaglistReader>();
         _folders = GetComponent<global_folders>();
-        _replacer = GetComponent<extStrEditorReplacer>();
+        _replacer = GetComponent<StrEditorReplacer>();
         _CGRectTransform = _CGImage.GetComponent<RectTransform>();
         _exeptions = GetComponent<ext_Storyline_exeptions>();
         _composer = GetComponent<StrEditorStorylineComposer>();
         _encryptor = GetComponent<StrEditorEncryptor>();
-        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents() && _encryptor.GetRequieredComponents() && _characterSpawner.GetRequieredComponents())
+        _decompositor = GetComponent<StrEditorDecomposer>();
+        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents() && _encryptor.GetRequieredComponents() && _characterSpawner.GetRequieredComponents() && _decompositor.GetRequieredComponents())
         {
             _initStatus = "successful";
             _isStrEditorRootObjectInitialized = true;
@@ -186,6 +189,15 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             EditorUtility.DisplayDialog("Notice", "Cannot create more than 1 step in the current version", "OK");
         }
     }
+    public void DeleteStep(int stepIndex)
+    {
+        if (_curretActionSteps.Count != 0)
+        {
+            _curretActionSteps.Clear();
+            _totalStepsCount.Clear();
+        }
+
+    }
     public void CreateNewAction()
     {
         StrStorylineParameters uncomposedStoryline = SetStrUncomposedStorylineParameters();
@@ -209,7 +221,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         string fileContent = "";
         foreach (string storylineLine in _composedStoryline)
         {
-            fileContent = fileContent + storylineLine+ _tags._lineSeparator;
+            fileContent = fileContent + storylineLine + _tags._lineSeparator;
         }
         _encryptor.ExportToFile(_StorylineName, fileContent);
     }
@@ -343,8 +355,13 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _actionID = TargetActionID;
         _activatedCharacters.Clear();
         _inactivatedCharacters.Clear();
-        _replacer.GetSelectedActionData();
-
+        List<string> selectedAction = _replacer.GetSelectedActionData(TargetActionID);
+        StrDecomposedAction decomposedAction = _decompositor.DecomposeSelectedAction(selectedAction);
+        foreach (KeyValuePair<string, Vector3> characterPosition in decomposedAction.ActiveCharactersPositions)
+        {
+            Debug.Log(characterPosition.Key + " /// " + characterPosition.Value);
+        }
+        Debug.Log(decomposedAction.JumpToAction);
     }
 
     public void SelectedActionSetup()
@@ -384,17 +401,20 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                 {
                     for (int k = (i + 1); k < units.Length; k++)
                     {
+
                         if (units[k] != _tags._skip)
                         {
-                            string line = units[k];
-                            string[] units2 = line.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            string[] units2 = units[k].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                             string TempCharacterName = units2[0];
+                            foreach (string unit in units2)
+                            {
+                                Debug.Log(unit);
+                            }
                             float TempCharacterPositionX = float.Parse(units2[1], CultureInfo.InvariantCulture);
-                            float TempCharacterPositionY = float.Parse(units2[2], CultureInfo.InvariantCulture);
-                            float TempCharacterPositionZ = float.Parse(units2[3], CultureInfo.InvariantCulture);
-                            RelocateObjects(TempCharacterName, TempCharacterPositionX, TempCharacterPositionY, TempCharacterPositionZ);
+                            RelocateObjects(TempCharacterName, TempCharacterPositionX);
                         }
                     }
+
                 }
             }
             if (units[i] == _tags._rescale)
@@ -415,7 +435,9 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                 if (units[i + 1] != _tags._null)
                 {
                     string line = units[i + 1];
+
                     string[] units2 = line.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                    Debug.Log(units2[0]);
                     float TempCGPositionX = float.Parse(units2[0], CultureInfo.InvariantCulture);
                     float TempCGPositionY = float.Parse(units2[1], CultureInfo.InvariantCulture);
                     float TempCGPositionZ = float.Parse(units2[2], CultureInfo.InvariantCulture);
@@ -474,13 +496,13 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         return true;
     }
-    private Boolean RelocateObjects(string char_name, float pos_x, float pos_y, float pos_z)
+    private Boolean RelocateObjects(string char_name, float pos_x)
     {
         for (int i = 0; i < _requiredObjects.Count; i++)
         {
             if (_requiredObjects[i].name == char_name)
             {
-                _requiredObjects[i].GetComponent<RectTransform>().localPosition = new Vector3(pos_x, pos_y, pos_z);
+                _requiredObjects[i].GetComponent<RectTransform>().localPosition = new Vector3(pos_x, 0f, 0f);
                 _requiredObjects[i].GetComponent<RectTransform>().localScale = new Vector3(1.8f, 1.8f, 1.8f);
             }
         }
@@ -502,7 +524,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
 
     public void CreateChoiseOption(StrChoiseOption choiseOption)
     {
-        if (_jumpMarker == null)
+        if (_jumpMarker == "")
         {
             int optionNumber = _choiseOptions.Count + 1;
             string currencyType = choiseOption.CurrencyType;
@@ -513,7 +535,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             string option = optionNumber.ToString() + _tags._separator + currencyType + _tags._separator + costValue + _tags._separator + jumpToActionID + _tags._separator + givedItemID + _tags._separator + optionText;
             _choiseOptions.Add(option);
         }
-        else 
+        else
         {
             EditorUtility.DisplayDialog("Notice", "This action already has a redirect.", "OK");
         }
@@ -569,7 +591,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         else
         {
             _jumpMarker = null;
-            EditorUtility.DisplayDialog("Notice", "This action already has a redirect.", "OK"); 
+            EditorUtility.DisplayDialog("Notice", "This action already has a redirect.", "OK");
         }
     }
     Boolean CheckCharacterActivation(string CharacterName)
@@ -717,7 +739,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _stepID = 1;
         _actionID = 1;
         _totalActions = 0;
-        
+
         return true;
     }
     public Boolean ValidateStoryline()

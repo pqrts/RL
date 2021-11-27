@@ -4,15 +4,16 @@ using UnityEngine;
 using UnityEditor.UIElements;
 using UnityEditor;
 using System;
-
 using System.IO;
-[ExecuteInEditMode]
-public class extStrEditorReplacer : MonoBehaviour
-{
-    TaglistReader _s_Tag;
-    StrEditorGodObject _s_StorylineEditor;
-    private int _decomposedStepsCount;
 
+[RequireComponent(typeof(TaglistReader))]
+[RequireComponent(typeof(StrEditorGodObject))]
+[ExecuteInEditMode]
+public class StrEditorReplacer : MonoBehaviour
+{
+    private TaglistReader _tags;
+    private StrEditorGodObject _StrEditorRoot;
+    private int _decomposedStepsCount;
     public List<string> _beforeSelectedData = new List<string>();
     public List<string> _afterSelectedData = new List<string>();
     public List<string> _selectedActionData = new List<string>();
@@ -21,11 +22,11 @@ public class extStrEditorReplacer : MonoBehaviour
 
     public Boolean GetRequieredComponents()
     {
-        _s_StorylineEditor = GetComponent<StrEditorGodObject>();
-        _s_Tag = GetComponent<TaglistReader>();
+        _StrEditorRoot = GetComponent<StrEditorGodObject>();
+        _tags = GetComponent<TaglistReader>();
         return true;
     }
-    public Boolean GetSelectedActionData()
+    public List<string> GetSelectedActionData(int selectedActionID)
     {
 
         int k = 0;
@@ -35,15 +36,15 @@ public class extStrEditorReplacer : MonoBehaviour
         _beforeSelectedData.Clear();
         _afterSelectedData.Clear();
 
-        int nextActionID = _s_StorylineEditor._actionID + 1;
-        string nextActionData = _s_Tag._action + _s_Tag._separator + nextActionID;
-        string currentActionData = _s_Tag._action + _s_Tag._separator + _s_StorylineEditor._actionID;
+        int nextActionID = selectedActionID + 1;
+        string nextActionData = _tags._action + _tags._separator + nextActionID;
+        string currentActionData = _tags._action + _tags._separator + selectedActionID;
 
-        for (int i = 0; i < _s_StorylineEditor._storylineActions.Count; i++)
+        for (int i = 0; i < _StrEditorRoot._storylineActions.Count; i++)
         {
-            if (_s_StorylineEditor._storylineActions[i] != currentActionData)
+            if (_StrEditorRoot._storylineActions[i] != currentActionData)
             {
-                _beforeSelectedData.Add(_s_StorylineEditor._storylineActions[i]);
+                _beforeSelectedData.Add(_StrEditorRoot._storylineActions[i]);
             }
             else
             {
@@ -53,34 +54,34 @@ public class extStrEditorReplacer : MonoBehaviour
 
         }
         Selected:
-        for (int r = k; r < _s_StorylineEditor._storylineActions.Count; r++)
+        for (int r = k; r < _StrEditorRoot._storylineActions.Count; r++)
         {
-            if (_s_StorylineEditor._storylineActions[r] != nextActionData)
+            if (_StrEditorRoot._storylineActions[r] != nextActionData)
             {
-                _selectedActionData.Add(_s_StorylineEditor._storylineActions[r]);
+                _selectedActionData.Add(_StrEditorRoot._storylineActions[r]);
             }
             else
             {
                 f = r;
-                DecomposeSelectedAction();
+            
                 goto After;
             }
         }
         After:
-        for (int l = f; l < _s_StorylineEditor._storylineActions.Count; l++)
+        for (int l = f; l < _StrEditorRoot._storylineActions.Count; l++)
         {
-            _afterSelectedData.Add(_s_StorylineEditor._storylineActions[l]);
+            _afterSelectedData.Add(_StrEditorRoot._storylineActions[l]);
         }
-        return true;
+        return _selectedActionData;
     }
     private void DecomposeSelectedAction()
     {
         _decomposedStepsCount = 1;
         for (int i = 0; i < _selectedActionData.Count; i++)
         {
-            string stepData = _s_Tag._step + _s_Tag._separator + _decomposedStepsCount;
-            string nextStepData = _s_Tag._step + _s_Tag._separator + (_decomposedStepsCount + 1);
-            string nextActionData = _s_Tag._action + _s_Tag._action + (_s_StorylineEditor._actionID + 1);
+            string stepData = _tags._step + _tags._separator + _decomposedStepsCount;
+            string nextStepData = _tags._step + _tags._separator + (_decomposedStepsCount + 1);
+            string nextActionData = _tags._action + _tags._action + (_StrEditorRoot._actionID + 1);
             if (_selectedActionData[i] == stepData)
             {
                 string step_raw = "";
@@ -88,11 +89,11 @@ public class extStrEditorReplacer : MonoBehaviour
                 {
                     if (_selectedActionData[e] != nextStepData || _selectedActionData[e] != "}")
                     {
-                        string temp_tag_skip = "          " + _s_Tag._skip;
+                        string temp_tag_skip = "          " + _tags._skip;
                         if (_selectedActionData[e] != temp_tag_skip && _selectedActionData[e] != stepData && _selectedActionData[e] != "/&endstep" && _selectedActionData[e] != "}")
                         {
                             string t = _selectedActionData[e].Replace("          ", "");
-                            step_raw = step_raw + t + _s_Tag._separatorVertical;
+                            step_raw = step_raw + t + _tags._separatorVertical;
                         }
                         else
                         {
@@ -113,10 +114,10 @@ public class extStrEditorReplacer : MonoBehaviour
 
             }
         }
-        _s_StorylineEditor.SelectedActionSetup();
+        _StrEditorRoot.SelectedActionSetup();
     }
 
-    
+
 
 
 }

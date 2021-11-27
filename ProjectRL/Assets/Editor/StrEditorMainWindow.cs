@@ -411,6 +411,24 @@ public class StrEditorMainWindow : EditorWindow
         });
         _b_DeleteCharacterFromStoryline.text = "Delete from current";
 
+        Button deleteSelectedStepButton = new Button(() =>
+        {
+            if (ValidateStoryline())
+            {
+                if (_listview_Steps.selectedItem != null)
+                {
+                    _s_StorylineEditor.DeleteStep(_listview_Steps.selectedIndex);
+                    _StrEvents.EditorUpdated();
+                }
+                else 
+                {
+                    EditorUtility.DisplayDialog("Notice", "Select step first", "OK");
+                }
+            }
+         
+        });
+        deleteSelectedStepButton.text = "Delete selected step";
+
         TextField _field_Phrase = new TextField();
 
         var SS4 = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/InputFieldCustom.uss");
@@ -449,6 +467,7 @@ public class StrEditorMainWindow : EditorWindow
         VTuxml.Q<VisualElement>("charlistBackgroung").Add(_listview_Characters);
         VTuxml.Q<VisualElement>("steplistArea").Add(_listview_Steps);
         VTuxml.Q<VisualElement>("CG_sliderHolder").Add(_slider_CGPosition);
+        VTuxml.Q<VisualElement>("buttonHolder1").Add(deleteSelectedStepButton);
 
         _slider_CGPosition.valueChanged += (e => ConvertSliderToCGPosition(_slider_CGPosition.value));
         _field_Phrase.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SelectPhrase(_field_Phrase.value));

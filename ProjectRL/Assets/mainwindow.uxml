@@ -54,8 +54,8 @@
         <ui:VisualElement name="labelStepslist" style="top: 245px; position: absolute; width: 140px; left: 700px; height: 10px; background-color: rgb(185, 185, 185); color: rgb(142, 142, 142);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="steplist" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap; width: 140px;" />
         </ui:VisualElement>
-        <ui:VisualElement name="steplistHolder" style="width: 140px; height: 190px; left: 700px; top: 255px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);">
-            <ui:VisualElement name="steplistArea" style="width: 130px; height: 180px; left: 5px; top: 5px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
+        <ui:VisualElement name="steplistHolder" style="width: 140px; height: 170px; left: 700px; top: 255px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);">
+            <ui:VisualElement name="steplistArea" style="width: 130px; height: 160px; left: 5px; top: 5px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
         </ui:VisualElement>
         <ui:VisualElement name="toggleHolder" style="width: 475px; height: 20px; left: 365px; top: 5px; position: absolute; background-color: rgb(185, 185, 185);">
             <ui:Label text="Label" display-tooltip-when-elided="true" name="status2" style="height: 20px; color: rgb(0, 0, 0); width: 665px;" />
@@ -73,5 +73,6 @@
             <ui:Label text="Label" display-tooltip-when-elided="true" name="toolbar3" style="font-size: 10px; color: rgb(5, 5, 5); -unity-text-align: middle-center; white-space: nowrap;" />
         </ui:VisualElement>
         <ui:VisualElement name="leftToolbar3" style="width: 150px; position: absolute; left: 5px; top: 180px; height: 200px; background-color: rgb(152, 152, 152);" />
+        <ui:VisualElement name="buttonHolder1" style="width: 140px; height: 20px; left: 700px; top: 425px; position: absolute; background-color: rgb(152, 152, 152); border-left-color: rgb(255, 255, 255); border-right-color: rgb(255, 255, 255); border-top-color: rgb(255, 255, 255); border-bottom-color: rgb(255, 255, 255);" />
     </ui:VisualElement>
 </ui:UXML>

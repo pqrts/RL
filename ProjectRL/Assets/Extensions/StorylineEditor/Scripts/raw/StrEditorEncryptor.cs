@@ -9,7 +9,7 @@ using StorylineEditor;
 
 [RequireComponent(typeof(StrEditorEvents))]
 [RequireComponent(typeof(StrEditorGodObject))]
-[RequireComponent(typeof(extStrEditorReplacer))]
+[RequireComponent(typeof(StrEditorReplacer))]
 [RequireComponent(typeof(TaglistReader))]
 [ExecuteInEditMode]
 
