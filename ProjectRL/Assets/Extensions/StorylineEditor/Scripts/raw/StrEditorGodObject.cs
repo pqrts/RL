@@ -27,7 +27,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     public TaglistReader _tags;
     public global_folders _folders;
     private StrEditorReplacer _replacer;
-    private StrEditorDecomposer _decompositor;
+    private StrEditorDecomposer _decomposer;
     ext_Storyline_exeptions _exeptions;
     private StrEditorStorylineComposer _composer;
     private StrEditorEncryptor _encryptor;
@@ -102,8 +102,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _exeptions = GetComponent<ext_Storyline_exeptions>();
         _composer = GetComponent<StrEditorStorylineComposer>();
         _encryptor = GetComponent<StrEditorEncryptor>();
-        _decompositor = GetComponent<StrEditorDecomposer>();
-        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents() && _encryptor.GetRequieredComponents() && _characterSpawner.GetRequieredComponents() && _decompositor.GetRequieredComponents())
+        _decomposer = GetComponent<StrEditorDecomposer>();
+        if (_folders.Setup_folders() && _tags.Setup_tags() && GetCGPositionLimits() && _replacer.GetRequieredComponents() && _composer.GetRequieredComponents() && _encryptor.GetRequieredComponents() && _characterSpawner.GetRequieredComponents() && _decomposer.GetRequieredComponents())
         {
             _initStatus = "successful";
             _isStrEditorRootObjectInitialized = true;
@@ -356,103 +356,16 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _activatedCharacters.Clear();
         _inactivatedCharacters.Clear();
         List<string> selectedAction = _replacer.GetSelectedActionData(TargetActionID);
-        StrDecomposedAction decomposedAction = _decompositor.DecomposeSelectedAction(selectedAction);
-        foreach (KeyValuePair<string, Vector3> characterPosition in decomposedAction.ActiveCharactersPositions)
-        {
-            Debug.Log(characterPosition.Key + " /// " + characterPosition.Value);
-        }
-        Debug.Log(decomposedAction.JumpToAction);
+        SelectedActionSetup(selectedAction);
     }
 
-    public void SelectedActionSetup()
+    public void SelectedActionSetup(List<string> selectedActionData)
     {
-        string StepRaw = _replacer._selectedActionSteps[_stepID - 1];
-        string[] units = StepRaw.Split(_tags._separatorVertical.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < units.Length; i++)
-        {
-            if (units[i] == _tags._activate)
-            {
-                if (units[i + 1] != _tags._null)
-                {
-                    string line = units[i + 1];
-                    string[] units2 = line.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string unit2 in units2)
-                    {
-                        _activatedObjects.Add(unit2);
-                    }
-                }
-            }
-            if (units[i] == _tags._inactivate)
-            {
-                if (units[i + 1] != _tags._null)
-                {
-                    string line = units[i + 1];
-                    string[] units2 = line.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string unit2 in units2)
-                    {
-                        _inactivatedObjects.Add(unit2);
-                    }
-                }
-            }
-
-            if (units[i] == _tags._characterRelocated)
-            {
-                if (units[i + 1] != _tags._null)
-                {
-                    for (int k = (i + 1); k < units.Length; k++)
-                    {
-
-                        if (units[k] != _tags._skip)
-                        {
-                            string[] units2 = units[k].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                            string TempCharacterName = units2[0];
-                            foreach (string unit in units2)
-                            {
-                                Debug.Log(unit);
-                            }
-                            float TempCharacterPositionX = float.Parse(units2[1], CultureInfo.InvariantCulture);
-                            RelocateObjects(TempCharacterName, TempCharacterPositionX);
-                        }
-                    }
-
-                }
-            }
-            if (units[i] == _tags._rescale)
-            {
-                if (units[i + 1] != _tags._null)
-                {
-                    string line = units[i + 1];
-                    string[] units2 = line.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    string TempCharacterName = units2[0];
-                    float TempCharacterScaleX = float.Parse(units2[1], CultureInfo.InvariantCulture);
-                    float TempCharacterScaleY = float.Parse(units2[2], CultureInfo.InvariantCulture);
-                    float TempCharacterScaleZ = float.Parse(units2[3], CultureInfo.InvariantCulture);
-                    // Rescale_objects(p_char_name, p_sca_x, p_sca_y, p_sca_z);
-                }
-            }
-            if (units[i] == _tags._stepsEnd)
-            {
-                if (units[i + 1] != _tags._null)
-                {
-                    string line = units[i + 1];
-
-                    string[] units2 = line.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    Debug.Log(units2[0]);
-                    float TempCGPositionX = float.Parse(units2[0], CultureInfo.InvariantCulture);
-                    float TempCGPositionY = float.Parse(units2[1], CultureInfo.InvariantCulture);
-                    float TempCGPositionZ = float.Parse(units2[2], CultureInfo.InvariantCulture);
-                    Vector3 NewCGPosition = new Vector3(TempCGPositionX, TempCGPositionY, TempCGPositionZ);
-                    _CGImage.GetComponent<RectTransform>().localPosition = NewCGPosition;
-                }
-            }
-            if (i == units.Length - 1)
-            {
-                ActivateObjects();
-                InactivateObjects();
-                break;
-            }
-        }
-
+        StrDecomposedAction decomposedAction = _decomposer.DecomposeSelectedAction(selectedActionData);
+        SetPhrase(decomposedAction.Phrase);
+        SetAuthor(decomposedAction.PhraseAuthor);
+        SetCG(decomposedAction.CGImageName);
+        Debug.Log(decomposedAction.CGImageName);
     }
     private Boolean ActivateObjects()
     {
@@ -749,6 +662,22 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             return false;
         }
         return true;
+    }
+    private void SetCG(string CGName)
+    {
+        foreach (Sprite CGSprite in _requiredCG)
+        {
+            if (CGSprite.name == CGName)
+            {
+                _CGImage.sprite = CGSprite;
+                _StrEvents.EditorUpdated();
+                HandleUtility.Repaint();
+            }
+        }
+    }
+    private void SetPhrase(string phrase)
+    {
+        _phrase = phrase;
     }
     public void SetAuthor(string AuthorObjectName)
     {

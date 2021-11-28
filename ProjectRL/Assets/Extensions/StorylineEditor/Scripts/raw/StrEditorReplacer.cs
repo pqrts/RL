@@ -74,50 +74,7 @@ public class StrEditorReplacer : MonoBehaviour
         }
         return _selectedActionData;
     }
-    private void DecomposeSelectedAction()
-    {
-        _decomposedStepsCount = 1;
-        for (int i = 0; i < _selectedActionData.Count; i++)
-        {
-            string stepData = _tags._step + _tags._separator + _decomposedStepsCount;
-            string nextStepData = _tags._step + _tags._separator + (_decomposedStepsCount + 1);
-            string nextActionData = _tags._action + _tags._action + (_StrEditorRoot._actionID + 1);
-            if (_selectedActionData[i] == stepData)
-            {
-                string step_raw = "";
-                for (int e = i; e < _selectedActionData.Count; e++)
-                {
-                    if (_selectedActionData[e] != nextStepData || _selectedActionData[e] != "}")
-                    {
-                        string temp_tag_skip = "          " + _tags._skip;
-                        if (_selectedActionData[e] != temp_tag_skip && _selectedActionData[e] != stepData && _selectedActionData[e] != "/&endstep" && _selectedActionData[e] != "}")
-                        {
-                            string t = _selectedActionData[e].Replace("          ", "");
-                            step_raw = step_raw + t + _tags._separatorVertical;
-                        }
-                        else
-                        {
-                            continue;
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-                _selectedActionSteps.Add(step_raw);
-
-
-                step_raw = "";
-                _decomposedStepsCount += 1;
-
-            }
-        }
-        _StrEditorRoot.SelectedActionSetup();
-    }
-
-
+   
 
 
 }

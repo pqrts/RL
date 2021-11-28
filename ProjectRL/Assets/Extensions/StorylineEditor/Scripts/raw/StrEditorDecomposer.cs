@@ -62,7 +62,7 @@ public class StrEditorDecomposer : MonoBehaviour
         string CGName = "";
         for (int i = 0; i < selectedAction.Count; i++)
         {
-            if (selectedAction[i] == _tags._author + _tags._separator + actionID)
+            if (selectedAction[i] == _tags._CG)
             {
                 CGName = selectedAction[i + 1];
             }
