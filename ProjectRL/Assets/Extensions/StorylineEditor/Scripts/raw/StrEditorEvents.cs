@@ -115,14 +115,13 @@ namespace StorylineEditor
         public const float StandartCharacterHeight = 1280f;
         public const float StandartCharacterWidht = 720f;
 
-
     }
     public struct StrExtensions
     {
         public const string FinalStr = ".str";
         public const string RawStr = ".rsrtr";
         public const string Key = ".strk";
-        public const string iv = ".striv";
+        public const string IV = ".striv";
     }
     public struct StrUXMLElementsNames
     {

@@ -30,6 +30,7 @@ public class StrEditorDecomposer : MonoBehaviour
         decomposedAction.ActiveCharacters = ReadActiveCharacters(selectedAction);
         decomposedAction.ChoiseOptions = ReadChoiseOptions(selectedAction);
         decomposedAction.ActiveCharactersPositions = ReadActiveCharacterPositions(selectedAction);
+        decomposedAction.ActiveCharactersScales = ReadActiveCharacterScales(selectedAction);
         decomposedAction.JumpToAction = ReadJumpMarker(selectedAction);
         return decomposedAction;
     }
@@ -95,12 +96,14 @@ public class StrEditorDecomposer : MonoBehaviour
         {
             if (selectedAction[i] == StrConstantValues.StrFileStepGap + _tags._activate)
             {
-                activeCharacterRaw = selectedAction[i + 1];
+                activeCharacterRaw = selectedAction[i + 1].Replace(StrConstantValues.StrFileStepGap, "");
+
             }
         }
         string[] characters = activeCharacterRaw.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         foreach (string character in characters)
         {
+            Debug.Log("decomposed" + character);
             activeCharacters.Add(character);
         }
         return activeCharacters;
@@ -117,11 +120,14 @@ public class StrEditorDecomposer : MonoBehaviour
                     int m = i + 1;
                     for (int k = m; k < selectedAction.Count; k++)
                     {
-                        if (selectedAction[k] != StrConstantValues.StrFileStepGap + _tags._skip)
+                        if (selectedAction[k] != StrConstantValues.StrFileStepGap + _tags._characterRescaled)
                         {
-                            string[] characterPositionRaw = selectedAction[k].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            string tempRawPosition = selectedAction[k].Replace(StrConstantValues.StrFileStepGap, "");
+                            Debug.Log(tempRawPosition);
+                            string[] characterPositionRaw = tempRawPosition.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                             int characterPositionX = int.Parse(characterPositionRaw[1]);
                             int characterPositionY = int.Parse(characterPositionRaw[2]);
+                        
                             int characterPositionZ = int.Parse(characterPositionRaw[3]);
                             Vector3 characterPosition = new Vector3(characterPositionX, characterPositionY, characterPositionZ);
                             activeCharactersPositions.Add(characterPositionRaw[0], characterPosition);
@@ -141,6 +147,44 @@ public class StrEditorDecomposer : MonoBehaviour
         }
         return activeCharactersPositions;
     }
+    private Dictionary<string, Vector3> ReadActiveCharacterScales(List<string> selectedAction)
+    {
+        Dictionary<string, Vector3> activeCharactersScales = new Dictionary<string, Vector3>();
+        for (int i = 0; i < selectedAction.Count; i++)
+        {
+            if (selectedAction[i] == StrConstantValues.StrFileStepGap + _tags._characterRescaled)
+            {
+                if (selectedAction[i + 1] != _tags._null)
+                {
+                    int m = i + 1;
+                    for (int k = m; k < selectedAction.Count; k++)
+                    {
+                        if (selectedAction[k] != StrConstantValues.StrFileStepGap + _tags._skip)
+                        {
+                            string tempRawScale = selectedAction[k].Replace(StrConstantValues.StrFileStepGap, "");
+                            string[] characterScaleRaw = tempRawScale.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            float characterScaleX = float.Parse(characterScaleRaw[1]);
+                            float characterScaleY = float.Parse(characterScaleRaw[2]);
+                            float characterScaleZ = float.Parse(characterScaleRaw[3]);
+                            Vector3 characterScale = new Vector3(characterScaleX, characterScaleY, characterScaleZ);
+                            activeCharactersScales.Add(characterScaleRaw[0], characterScale);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+                else
+                {
+                    activeCharactersScales.Add(_tags._null, Vector3.one);
+                }
+
+            }
+        }
+        return activeCharactersScales;
+    }
+
     private List<string> ReadChoiseOptions(List<string> selectedAction)
     {
         List<string> choiseOptions = new List<string>();

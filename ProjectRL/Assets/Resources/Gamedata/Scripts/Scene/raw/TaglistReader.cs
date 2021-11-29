@@ -30,6 +30,7 @@ public class TaglistReader : MonoBehaviour
     public string _actionEnd;
     public string _lineSeparator;
     public string _jumpMarker;
+    public string _characterRescaled;
 
     void Start()
     {
@@ -141,6 +142,10 @@ public class TaglistReader : MonoBehaviour
                     break;
                 case 23:
                     _jumpMarker = line;
+                    count +=1;
+                    break;
+                case 24:
+                    _characterRescaled = line;
                     count = 0;
                     break;
             }

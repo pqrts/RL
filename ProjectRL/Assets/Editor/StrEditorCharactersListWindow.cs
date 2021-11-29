@@ -147,7 +147,7 @@ public class StrEditorCharactersListWindow : EditorWindow
     }
     private void Activate(string CharacterName)
     {
-        _s_StorylineEditor.ActivatExistingCharacter(CharacterName);
+        _s_StorylineEditor.ActivateExistingCharacter(CharacterName);
     }
     public Boolean GetPreviewComponents(int SelectedCharacterID)
     {

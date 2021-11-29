@@ -82,7 +82,10 @@ public class StrEditorMainWindow : EditorWindow
         VisualElement element_icon = VTlistview_element.Q<VisualElement>("icon") as VisualElement;
         Action<VisualElement, int> bindItem = (e, i) =>
         {
-            (e.Q<VisualElement>("name") as Label).text = _s_StorylineEditor._activeCharacters[i].name;
+            if (i < _s_StorylineEditor._activeCharacters.Count)
+            {
+                (e.Q<VisualElement>("name") as Label).text = _s_StorylineEditor._activeCharacters[i].name;
+            }
             (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = _s_StorylineEditor._tempCharIcon.texture;
         };
 

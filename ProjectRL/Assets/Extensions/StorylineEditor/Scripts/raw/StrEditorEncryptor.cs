@@ -39,7 +39,7 @@ public class StrEditorEncryptor : MonoBehaviour
         string modificatedFinalExtension = Modificate(convertedFinalExtension);
         string convertedKeyExtension = ConvertString(StrExtensions.Key);
         string modificatedKeyExtension = Modificate(convertedKeyExtension);
-        string convertedIVExtension = ConvertString(StrExtensions.iv);
+        string convertedIVExtension = ConvertString(StrExtensions.IV);
         string modificatedIVExtension = Modificate(convertedIVExtension);
         string modificatedFinalFilePath = _StrRootObject._folders._storylines + "/" + modificatedName + "." + modificatedFinalExtension;
         string modificatedKeyFilePath = _StrRootObject._folders._storylines + "/" + modificatedName + "." + modificatedKeyExtension;

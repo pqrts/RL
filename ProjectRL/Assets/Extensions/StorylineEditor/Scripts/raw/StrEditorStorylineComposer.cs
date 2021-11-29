@@ -49,12 +49,12 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._skip);
                     break;
                 case 1:
-                    
+
                     foreach (GameObject temp in uncomposedStoryline.ActiveCharacters)
                     {
                         _activeCharacters = _activeCharacters + temp.name + _tags._separator;
                     }
-          
+
                     break;
                 case 2:
                     stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._CGposition);
@@ -71,17 +71,36 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     {
                         stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._null);
                     }
-                
+
                     break;
                 case 3:
-                    stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._characterRelocated);
-                    for (int e = 0; e < activeCharacters.Count; e++)
+                    if (activeCharacters.Count != 0)
                     {
-                        string char_name = activeCharacters[e].ToString().Replace(" (UnityEngine.GameObject)", "");
-                        float pos_x = _activeRectTransforms[e].localPosition.x;
-                        float pos_y = _activeRectTransforms[e].localPosition.y;
-                        float pos_z = _activeRectTransforms[e].localPosition.z;
-                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + char_name + _tags._separator + pos_x + _tags._separator + pos_y + _tags._separator + pos_z + _tags._separator);
+                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._characterRelocated);
+                        for (int e = 0; e < activeCharacters.Count; e++)
+                        {
+                            string characterName = activeCharacters[e].ToString().Replace(" (UnityEngine.GameObject)", "");
+                            float positionX = _activeRectTransforms[e].localPosition.x;
+                            float positionY = _activeRectTransforms[e].localPosition.y;
+                            float positionZ = _activeRectTransforms[e].localPosition.z;
+                            stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + characterName + _tags._separator + positionX + _tags._separator + positionY + _tags._separator + positionZ + _tags._separator);
+                        }
+                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._characterRescaled);
+                        for (int e = 0; e < activeCharacters.Count; e++)
+                        {
+                            string characterName = activeCharacters[e].ToString().Replace(" (UnityEngine.GameObject)", "");
+                            float scaleX = _activeRectTransforms[e].localScale.x;
+                            float scaleY = _activeRectTransforms[e].localScale.y;
+                            float scaleZ = _activeRectTransforms[e].localScale.z;
+                            stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + characterName + _tags._separator + scaleX + _tags._separator + scaleY + _tags._separator + scaleZ + _tags._separator);
+                        }
+                    }
+                    else
+                    {
+                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._characterRelocated);
+                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._null);
+                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._characterRescaled);
+                        stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._null);
                     }
                     break;
                 case 4:

@@ -365,7 +365,15 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         SetPhrase(decomposedAction.Phrase);
         SetAuthor(decomposedAction.PhraseAuthor);
         SetCG(decomposedAction.CGImageName);
-        Debug.Log(decomposedAction.CGImageName);
+        DefineCharacterActivityState(decomposedAction.ActiveCharacters);
+        foreach (KeyValuePair<string, Vector3> characterPosition in decomposedAction.ActiveCharactersPositions)
+        {
+            RelocateObjects(characterPosition.Key, characterPosition.Value.x);
+        }
+        foreach (KeyValuePair<string, Vector3> characterScale in decomposedAction.ActiveCharactersScales)
+        {
+            RescaleObjects(characterScale.Key, characterScale.Value);
+        }
     }
     private Boolean ActivateObjects()
     {
@@ -409,17 +417,26 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         return true;
     }
-    private Boolean RelocateObjects(string char_name, float pos_x)
+    private Boolean RelocateObjects(string characterName, float characterPositionX)
     {
         for (int i = 0; i < _requiredObjects.Count; i++)
         {
-            if (_requiredObjects[i].name == char_name)
+            if (_requiredObjects[i].name == characterName)
             {
-                _requiredObjects[i].GetComponent<RectTransform>().localPosition = new Vector3(pos_x, 0f, 0f);
-                _requiredObjects[i].GetComponent<RectTransform>().localScale = new Vector3(1.8f, 1.8f, 1.8f);
+                _requiredObjects[i].GetComponent<RectTransform>().localPosition = new Vector3(characterPositionX, 0f, 0f);
             }
         }
         return true;
+    }
+    private void RescaleObjects(string characterName, Vector3 characterScale)
+    {
+        for (int i = 0; i < _requiredObjects.Count; i++)
+        {
+            if (_requiredObjects[i].name == characterName)
+            {
+                _requiredObjects[i].GetComponent<RectTransform>().localScale = characterScale;
+            }
+        }
     }
     //   private Boolean Rescale_objects(string char_name, float sca_x, float sca_y, float sca_z)
     //   {
@@ -507,24 +524,71 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             EditorUtility.DisplayDialog("Notice", "This action already has a redirect.", "OK");
         }
     }
-    Boolean CheckCharacterActivation(string CharacterName)
+    private void DefineCharacterActivityState(List<string> actionActiveCharacters)
     {
-        if (_activatedCharacters.Count != 0)
+        if (actionActiveCharacters.Count != 0)
         {
-            foreach (string unit in _activatedCharacters)
+            List<int> activatedCharactersIndices = new List<int>();
+            List<int> remainActiveCharactersIndices = new List<int>();
+            List<int> deactivatedCharactersIndices = new List<int>();
+
+
+            foreach (string characterName in actionActiveCharacters)
             {
-                if (unit == CharacterName)
+                for (int i = 0; i < _requiredObjects.Count; i++)
                 {
-                    return false;
+                    string tempName = _requiredObjects[i].ToString().Replace(" (UnityEngine.GameObject)", "");
+                    if (tempName == characterName && characterName != _tags._null)
+                    {
+                        if (_activeCharacters.Count != 0)
+                        {
+                            if (_activeCharacters.Contains(_requiredObjects[i]))
+                            {
+                                remainActiveCharactersIndices.Add(i);
+                            }
+                            else
+                            {
+                                activatedCharactersIndices.Add(i);
+                            }
+                        }
+                        else
+                        {
+                            activatedCharactersIndices.Add(i);
+                        }
+                    }
                 }
             }
-            _activatedCharacters.Add(CharacterName);
+            deactivatedCharactersIndices = FormDeactivatedCharactersIndicesList(activatedCharactersIndices, remainActiveCharactersIndices);
+            foreach (int activatedCharacterIndex in activatedCharactersIndices)
+            {
+                string name = _requiredObjects[activatedCharacterIndex].name;
+                Debug.Log("activate" + name);
+                ActivateExistingCharacter(name);
+
+            }
+            foreach (int deactivatedCharacterIndex in deactivatedCharactersIndices)
+            {
+                string name = _requiredObjects[deactivatedCharacterIndex].name;
+                Debug.Log("deactivate" + name);
+                DeactivateCharacter(name);
+            }
+            _StrEvents.EditorUpdated();
         }
-        else
+
+    }
+    private List<int> FormDeactivatedCharactersIndicesList(List<int> activated, List<int> remain)
+    {
+
+        List<int> tempList = new List<int>();
+        for (int i = 0; i < _activeCharacters.Count; i++)
         {
-            _activatedCharacters.Add(CharacterName);
+            if (!activated.Contains(i) && !remain.Contains(i))
+            {
+                tempList.Add(i);
+            }
+
         }
-        return true;
+        return tempList;
     }
     Boolean CheckCharacterExistence(string char_name)
     {
@@ -583,14 +647,14 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         return false;
     }
-    public Boolean ActivatExistingCharacter(string char_name)
+    public Boolean ActivateExistingCharacter(string characterName)
     {
         foreach (var character in _requiredObjects)
         {
-            if (character.name == char_name)
+            if (character.name == characterName)
             {
-                string t = character.ToString().Replace(" (UnityEngine.GameObject)", "");
-                _activatedCharacters.Add(t);
+                string tempName = character.ToString().Replace(" (UnityEngine.GameObject)", "");
+                _activatedCharacters.Add(tempName);
                 character.SetActive(true);
                 _activeCharacters.Add(character);
                 return true;
