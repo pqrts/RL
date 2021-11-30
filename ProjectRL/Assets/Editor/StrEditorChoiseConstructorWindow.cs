@@ -63,7 +63,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     }
     private void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject)
     {
-      
+
     }
     private void OnStrEdUpdated()
     {
@@ -184,22 +184,29 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     }
     private string[] DecomposeChoiseOption(int OptionIndex)
     {
-        string[] decomposedChoiseOption = _choiseOptions[OptionIndex].Split(StrEditorRoot._tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        return decomposedChoiseOption;
+        if (_choiseOptions.Count != 0)
+        {
+            string[] decomposedChoiseOption = _choiseOptions[OptionIndex].Split(StrEditorRoot._tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            return decomposedChoiseOption;
+        }
+        return null;
     }
     private void SetupUIElementsOfChoiseOptionTemplate(VisualElement choiseOptionTemplateVE, string[] decomposedOption)
     {
-        (choiseOptionTemplateVE.Q<VisualElement>("number") as Label).text = "¹: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("currency_type") as Label).text = "Currency type: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("cost") as Label).text = "Cost: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("jump_to") as Label).text = "Jump to: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("item_ID") as Label).text = "Item ID: ";
-        (choiseOptionTemplateVE.Q<VisualElement>("status_number") as Label).text = decomposedOption[0];
-        (choiseOptionTemplateVE.Q<VisualElement>("status_currency_type") as Label).text = decomposedOption[1];
-        (choiseOptionTemplateVE.Q<VisualElement>("status_cost") as Label).text = decomposedOption[2];
-        (choiseOptionTemplateVE.Q<VisualElement>("status_jump_to") as Label).text = decomposedOption[3];
-        (choiseOptionTemplateVE.Q<VisualElement>("status_itemID") as Label).text = decomposedOption[4];
-        (choiseOptionTemplateVE.Q<VisualElement>("status_opt_text") as Label).text = decomposedOption[5];
+        if (_choiseOptions.Count != 0)
+        {
+            (choiseOptionTemplateVE.Q<VisualElement>("number") as Label).text = "¹: ";
+            (choiseOptionTemplateVE.Q<VisualElement>("currency_type") as Label).text = "Currency type: ";
+            (choiseOptionTemplateVE.Q<VisualElement>("cost") as Label).text = "Cost: ";
+            (choiseOptionTemplateVE.Q<VisualElement>("jump_to") as Label).text = "Jump to: ";
+            (choiseOptionTemplateVE.Q<VisualElement>("item_ID") as Label).text = "Item ID: ";
+            (choiseOptionTemplateVE.Q<VisualElement>("status_number") as Label).text = decomposedOption[0];
+            (choiseOptionTemplateVE.Q<VisualElement>("status_currency_type") as Label).text = decomposedOption[1];
+            (choiseOptionTemplateVE.Q<VisualElement>("status_cost") as Label).text = decomposedOption[2];
+            (choiseOptionTemplateVE.Q<VisualElement>("status_jump_to") as Label).text = decomposedOption[3];
+            (choiseOptionTemplateVE.Q<VisualElement>("status_itemID") as Label).text = decomposedOption[4];
+            (choiseOptionTemplateVE.Q<VisualElement>("status_opt_text") as Label).text = decomposedOption[5];
+        }
     }
     private void AddInstatiatedUIElementsToMainVE()
     {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using StorylineEditor;
+using System.Globalization;
 
 [RequireComponent(typeof(TaglistReader))]
 [RequireComponent(typeof(StrEditorGodObject))]
@@ -103,7 +104,6 @@ public class StrEditorDecomposer : MonoBehaviour
         string[] characters = activeCharacterRaw.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         foreach (string character in characters)
         {
-            Debug.Log("decomposed" + character);
             activeCharacters.Add(character);
         }
         return activeCharacters;
@@ -123,12 +123,10 @@ public class StrEditorDecomposer : MonoBehaviour
                         if (selectedAction[k] != StrConstantValues.StrFileStepGap + _tags._characterRescaled)
                         {
                             string tempRawPosition = selectedAction[k].Replace(StrConstantValues.StrFileStepGap, "");
-                            Debug.Log(tempRawPosition);
                             string[] characterPositionRaw = tempRawPosition.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                            int characterPositionX = int.Parse(characterPositionRaw[1]);
-                            int characterPositionY = int.Parse(characterPositionRaw[2]);
-                        
-                            int characterPositionZ = int.Parse(characterPositionRaw[3]);
+                            int characterPositionX = int.Parse(characterPositionRaw[1], CultureInfo.InvariantCulture);
+                            int characterPositionY = int.Parse(characterPositionRaw[2], CultureInfo.InvariantCulture);
+                            int characterPositionZ = int.Parse(characterPositionRaw[3], CultureInfo.InvariantCulture);
                             Vector3 characterPosition = new Vector3(characterPositionX, characterPositionY, characterPositionZ);
                             activeCharactersPositions.Add(characterPositionRaw[0], characterPosition);
                         }
@@ -147,9 +145,9 @@ public class StrEditorDecomposer : MonoBehaviour
         }
         return activeCharactersPositions;
     }
-    private Dictionary<string, Vector3> ReadActiveCharacterScales(List<string> selectedAction)
+    private Dictionary<string, Vector2> ReadActiveCharacterScales(List<string> selectedAction)
     {
-        Dictionary<string, Vector3> activeCharactersScales = new Dictionary<string, Vector3>();
+        Dictionary<string, Vector2> activeCharactersScales = new Dictionary<string, Vector2>();
         for (int i = 0; i < selectedAction.Count; i++)
         {
             if (selectedAction[i] == StrConstantValues.StrFileStepGap + _tags._characterRescaled)
@@ -159,14 +157,13 @@ public class StrEditorDecomposer : MonoBehaviour
                     int m = i + 1;
                     for (int k = m; k < selectedAction.Count; k++)
                     {
-                        if (selectedAction[k] != StrConstantValues.StrFileStepGap + _tags._skip)
+                        if (selectedAction[k] != _tags._stepsEnd)
                         {
                             string tempRawScale = selectedAction[k].Replace(StrConstantValues.StrFileStepGap, "");
                             string[] characterScaleRaw = tempRawScale.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                             float characterScaleX = float.Parse(characterScaleRaw[1]);
                             float characterScaleY = float.Parse(characterScaleRaw[2]);
-                            float characterScaleZ = float.Parse(characterScaleRaw[3]);
-                            Vector3 characterScale = new Vector3(characterScaleX, characterScaleY, characterScaleZ);
+                            Vector2 characterScale = new Vector2(characterScaleX, characterScaleY);
                             activeCharactersScales.Add(characterScaleRaw[0], characterScale);
                         }
                         else

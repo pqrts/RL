@@ -24,12 +24,12 @@ public class StrEditorMainWindow : EditorWindow
     private string _characterSprite;
     private string _storylineTitle;
     private string _phraseFieldValue;
-
+    private bool _canRelocateCG;
     private RectTransform _SelectedCharacterRectTransform;
 
     private StrEditorEvents _StrEvents;
     private StrEditorGodObject _s_StorylineEditor;
-
+    private Scroller _CGPositionSlider;
     [MenuItem("Storyline Editor/Open")]
     public static StrEditorMainWindow ShowWindow()
     {
@@ -41,9 +41,11 @@ public class StrEditorMainWindow : EditorWindow
     }
     void OnEnable()
     {
+        _canRelocateCG = true;
         _StrEvents = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
         _s_StorylineEditor = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
         _StrEvents.StrEditorUpdated += OnStrEdUpdated;
+        _StrEvents.StrCGPositionSliderChanged += OnStrCGpositionSliderChanged;
         if (_s_StorylineEditor != null)
         {
             _s_StorylineEditor.Init();
@@ -53,7 +55,22 @@ public class StrEditorMainWindow : EditorWindow
     private void OnStrEdUpdated()
     {
         CreateGUI();
+    }
+    private void OnStrCGpositionSliderChanged(float sliderPosition)
+    {
+        _canRelocateCG = false;
+        Debug.Log(sliderPosition);
+        _CGPositionSlider.slider.value = sliderPosition;
+        if  (ConvertSliderToCGPosition(sliderPosition))
+        {
+            _StrEvents.EditorUpdated();
+            _canRelocateCG = true;
+        }
 
+        Debug.Log(_CGPositionSlider.value);
+        
+     //   ConvertSliderToCGPosition(_CGPositionSlider.value);
+        
     }
     private void CreateGUI()
     {
@@ -67,8 +84,8 @@ public class StrEditorMainWindow : EditorWindow
         var SS2 = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/ñhariconTemplateUSS.uss");
         rootVisualElement.styleSheets.Add(SS2);
 
-        Scroller _slider_CGPosition = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
-        _slider_CGPosition.style.height = 20f;
+        _CGPositionSlider = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
+        _CGPositionSlider.style.height = 20f;
         //Charlist setup
         var Characters_listview_items = new List<GameObject>();
 
@@ -329,7 +346,8 @@ public class StrEditorMainWindow : EditorWindow
         {
             if (ValidateStoryline())
             {
-                Debug.Log(" doing nothing");
+                _CGPositionSlider.value = 9f;
+                ConvertSliderToCGPosition(_CGPositionSlider.value);
                 _StrEvents.EditorUpdated();
             }
         });
@@ -469,10 +487,11 @@ public class StrEditorMainWindow : EditorWindow
         VTuxml.Q<VisualElement>("CharspriteHolder").Add(_b_DeleteCharacterFromStoryline);
         VTuxml.Q<VisualElement>("charlistBackgroung").Add(_listview_Characters);
         VTuxml.Q<VisualElement>("steplistArea").Add(_listview_Steps);
-        VTuxml.Q<VisualElement>("CG_sliderHolder").Add(_slider_CGPosition);
+        VTuxml.Q<VisualElement>("CG_sliderHolder").Add(_CGPositionSlider);
         VTuxml.Q<VisualElement>("buttonHolder1").Add(deleteSelectedStepButton);
-
-        _slider_CGPosition.valueChanged += (e => ConvertSliderToCGPosition(_slider_CGPosition.value));
+     //   _s_StorylineEditor.SetCGPositionSliderValue(_s_StorylineEditor._CGImage.rectTransform.localPosition.x);
+     //   _CGPositionSlider.valueChanged += (e => ConvertSliderToCGPosition(_CGPositionSlider.value));
+     
         _field_Phrase.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SelectPhrase(_field_Phrase.value));
         _field_Phrase.value = _s_StorylineEditor._phrase;
 
@@ -489,13 +508,14 @@ public class StrEditorMainWindow : EditorWindow
             }
         }
     }
-    void ConvertSliderToCGPosition(float CGSliderValue)
+    private Boolean ConvertSliderToCGPosition(float CGSliderValue)
     {
+        Debug.Log(CGSliderValue);
         float PoolX = _s_StorylineEditor._ñanvasMovingPool;
         float SliderValueOfDivision = PoolX / 100;
         float CGPosisitionX = CGSliderValue * SliderValueOfDivision;
-        _s_StorylineEditor.MoveCG(CGPosisitionX);
-
+        _s_StorylineEditor.RelocateCG(CGPosisitionX);
+        return true;
     }
 
     void SetSelectedCharacterParent()
@@ -578,5 +598,6 @@ public class StrEditorMainWindow : EditorWindow
     private void OnDisable()
     {
         _StrEvents.StrEditorUpdated -= OnStrEdUpdated;
+        _StrEvents.StrCGPositionSliderChanged -= OnStrCGpositionSliderChanged;
     }
 }

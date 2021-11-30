@@ -10,6 +10,8 @@ public class StrEditorEvents : MonoBehaviour, IStrEventSystem
 {
     public delegate void OnStrEditorUpdated();
     public event OnStrEditorUpdated StrEditorUpdated;
+    public delegate void OnStrCGPositionSliderChanged(float sliderValue);
+    public event OnStrCGPositionSliderChanged StrCGPositionSliderChanged;
     public delegate void OnStrEditorRootObjectRequested();
     public event OnStrEditorRootObjectRequested StrEditorRootObjectRequested;
     public delegate void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject);
@@ -17,6 +19,10 @@ public class StrEditorEvents : MonoBehaviour, IStrEventSystem
     public void EditorUpdated()
     {
         StrEditorUpdated?.Invoke();
+    }
+    public void ChangeCGPositionSliderValue(float sliderValue)
+    {
+        StrCGPositionSliderChanged?.Invoke(sliderValue);
     }
     public void RequestStrEditorRootObject()
     {
@@ -169,7 +175,7 @@ namespace StorylineEditor
         public Vector3 CGPosition;
         public List<string> ActiveCharacters;
         public Dictionary<string, Vector3> ActiveCharactersPositions;
-        public Dictionary<string, Vector3> ActiveCharactersScales;
+        public Dictionary<string, Vector2> ActiveCharactersScales;
         public List<string> ChoiseOptions;
         public string JumpToAction;
     }
