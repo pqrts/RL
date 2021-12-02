@@ -127,10 +127,16 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _movingPoolPositions = new float[] { LeftX, RightX };
         return true;
     }
+    public float GetReferenceCGResolutionWidht()
+    {
+        float resolution = _refereceResolutionWidht;
+        return resolution;
+    }
     public void SetCGPositionSliderValue(float CGPositionX)
     {
         float sliderValueOfDivision = _ñanvasMovingPool / 100;
-        float sliderValue = CGPositionX / sliderValueOfDivision;
+        float x = _movingPoolPositions[0] - CGPositionX;
+        float sliderValue = x / sliderValueOfDivision;
         Debug.Log(sliderValue);
         if (sliderValue < 0)
         {
@@ -142,9 +148,13 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             _StrEvents.ChangeCGPositionSliderValue(sliderValue);
         }
     }
-    public void RelocateCG(float CGPositionX)
+    public void RelocateCG(float CGPositionX, float sliderValue)
     {
         float x = _movingPoolPositions[0] - CGPositionX;
+
+
+
+        Debug.Log("relocate" + x);
         _CGRectTransform.localPosition = new Vector3(x, _CGRectTransform.localPosition.y, _CGRectTransform.localPosition.z);
     }
 
@@ -391,7 +401,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         SetChoiseOptions(decomposedAction.ChoiseOptions);
         SetJumpMarker(decomposedAction.JumpToAction);
-        RelocateCG(decomposedAction.CGPosition.x);
+
         SetCGPositionSliderValue(decomposedAction.CGPosition.x);
     }
     private Boolean ActivateObjects()

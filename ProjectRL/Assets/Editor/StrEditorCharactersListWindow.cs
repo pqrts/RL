@@ -41,7 +41,7 @@ public class StrEditorCharactersListWindow : EditorWindow
     {
         var VT = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/char_activation.uxml");
         VisualElement VTuxml = VT.Instantiate();
-        var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/charIconTemplate.uxml");
+        var VTListview = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Assets/Extensions/StorylineEditor/UXML/ActiveCharacterTemplate.uxml");
         VisualElement VTlistview_element = VTListview.Instantiate();
         rootVisualElement.Add(VTuxml);
 

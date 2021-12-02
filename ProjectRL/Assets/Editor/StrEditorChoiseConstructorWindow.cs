@@ -14,8 +14,8 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     private VisualTreeAsset _choiseConstructorVTAsset;
     private VisualElement _choiseOptionListviewItemVE;
     private VisualTreeAsset _choiseOptionListviewItemVTAsset;
-    private StrEditorGodObject StrEditorRoot;
-    private StrEditorEvents StrEvents;
+    private StrEditorGodObject _StrEditorRoot;
+    private StrEditorEvents _StrEvents;
     private int _costFieldValue;
     private string _optionTextFieldValue;
     private int _jumpToActionFieldValue;
@@ -44,22 +44,22 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     private void OnEnable()
     {
         SetupStrEventsComponent();
-        StrEvents.StrEditorUpdated += OnStrEdUpdated;
-        StrEvents.StrEditorRootObjectDeclared += OnStrEditorRootObjectDeclared;
-        StrEvents.RequestStrEditorRootObject();
+        _StrEvents.StrEditorUpdated += OnStrEdUpdated;
+        _StrEvents.StrEditorRootObjectDeclared += OnStrEditorRootObjectDeclared;
+        _StrEvents.RequestStrEditorRootObject();
     }
     private void SetupStrEventsComponent()
     {
         StrEditorEvents tempStrEvents = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
         if (tempStrEvents is IStrEventSystem)
         {
-            StrEvents = tempStrEvents;
+            _StrEvents = tempStrEvents;
         }
         else
         {
             throw new ArgumentException("'StrEditorEvents' must implement the 'IStrEventSystem' interface");
         }
-        StrEditorRoot = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
+        _StrEditorRoot = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
     }
     private void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject)
     {
@@ -108,7 +108,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     }
     private void SetChoiseOptionsList()
     {
-        List<string> tempChoiseOptions = StrEditorRoot.GetChoiseOptionsList();
+        List<string> tempChoiseOptions = _StrEditorRoot.GetChoiseOptionsList();
         if (tempChoiseOptions.Count != 0)
         {
             _choiseOptions = tempChoiseOptions;
@@ -135,7 +135,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             _addOptionButton = new Button(() => CreateOption());
             _deleteOptionButton = new Button(() => DeleteOption());
-            _addOptionToActionButton = new Button(() => StrEvents.EditorUpdated());
+            _addOptionToActionButton = new Button(() => _StrEvents.EditorUpdated());
             _moveOptionUpButton = new Button(() => MoveChoiseOption(StrListDirection.Up));
             _moveOptionDownButton = new Button(() => MoveChoiseOption(StrListDirection.Down));
             _addOptionButton.text = "Add option";
@@ -186,7 +186,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     {
         if (_choiseOptions.Count != 0)
         {
-            string[] decomposedChoiseOption = _choiseOptions[OptionIndex].Split(StrEditorRoot._tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            string[] decomposedChoiseOption = _choiseOptions[OptionIndex].Split(_StrEditorRoot._tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
             return decomposedChoiseOption;
         }
         return null;
@@ -250,7 +250,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                 }
                 if (FieldType == StrFieldType.JumpToField)
                 {
-                    if (out_value > 0 && out_value <= StrEditorRoot._totalActions)
+                    if (out_value > 0 && out_value <= _StrEditorRoot._totalActions)
                     {
                         _jumpToActionFieldValue = out_value;
                     }
@@ -297,16 +297,16 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                 _costFieldValue = 0;
                 _costField.value = "0";
                 StrChoiseOption choiseOption = SetChoiseOptionValues();
-                StrEditorRoot.CreateChoiseOption(choiseOption);
-                StrEvents.EditorUpdated();
+                _StrEditorRoot.CreateChoiseOption(choiseOption);
+                _StrEvents.EditorUpdated();
             }
             else
             {
                 if (_costFieldValue != 0)
                 {
                     StrChoiseOption choiseOption = SetChoiseOptionValues();
-                    StrEditorRoot.CreateChoiseOption(choiseOption);
-                    StrEvents.EditorUpdated();
+                    _StrEditorRoot.CreateChoiseOption(choiseOption);
+                    _StrEvents.EditorUpdated();
                 }
                 else
                 {
@@ -318,7 +318,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             EditorUtility.DisplayDialog("Notice", "Fill all fields", "OK");
         }
-        StrEvents.EditorUpdated();
+        _StrEvents.EditorUpdated();
     }
     private StrChoiseOption SetChoiseOptionValues()
     {
@@ -334,13 +334,13 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
     {
         if (_optionsListview.selectedItem != null)
         {
-            StrEditorRoot.DeleteChoiseOption(_optionsListview.selectedIndex);
+            _StrEditorRoot.DeleteChoiseOption(_optionsListview.selectedIndex);
         }
         else
         {
             EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
         }
-        StrEvents.EditorUpdated();
+        _StrEvents.EditorUpdated();
     }
     private void MoveChoiseOption(StrListDirection moveDirection)
     {
@@ -350,7 +350,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
             {
                 if (_optionsListview.selectedIndex != 0)
                 {
-                    StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrListDirection.Up);
+                    _StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrListDirection.Up);
                     _optionsListview.selectedIndex = _optionsListview.selectedIndex - 1;
                 }
                 else
@@ -363,7 +363,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                 int selected_option_id = _optionsListview.selectedIndex;
                 if ((_optionsListview.selectedIndex + 1) != _choiseOptions.Count)
                 {
-                    StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrListDirection.Down);
+                    _StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrListDirection.Down);
                     _optionsListview.selectedIndex = _optionsListview.selectedIndex + 1;
                 }
                 else
@@ -376,11 +376,11 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         {
             EditorUtility.DisplayDialog("Notice", "Select option first", "OK");
         }
-        StrEvents.EditorUpdated();
+        _StrEvents.EditorUpdated();
     }
     private Boolean ValidateStoryline()
     {
-        if (StrEditorRoot.CheckStorylineExistence(StrEditorRoot._StorylineName))
+        if (_StrEditorRoot.CheckStorylineExistence(_StrEditorRoot._StorylineName))
         {
             return true;
         }
@@ -393,7 +393,7 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
 
     private void OnDisable()
     {
-        StrEvents.StrEditorUpdated -= OnStrEdUpdated;
-        StrEvents.StrEditorRootObjectDeclared -= OnStrEditorRootObjectDeclared;
+        _StrEvents.StrEditorUpdated -= OnStrEdUpdated;
+        _StrEvents.StrEditorRootObjectDeclared -= OnStrEditorRootObjectDeclared;
     }
 }
