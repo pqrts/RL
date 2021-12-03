@@ -11,8 +11,6 @@ using System.IO;
 
 public class StrEditorMainWindow : EditorWindow
 {
-    public int id_action = 0;
-    public int id_step;
     private VisualElement _mainWindowMainVE;
     private VisualTreeAsset _mainWindowVTAsset;
     private VisualElement _activeCharactersListviewItemVE;
@@ -38,164 +36,73 @@ public class StrEditorMainWindow : EditorWindow
     private Button _deleteSelectedStepButton;
     private ListView _activeCharactersListview;
     private ListView _stepsListview;
+    private DropdownField _translocationModeDropdown;
+    private int _translocationModeDropdownValue = 0;
+    private Label _initializationStatusLabel;
+    private Label _actionStatusLabel;
     private Sprite _previewBody;
     private Sprite _previewHaircut;
     private Sprite _previewClothes;
     private Sprite _previewMakeup;
     private string _characterName;
     private string _characterDescription;
-    private string _characterSprite;
     private string _storylineTitle;
-    private string _phraseFieldValue;
-    private bool _canRelocateCG;
+    private string _phraseFieldValue;  
     private RectTransform _SelectedCharacterRectTransform;
-    [SerializeField] private float _CGPositionsSliderValue;
+    private float _CGPositionsSliderValue;
     private StrEditorEvents _StrEvents;
     private StrEditorGodObject _StrEditorRoot;
-    private Scroller _CGPositionSlider;
+    private Scroller _CGPositionScroller;
+    private List<string> _translocationModeDropdownChoises = new List<string> { "By scroller", "Position of the current step" };
+
     [MenuItem("Storyline Editor/Open")]
     public static StrEditorMainWindow ShowWindow()
     {
-        StrEditorMainWindow main_window = GetWindow<StrEditorMainWindow>();
-        main_window.titleContent = new GUIContent("Storyline Editor");
-        main_window.minSize = new Vector2(845f, 475f);
-        main_window.maxSize = new Vector2(845f, 475f);
-        return main_window;
+        StrEditorMainWindow mainWindow = GetWindow<StrEditorMainWindow>();
+        mainWindow.titleContent = new GUIContent("Storyline Editor");
+        mainWindow.minSize = new Vector2(845f, 475f);
+        mainWindow.maxSize = new Vector2(845f, 475f);
+        return mainWindow;
     }
     void OnEnable()
-    {
-        _canRelocateCG = true;
+    {     
         _StrEvents = (StrEditorEvents)FindObjectOfType(typeof(StrEditorEvents));
         _StrEditorRoot = (StrEditorGodObject)FindObjectOfType(typeof(StrEditorGodObject));
-        _StrEvents.StrEditorUpdated += OnStrEdUpdated;
-        _StrEvents.StrCGPositionSliderChanged += OnStrCGpositionSliderChanged;
+        _StrEvents.StrEditorUpdated += OnStrEditorUpdated;
+        _StrEvents.StrCGPositionChanged += OnStrCGPositionChanged;
         if (_StrEditorRoot != null)
         {
             _StrEditorRoot.Init();
         }
     }
-
-    private void OnStrEdUpdated()
+    private void OnStrEditorUpdated()
     {
         CreateGUI();
     }
-    private void OnStrCGpositionSliderChanged(float sliderPosition)
-    {
-        _canRelocateCG = false;
-        _CGPositionsSliderValue = sliderPosition;
-        Debug.Log(sliderPosition + "//" + _CGPositionsSliderValue);
-        ConvertSliderToCGPosition(_CGPositionsSliderValue);
+    private void OnStrCGPositionChanged()
+    {           
+        _translocationModeDropdown.value = _translocationModeDropdownChoises[1];
+        _translocationModeDropdownValue = 1;   
         _StrEvents.EditorUpdated();
     }
     private void CreateGUI()
     {
         InstantiateMainVisualElement();
-        InstatiateActiveCharactersListviewItemVE();
+        InstantiateActiveCharactersListviewItemVE();
         InstantiateStyleSheets();
-        InstatiateTextFields();
+        InstantiateTextFields();
         RegisterTextFieldsCallback();
-        InstatiateButtons();
-        InstatiateActiveCharactersListview();
-
-        _CGPositionSlider = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
-        _CGPositionSlider.style.height = 20f;
-
-        // steplist setup
-        var items2 = new List<int>();
-
-        for (int i = 0; i < _StrEditorRoot._totalStepsCount.Count; i++)
-            items2.Add(i);
-        Func<VisualElement> makeItem2 = () => _activeCharactersListviewItemVTAsset.CloneTree();
-        Label element_name2 = _activeCharactersListviewItemVE.Q<VisualElement>("name") as Label;
-        VisualElement element_icon2 = _activeCharactersListviewItemVE.Q<VisualElement>("icon") as VisualElement;
-        Action<VisualElement, int> bindItem2 = (e, i) =>
-        {
-
-            (e.Q<VisualElement>("name") as Label).text = "Step: " + i.ToString();
-            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = _StrEditorRoot._tempCharIcon.texture;
-        };
-
-        const int itemHeight2 = 30;
-        _stepsListview = new ListView(items2, itemHeight2, makeItem2, bindItem2);
-
-        _stepsListview.selectionType = SelectionType.Single;
-
-        _stepsListview.onItemsChosen += obj =>
-        {
-            Debug.Log(_stepsListview.selectedItem);
-        };
-        _stepsListview.onSelectionChange += objects =>
-        {
-            Debug.Log(_stepsListview.selectedItem);
-        };
-        _stepsListview.style.flexGrow = 1.0f;
-        /////////////////////////////////////////////////////////////
-        //////
-        Label _l_Charlist = _mainWindowMainVE.Q<VisualElement>("charlist") as Label;
-        _l_Charlist.text = "Active Characters";
-        Label _l_Preview = _mainWindowMainVE.Q<VisualElement>("preview") as Label;
-        _l_Preview.text = "Character preview";
-        Label _l_CharacterDescription = _mainWindowMainVE.Q<VisualElement>("description") as Label;
-        _l_CharacterDescription.text = "Description";
-        Label _l_Tools = _mainWindowMainVE.Q<VisualElement>("toolbar1") as Label;
-        _l_Tools.text = "Tools";
-
-        Label _l_FileOptions = _mainWindowMainVE.Q<VisualElement>("toolbar2") as Label;
-        _l_FileOptions.text = "File options";
-
-        Label _l_EditingOptions = _mainWindowMainVE.Q<VisualElement>("toolbar3") as Label;
-        _l_EditingOptions.text = "Editing options";
-
-        Label _l_CharacterName = _mainWindowMainVE.Q<VisualElement>("charname") as Label;
-        _l_CharacterName.text = "Runtime Name";
-        Label _l_CharaterSprite = _mainWindowMainVE.Q<VisualElement>("sprites") as Label;
-        _l_CharaterSprite.text = "Character options";
-
-        Label _l_Status = _mainWindowMainVE.Q<VisualElement>("status") as Label;
-        _l_Status.text = "Initialization : " + _StrEditorRoot._initStatus + "      Current file : " + _StrEditorRoot._StorylineName;
-        Label _l_Status2 = _mainWindowMainVE.Q<VisualElement>("status2") as Label;
-        _l_Status2.text = "Action: " + _StrEditorRoot._actionID + " (Total: " + _StrEditorRoot._actionsTotal.Count + ") / Step: " + _StrEditorRoot._stepID + " (Total: " + _StrEditorRoot._totalStepsCount.Count + ")";
-
-        Label _l_StepsList = _mainWindowMainVE.Q<VisualElement>("steplist") as Label;
-        _l_StepsList.text = "Steps list";
-        Label _l_CGSlider = _mainWindowMainVE.Q<VisualElement>("CGrlabel") as Label;
-        _l_CGSlider.text = "CG position";
-
-        // CG preview
-        if (_StrEditorRoot._CGsprite != null)
-        {
-            _mainWindowMainVE.Q<VisualElement>("CGpreviewArea").style.backgroundImage = _StrEditorRoot._CGsprite.texture;
-        }
-        var SS4 = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/InputFieldCustom.uss");
-        // rootVisualElement.styleSheets.Add(SS4);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar").Add(_controlPanelButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar").Add(_characterConstructorButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar2").Add(_newStrButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar2").Add(_openStrButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar2").Add(_saveButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_selectCGButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_openCharactersListButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addCharacterButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addJumpMarkerButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addChoiseButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addEffectButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_newStepButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_newActionButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_exportToStrButton);
-        _mainWindowMainVE.Q<VisualElement>("phraseHolder2").Add(_phraseField);
-        _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_deactivateCharacterButton);
-        _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_setAuthorButton);
-        _mainWindowMainVE.Q<VisualElement>("charlistBackgroung").Add(_activeCharactersListview);
-        _mainWindowMainVE.Q<VisualElement>("steplistArea").Add(_stepsListview);
-        _mainWindowMainVE.Q<VisualElement>("CG_sliderHolder").Add(_CGPositionSlider);
-        _mainWindowMainVE.Q<VisualElement>("buttonHolder1").Add(_deleteSelectedStepButton);
-
-        // _s_StorylineEditor.SetCGPositionSliderValue(_s_StorylineEditor._CGImage.rectTransform.localPosition.x);
-        _CGPositionSlider.value = _CGPositionsSliderValue;
-        if (_StrEditorRoot._actionID > _StrEditorRoot._totalActions)
-        {
-            _CGPositionSlider.valueChanged += (e => ConvertSliderToCGPosition(_CGPositionSlider.value));
-        }
+       
+        InstantiateActiveCharactersListview();
+        InstantiateButtons();
+        InstantiateStepsListview();
+        SetupStepsListviewItemsList();
+        InstantiateScrollers();
+        RegisterScrollersCallbacks();
+        InstantiateStatusLabels();
+        InstatiateDropDownFields();
+        SetupCGPreview();
+        AddInstatiatedUIElementsToMainVE();
     }
     private void InstantiateMainVisualElement()
     {
@@ -210,7 +117,7 @@ public class StrEditorMainWindow : EditorWindow
             Debug.Log(ex);
         }
     }
-    private void InstatiateActiveCharactersListviewItemVE()
+    private void InstantiateActiveCharactersListviewItemVE()
     {
         try
         {
@@ -227,7 +134,7 @@ public class StrEditorMainWindow : EditorWindow
         _mainWindowSS = AssetDatabase.LoadAssetAtPath<StyleSheet>("Assets/Extensions/StorylineEditor/USS/MainWindow.uss");
         rootVisualElement.styleSheets.Add(_mainWindowSS);
     }
-    private void InstatiateTextFields()
+    private void InstantiateTextFields()
     {
         _phraseField = new TextField();
         _phraseField.Q(TextField.textInputUssName).AddToClassList("TextField-Editor");
@@ -241,7 +148,7 @@ public class StrEditorMainWindow : EditorWindow
     {
         _phraseField.Q(TextField.textInputUssName).RegisterCallback<FocusOutEvent>(e => SelectPhrase(_phraseField.value));
     }
-    private void InstatiateButtons()
+    private void InstantiateButtons()
     {
         _newStrButton = new Button(() => StrEditorStorylineCreatorWindow.ShowWindow());
         _openStrButton = new Button(() => SelectStoryline());
@@ -278,10 +185,10 @@ public class StrEditorMainWindow : EditorWindow
             _exportToStrButton.text = "Export to .str";
             _deactivateCharacterButton.text = "Deactivate Character";
             _setAuthorButton.text = "Set as author";
-            _deleteSelectedStepButton.text = "Delete selected step";
+            _deleteSelectedStepButton.text = "Delete selected step";         
         }
     }
-    private void InstatiateActiveCharactersListview()
+    private void InstantiateActiveCharactersListview()
     {
         List<GameObject> activeCharactersListviewItems = SetupActiveCharactersListviewItemsList();
         Func<VisualElement> makeItem = () => _activeCharactersListviewItemVTAsset.CloneTree();
@@ -309,24 +216,99 @@ public class StrEditorMainWindow : EditorWindow
             }
         return itemsList;
     }
+    private void InstantiateStepsListview()
+    {
+        List<int> stepsListviewItems = SetupStepsListviewItemsList();
+        Func<VisualElement> makeItem = () => _activeCharactersListviewItemVTAsset.CloneTree();
+        Action<VisualElement, int> bindItem = (e, i) =>
+        {
+            (e.Q<VisualElement>("name") as Label).text = "Step: " + i.ToString();
+            (e.Q<VisualElement>("icon") as VisualElement).style.backgroundImage = _StrEditorRoot._tempCharIcon.texture;
+        };
+        _stepsListview = new ListView(stepsListviewItems, StrConstantValues.StandartListviewItemHeight, makeItem, bindItem);
+        _stepsListview.selectionType = SelectionType.Single;
+        _stepsListview.onItemsChosen += obj => Debug.Log("1");
+        _stepsListview.onSelectionChange += objects => Debug.Log("1");
+        _stepsListview.style.flexGrow = 1.0f;
+    }
+    private List<int> SetupStepsListviewItemsList()
+    {
+        List<int> itemsList = new List<int>();
+        for (int i = 0; i < _StrEditorRoot._totalStepsCount.Count; i++)
+        {
+            itemsList.Add(i);
+        }
+        return itemsList;
+    }
     private void OnActiveCharacterListviewItemSelected()
     {
         string tempCharacterName = _activeCharactersListview.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
         SetSelectedCharacterRectTransform(tempCharacterName);
-        if (GetPreviewComponents(_activeCharactersListview.selectedIndex))
+        GetPreviewComponents(_activeCharactersListview.selectedIndex);
+        if (_previewBody != null && _previewClothes != null && _previewHaircut != null && _previewMakeup != null)
         {
-            if (_previewBody != null && _previewClothes != null && _previewHaircut != null && _previewMakeup != null)
-            {
-                _mainWindowMainVE.Q<VisualElement>("previewHolder").style.backgroundImage = _previewBody.texture;
-                _mainWindowMainVE.Q<VisualElement>("previewHolder2").style.backgroundImage = _previewClothes.texture;
-                _mainWindowMainVE.Q<VisualElement>("previewHolder3").style.backgroundImage = _previewHaircut.texture;
-                _mainWindowMainVE.Q<VisualElement>("previewHolder4").style.backgroundImage = _previewMakeup.texture;
-                Label _characterNameLabel = _mainWindowMainVE.Q<VisualElement>("namecontent") as Label;
-                _characterNameLabel.text = _characterName;
-                Label _characterDescriptionLabel = _mainWindowMainVE.Q<VisualElement>("descrcontent") as Label;
-                _characterDescriptionLabel.text = _characterDescription;
-            }
+            _mainWindowMainVE.Q<VisualElement>("previewHolder").style.backgroundImage = _previewBody.texture;
+            _mainWindowMainVE.Q<VisualElement>("previewHolder2").style.backgroundImage = _previewClothes.texture;
+            _mainWindowMainVE.Q<VisualElement>("previewHolder3").style.backgroundImage = _previewHaircut.texture;
+            _mainWindowMainVE.Q<VisualElement>("previewHolder4").style.backgroundImage = _previewMakeup.texture;
+            Label _characterNameLabel = _mainWindowMainVE.Q<VisualElement>("namecontent") as Label;
+            _characterNameLabel.text = _characterName;
+            Label _characterDescriptionLabel = _mainWindowMainVE.Q<VisualElement>("descrcontent") as Label;
+            _characterDescriptionLabel.text = _characterDescription;
         }
+          }
+    private void InstantiateScrollers()
+    {
+        _CGPositionScroller = new Scroller(0, 100, (v) => { }, SliderDirection.Horizontal);
+        _CGPositionScroller.style.height = 20f;
+    }
+    private void RegisterScrollersCallbacks()
+    {
+        _CGPositionScroller.valueChanged += (e => ConvertSliderToCGPosition(_CGPositionScroller.value));
+    }
+    private void InstantiateStatusLabels()
+    {
+        _initializationStatusLabel = _mainWindowMainVE.Q<VisualElement>("status") as Label;
+        _initializationStatusLabel.text = "Initialization : " + _StrEditorRoot._initStatus + "      Current file : " + _StrEditorRoot._StorylineName;
+        _actionStatusLabel = _mainWindowMainVE.Q<VisualElement>("status2") as Label;
+        _actionStatusLabel.text = "Action: " + _StrEditorRoot._actionID + " (Total: " + _StrEditorRoot._actionsTotal.Count + ") / Step: " + _StrEditorRoot._stepID + " (Total: " + _StrEditorRoot._totalStepsCount.Count + ")";
+    }
+    private void InstatiateDropDownFields()
+    {
+        _translocationModeDropdown = new DropdownField("", _translocationModeDropdownChoises, _translocationModeDropdownValue);
+        _translocationModeDropdown.RegisterCallback<FocusOutEvent>(e => SetTranslocationModeDropdownValue(_translocationModeDropdown.value));
+    }
+    private void SetupCGPreview()
+    {
+        if (_StrEditorRoot._CGsprite != null)
+        {
+            _mainWindowMainVE.Q<VisualElement>("CGpreviewArea").style.backgroundImage = _StrEditorRoot._CGsprite.texture;
+        }
+    }
+    private void AddInstatiatedUIElementsToMainVE()
+    {
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar").Add(_controlPanelButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar").Add(_characterConstructorButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar2").Add(_newStrButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar2").Add(_openStrButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar2").Add(_saveButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_selectCGButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_openCharactersListButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addCharacterButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addJumpMarkerButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addChoiseButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addEffectButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_newStepButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_newActionButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_exportToStrButton);
+        _mainWindowMainVE.Q<VisualElement>("phraseHolder2").Add(_phraseField);
+        _mainWindowMainVE.Q<VisualElement>("labelCGtranlocationButtonHolder").Add(_translocationModeDropdown);
+        _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_deactivateCharacterButton);
+        _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_setAuthorButton);
+        _mainWindowMainVE.Q<VisualElement>("charlistBackgroung").Add(_activeCharactersListview);
+        _mainWindowMainVE.Q<VisualElement>("steplistArea").Add(_stepsListview);
+        _mainWindowMainVE.Q<VisualElement>("CG_sliderHolder").Add(_CGPositionScroller);
+        _mainWindowMainVE.Q<VisualElement>("buttonHolder1").Add(_deleteSelectedStepButton);
     }
     private void OpenControlPanel()
     {
@@ -395,6 +377,17 @@ public class StrEditorMainWindow : EditorWindow
             EditorUtility.DisplayDialog("Notice", "Select step first", "OK");
         }
     }
+    private void SetTranslocationModeDropdownValue(string value)
+    {
+        for (int i = 0; i < _translocationModeDropdownChoises.Count; i++)
+        {
+            if (_translocationModeDropdownChoises[i] == value)
+            {
+                _translocationModeDropdownValue = i;
+                Debug.Log(i);
+            }
+        }
+    }
     void SetSelectedCharacterRectTransform(string CharacterName)
     {
 
@@ -407,19 +400,18 @@ public class StrEditorMainWindow : EditorWindow
             }
         }
     }
-    private Boolean ConvertSliderToCGPosition(float CGSliderValue)
+    private void ConvertSliderToCGPosition(float CGSliderValue)
     {
-
-        Debug.Log("converted: " + CGSliderValue);
-        float PoolX = _StrEditorRoot._ñanvasMovingPool;
-
-        float SliderValueOfDivision = PoolX / 100;
-        Debug.Log(SliderValueOfDivision);
-        float CGPosisitionX = CGSliderValue * SliderValueOfDivision;
-        _StrEditorRoot.RelocateCG(CGPosisitionX, CGSliderValue);
-        _CGPositionsSliderValue = CGSliderValue;
-
-        return true;
+        if (_translocationModeDropdown.value == _translocationModeDropdownChoises[0])
+        {
+            Debug.Log("converted: " + CGSliderValue);
+            float PoolX = _StrEditorRoot._ñanvasMovingPool;
+            float SliderValueOfDivision = PoolX / 100;
+            Debug.Log(SliderValueOfDivision);
+            float CGPosisitionX = CGSliderValue * SliderValueOfDivision;
+            _StrEditorRoot.RelocateCG(CGPosisitionX);
+            _CGPositionsSliderValue = CGSliderValue;
+        }
     }
     void SetSelectedCharacterParent()
     {
@@ -471,7 +463,7 @@ public class StrEditorMainWindow : EditorWindow
         _StrEditorRoot._phrase = PhraseText;
         return (PhraseText);
     }
-    private Boolean GetPreviewComponents(int SelectedCharacterID)
+    private void GetPreviewComponents(int SelectedCharacterID)
     {
         StrCharacter tempStrCharacter = _StrEditorRoot._requiredObjects[SelectedCharacterID].GetComponent<Character>().GetCharacterParameters();
         _previewBody = tempStrCharacter.CharacterBody.sprite;
@@ -480,8 +472,6 @@ public class StrEditorMainWindow : EditorWindow
         _previewMakeup = tempStrCharacter.CharacterHaircut.sprite;
         _characterName = tempStrCharacter.CharacterRuntimeName;
         _characterDescription = tempStrCharacter.CharacterDescription;
-        _characterSprite = "get sprites list";
-        return true;
     }
     private Boolean ValidateStoryline()
     {
@@ -497,7 +487,7 @@ public class StrEditorMainWindow : EditorWindow
     }
     private void OnDisable()
     {
-        _StrEvents.StrEditorUpdated -= OnStrEdUpdated;
-        _StrEvents.StrCGPositionSliderChanged -= OnStrCGpositionSliderChanged;
+        _StrEvents.StrEditorUpdated -= OnStrEditorUpdated;
+        _StrEvents.StrCGPositionChanged -= OnStrCGPositionChanged;
     }
 }

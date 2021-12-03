@@ -37,9 +37,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         int stepID = uncomposedStoryline.StepID;
         RectTransform _CGRectTransform = uncomposedStoryline.CGRectTransform;
         List<GameObject> activeCharacters = uncomposedStoryline.ActiveCharacters;
-        List<RectTransform> _activeRectTransforms = uncomposedStoryline.ActiveRectTransforms;
-        List<string> activatedCharacters = uncomposedStoryline.ActivatedCharacters;
-        List<string> inactivatedCharacters = uncomposedStoryline.InactivatedCharacters;
+        List<RectTransform> _activeRectTransforms = uncomposedStoryline.ActiveRectTransforms;    
         for (int i = 0; i <= StrConstantValues.StepComposeStagesCount; i++)
         {
             switch (i)
@@ -150,6 +148,8 @@ public class StrEditorStorylineComposer : MonoBehaviour
         int actionID = uncomposedStoryline.ActionID;
         string phrase = uncomposedStoryline.Phrase;
         string phraseAuthor = uncomposedStoryline.PhraseAuthor;
+        bool isPhraseHolderActive = uncomposedStoryline.IsPhraseHolderActive;
+        RectTransform phraseHolderRectTransform = uncomposedStoryline.PhraseHolder.GetComponent<RectTransform>();
         string CGSpriteName = uncomposedStoryline.CGImage.sprite.ToString().Replace(" (UnityEngine.Sprite)", "");
         string _jumpMarker = uncomposedStoryline.JumpMarker;
         for (int i = 0; i <= StrConstantValues.ActionComposeStagesCount; i++)
@@ -163,6 +163,20 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     currentAction.Add(phrase);
                     currentAction.Add(_tags._author + _tags._separator + actionID);
                     currentAction.Add(phraseAuthor);
+                    currentAction.Add(_tags._phraseHolderState +_tags._separator + actionID);
+                    currentAction.Add(isPhraseHolderActive.ToString());
+                    currentAction.Add(_tags._praseHolderPosition + _tags._separator + actionID);
+                    if (phraseHolderRectTransform != null)
+                    {
+                        float positionX = phraseHolderRectTransform.localPosition.x;
+                        float positionY = phraseHolderRectTransform.localPosition.y;
+                        float positionZ = phraseHolderRectTransform.localPosition.z;
+                        currentAction.Add(positionX + _tags._separator + positionY + _tags._separator + positionZ);
+                    }
+                    else 
+                    {
+                        currentAction.Add(_tags._null);
+                    }                   
                     currentAction.Add(_tags._CG);
                     currentAction.Add(CGSpriteName);
                     break;

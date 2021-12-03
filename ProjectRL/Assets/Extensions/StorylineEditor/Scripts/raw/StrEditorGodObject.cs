@@ -41,27 +41,23 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     [HideInInspector] public List<Sprite> _requiredCG = new List<Sprite>();
     //steps parameters
     private List<RectTransform> _activeRectTransforms = new List<RectTransform>();
-    public List<GameObject> _activeCharacters = new List<GameObject>();
-    private List<string> _activatedCharacters = new List<string>();
-    private List<string> _inactivatedCharacters = new List<string>();
+    public List<GameObject> _activeCharacters = new List<GameObject>(); 
     private List<string> _activatedObjects = new List<string>();
     public List<string> _inactivatedObjects = new List<string>();
     public List<string> _choiseOptions = new List<string>();
-    [SerializeField] private List<string> _composedStoryline = new List<string>();
-
-    private string _toActivation;
-    private string _toInactivation;
+    [SerializeField] private List<string> _composedStoryline = new List<string>();    
     public string _StorylineName;
     //for str form
     public List<string> _initPart = new List<string>();
     public List<string> _storylineActions = new List<string>();
     private List<string> _curretActionSteps = new List<string>();
     [HideInInspector] public List<string> _totalStepsCount = new List<string>();
-
     [HideInInspector] public List<List<string>> _actionsTotal = new List<List<string>>();
     //scene
     [HideInInspector] public Sprite _CGsprite;
     public Image _CGImage;
+    private bool _isPhraseHolderActive;
+    [SerializeField] private GameObject _phraseHolder;
     private float _leftCameraBorderPosition;
     private float _rightCameraBorderPosition;
     private float[] _movingPoolPositions;
@@ -132,29 +128,16 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         float resolution = _refereceResolutionWidht;
         return resolution;
     }
-    public void SetCGPositionSliderValue(float CGPositionX)
-    {
-        float sliderValueOfDivision = _ñanvasMovingPool / 100;
-        float x = _movingPoolPositions[0] - CGPositionX;
-        float sliderValue = x / sliderValueOfDivision;
-        Debug.Log(sliderValue);
-        if (sliderValue < 0)
-        {
-            float tempValue = sliderValue * -1f;
-            _StrEvents.ChangeCGPositionSliderValue(tempValue);
-        }
-        else
-        {
-            _StrEvents.ChangeCGPositionSliderValue(sliderValue);
-        }
+    public void SetCGPosition(float CGPositionX)
+    {       
+        _CGRectTransform.localPosition = new Vector3(CGPositionX, _CGRectTransform.localPosition.y, _CGRectTransform.localPosition.z);
+        _StrEvents.CGPositionChanged();
     }
-    public void RelocateCG(float CGPositionX, float sliderValue)
+    public void RelocateCG(float CGPositionX)
     {
+        Debug.Log("relocate" + CGPositionX);
         float x = _movingPoolPositions[0] - CGPositionX;
-
-
-
-        Debug.Log("relocate" + x);
+       
         _CGRectTransform.localPosition = new Vector3(x, _CGRectTransform.localPosition.y, _CGRectTransform.localPosition.z);
     }
 
@@ -259,18 +242,22 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         tempStrStruct.StepID = _stepID;
         tempStrStruct.Phrase = _phrase;
         tempStrStruct.PhraseAuthor = _phraseAuthor;
+        tempStrStruct.IsPhraseHolderActive = GetPhraseHolderActivityState();
+        tempStrStruct.PhraseHolder = _phraseHolder;
         tempStrStruct.CGImage = _CGImage;
         tempStrStruct.CGRectTransform = _CGRectTransform;
         tempStrStruct.ActiveCharacters = _activeCharacters;
-        tempStrStruct.ActiveRectTransforms = _activeRectTransforms;
-        tempStrStruct.ActivatedCharacters = _activatedCharacters;
-        tempStrStruct.InactivatedCharacters = _inactivatedCharacters;
+        tempStrStruct.ActiveRectTransforms = _activeRectTransforms;      
         tempStrStruct.StepsOfCurrentAction = _curretActionSteps;
         tempStrStruct.RequiredObjects = _requiredObjects;
         tempStrStruct.RequiredCG = _requiredCG;
         tempStrStruct.ChoiseOptions = _choiseOptions;
         tempStrStruct.JumpMarker = _jumpMarker;
         return tempStrStruct;
+    }
+    private bool GetPhraseHolderActivityState()
+    {        
+        return _phraseHolder.activeInHierarchy;
     }
     private StrUncomposedStorylineParts SetUncomposedStorylineParts()
     {
@@ -281,8 +268,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     private void ClearStepAssociatedData()
     {
-        _activatedCharacters.Clear();
-        _inactivatedCharacters.Clear();
+   
     }
     private void ClearActionAssociatedData()
     {
@@ -365,21 +351,17 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         Character.transform.SetParent(_CGRectTransform.transform, false);
         _activeRectTransforms.Add(RT);
         if (_activeCharacters.Count == 0)
-        {
-            _activatedCharacters.Add(Character.name);
+        {         
             _activeCharacters.Add(_ñharacter);
         }
         else
-        {
-            _inactivatedCharacters.Add(Character.name);
+        {           
             _ñharacter.SetActive(false);
         }
     }
     public void SelectAction(int TargetActionID)
     {
-        _actionID = TargetActionID;
-        _activatedCharacters.Clear();
-        _inactivatedCharacters.Clear();
+        _actionID = TargetActionID;    
         List<string> selectedAction = _replacer.GetSelectedActionData(TargetActionID);
         SelectedActionSetup(selectedAction);
     }
@@ -401,8 +383,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         SetChoiseOptions(decomposedAction.ChoiseOptions);
         SetJumpMarker(decomposedAction.JumpToAction);
-
-        SetCGPositionSliderValue(decomposedAction.CGPosition.x);
+        RelocateCG(decomposedAction.CGPosition.x);
+        SetCGPosition(decomposedAction.CGPosition.x);
     }
     private Boolean ActivateObjects()
     {
@@ -662,8 +644,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             if (Character.name == CharacterName)
             {
-                string temp = Character.ToString().Replace(" (UnityEngine.GameObject)", "");
-                _inactivatedCharacters.Add(temp);
+                string temp = Character.ToString().Replace(" (UnityEngine.GameObject)", "");            
                 Character.SetActive(false);
                 _activeCharacters.Remove(Character);
                 return true;
@@ -681,8 +662,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             if (character.name == characterName)
             {
-                string tempName = character.ToString().Replace(" (UnityEngine.GameObject)", "");
-                _activatedCharacters.Add(tempName);
+                string tempName = character.ToString().Replace(" (UnityEngine.GameObject)", "");               
                 character.SetActive(true);
                 _activeCharacters.Add(character);
                 return true;
@@ -729,9 +709,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _requiredObjects.Clear();
         _activatedObjects.Clear();
         _activeCharacters.Clear();
-        _activeRectTransforms.Clear();
-        _inactivatedCharacters.Clear();
-        _activatedCharacters.Clear();
+        _activeRectTransforms.Clear();   
         _requiredCG.Clear();
         _storylineActions.Clear();
         _initPart.Clear();
@@ -813,21 +791,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                     {
                         _activeRectTransforms.Remove(_activeRectTransforms[i5]);
                     }
-                }
-                for (int i6 = 0; i6 < _inactivatedCharacters.Count; i6++)
-                {
-                    if (_inactivatedCharacters[i6] != null && _inactivatedCharacters[i6] == characterName)
-                    {
-                        _inactivatedCharacters.Remove(_inactivatedCharacters[i6]);
-                    }
-                }
-                for (int i7 = 0; i7 < _activatedCharacters.Count; i7++)
-                {
-                    if (_activatedCharacters[i7] != null && _activatedCharacters[i7] == characterName)
-                    {
-                        _activatedCharacters.Remove(_activatedCharacters[i7]);
-                    }
-                }
+                }               
                 if (_initPart.Count != 0)
                 {
                     for (int i8 = 0; i8 < _initPart.Count; i8++)

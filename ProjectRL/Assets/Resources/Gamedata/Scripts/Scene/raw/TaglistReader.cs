@@ -31,6 +31,8 @@ public class TaglistReader : MonoBehaviour
     public string _lineSeparator;
     public string _jumpMarker;
     public string _characterRescaled;
+    public string _phraseHolderState;
+    public string _praseHolderPosition;
 
     void Start()
     {
@@ -146,6 +148,14 @@ public class TaglistReader : MonoBehaviour
                     break;
                 case 24:
                     _characterRescaled = line;
+                    count += 1;
+                    break;
+                case 25:
+                    _phraseHolderState = line;
+                    count += 1;
+                    break;
+                case 26:
+                    _praseHolderPosition = line;
                     count = 0;
                     break;
             }

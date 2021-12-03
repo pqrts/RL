@@ -10,8 +10,8 @@ public class StrEditorEvents : MonoBehaviour, IStrEventSystem
 {
     public delegate void OnStrEditorUpdated();
     public event OnStrEditorUpdated StrEditorUpdated;
-    public delegate void OnStrCGPositionSliderChanged(float sliderValue);
-    public event OnStrCGPositionSliderChanged StrCGPositionSliderChanged;
+    public delegate void OnStrCGPositionChanged();
+    public event OnStrCGPositionChanged StrCGPositionChanged;
     public delegate void OnStrEditorRootObjectRequested();
     public event OnStrEditorRootObjectRequested StrEditorRootObjectRequested;
     public delegate void OnStrEditorRootObjectDeclared(StrEditorGodObject StrEditorRootObject);
@@ -20,9 +20,9 @@ public class StrEditorEvents : MonoBehaviour, IStrEventSystem
     {
         StrEditorUpdated?.Invoke();
     }
-    public void ChangeCGPositionSliderValue(float sliderValue)
+    public void CGPositionChanged()
     {
-        StrCGPositionSliderChanged?.Invoke(sliderValue);
+        StrCGPositionChanged?.Invoke();
     }
     public void RequestStrEditorRootObject()
     {
@@ -150,12 +150,12 @@ namespace StorylineEditor
         public int StepID;
         public string Phrase;
         public string PhraseAuthor;
+        public bool IsPhraseHolderActive;
+        public GameObject PhraseHolder;
         public Image CGImage;
         public RectTransform CGRectTransform;
         public List<GameObject> ActiveCharacters;
         public List<RectTransform> ActiveRectTransforms;
-        public List<string> ActivatedCharacters;
-        public List<string> InactivatedCharacters;
         public List<string> StepsOfCurrentAction;
         public List<GameObject> RequiredObjects;
         public List<Sprite> RequiredCG;
