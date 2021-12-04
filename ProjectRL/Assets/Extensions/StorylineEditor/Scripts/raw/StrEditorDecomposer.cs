@@ -26,6 +26,8 @@ public class StrEditorDecomposer : MonoBehaviour
         int actionID = int.Parse(actionIdRaw[1]);
         decomposedAction.Phrase = ReadPhrase(selectedAction, actionID);
         decomposedAction.PhraseAuthor = ReadPhraseAuthor(selectedAction, actionID);
+        decomposedAction.IsPhraseHolderActive = ReadIsPhraseHolderActive(selectedAction, actionID);
+        decomposedAction.PhraseHolderPosition = ReadPhraseHolderPosition(selectedAction, actionID);
         decomposedAction.CGImageName = ReadCGName(selectedAction, actionID);
         decomposedAction.CGPosition = ReadCGPosition(selectedAction);
         decomposedAction.ActiveCharacters = ReadActiveCharacters(selectedAction);
@@ -59,6 +61,37 @@ public class StrEditorDecomposer : MonoBehaviour
         }
         return phraseAuthor;
     }
+    private string ReadIsPhraseHolderActive(List<string> selectedAction, int actionID)
+    {
+        string isPhraseHolderActive = "";
+        for (int i = 0; i < selectedAction.Count; i++)
+        {
+            if (selectedAction[i] == _tags._phraseHolderState + _tags._separator + actionID)
+            {
+                isPhraseHolderActive = selectedAction[i + 1];
+            }
+        }
+        return isPhraseHolderActive;
+    }
+    private Vector3 ReadPhraseHolderPosition(List<string> selectedAction, int actionID)
+    {
+        Vector3 phraseHolderPosition;
+        string phraseHolderPositionRaw = "";
+        for (int i = 0; i < selectedAction.Count; i++)
+        {
+            if (selectedAction[i] ==  _tags._praseHolderPosition + _tags._separator + actionID)
+            {
+                phraseHolderPositionRaw = selectedAction[i + 1];
+            }
+        }
+        string[] phraseHolderPositionValues = phraseHolderPositionRaw.Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        int positionX = int.Parse(phraseHolderPositionValues[0]);
+        int positionY = int.Parse(phraseHolderPositionValues[1]);
+        int positionZ = int.Parse(phraseHolderPositionValues[2]);
+        phraseHolderPosition = new Vector3(positionX, positionY, positionZ);
+        return phraseHolderPosition;
+    }
+
     private string ReadCGName(List<string> selectedAction, int actionID)
     {
         string CGName = "";

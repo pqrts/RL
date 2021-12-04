@@ -6,6 +6,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 [ExecuteInEditMode]
 [RequireComponent(typeof(StrEditorEvents))]
@@ -41,11 +42,11 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     [HideInInspector] public List<Sprite> _requiredCG = new List<Sprite>();
     //steps parameters
     private List<RectTransform> _activeRectTransforms = new List<RectTransform>();
-    public List<GameObject> _activeCharacters = new List<GameObject>(); 
+    public List<GameObject> _activeCharacters = new List<GameObject>();
     private List<string> _activatedObjects = new List<string>();
     public List<string> _inactivatedObjects = new List<string>();
     public List<string> _choiseOptions = new List<string>();
-    [SerializeField] private List<string> _composedStoryline = new List<string>();    
+    [SerializeField] private List<string> _composedStoryline = new List<string>();
     public string _StorylineName;
     //for str form
     public List<string> _initPart = new List<string>();
@@ -56,8 +57,11 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     //scene
     [HideInInspector] public Sprite _CGsprite;
     public Image _CGImage;
-    private bool _isPhraseHolderActive;
+    [SerializeField] private GameObject _screenBorders;
     [SerializeField] private GameObject _phraseHolder;
+    private RectTransform _phraseHolderRectTransform;
+    [SerializeField] private TextMeshProUGUI _phraseHolderAuthor;
+    [SerializeField] private TextMeshProUGUI _phraseHolderPhrase;
     private float _leftCameraBorderPosition;
     private float _rightCameraBorderPosition;
     private float[] _movingPoolPositions;
@@ -95,6 +99,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _folders = GetComponent<global_folders>();
         _replacer = GetComponent<StrEditorReplacer>();
         _CGRectTransform = _CGImage.GetComponent<RectTransform>();
+        _phraseHolderRectTransform = _phraseHolder.GetComponent<RectTransform>();
+        _phraseHolderRectTransform.localPosition = new Vector3(0f, 0f, 0f);
         _exeptions = GetComponent<ext_Storyline_exeptions>();
         _composer = GetComponent<StrEditorStorylineComposer>();
         _encryptor = GetComponent<StrEditorEncryptor>();
@@ -129,18 +135,61 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         return resolution;
     }
     public void SetCGPosition(float CGPositionX)
-    {       
+    {
         _CGRectTransform.localPosition = new Vector3(CGPositionX, _CGRectTransform.localPosition.y, _CGRectTransform.localPosition.z);
         _StrEvents.CGPositionChanged();
     }
-    public void RelocateCG(float CGPositionX)
+    public void TranslocateCG(float CGPositionX)
     {
         Debug.Log("relocate" + CGPositionX);
         float x = _movingPoolPositions[0] - CGPositionX;
-       
+
         _CGRectTransform.localPosition = new Vector3(x, _CGRectTransform.localPosition.y, _CGRectTransform.localPosition.z);
     }
-
+    private void TranslocatePhraseHolder(float phraseHolserPositionX)
+    {
+        _phraseHolderRectTransform.localPosition = new Vector3(phraseHolserPositionX, _phraseHolderRectTransform.localPosition.y, _phraseHolderRectTransform.localPosition.z);
+    }
+    private void SetPhraseHolderText(string phraseHolderAuthor, string phraseHolderPhrase)
+    {
+        _phraseHolderAuthor.text = phraseHolderAuthor;
+        _phraseHolderPhrase.text = phraseHolderPhrase;
+    }
+    public void DefinePhraseHolderActivityState(string phraseHolderState)
+    {
+        switch (phraseHolderState)
+        {
+            case "True":
+                _phraseHolder.SetActive(true);
+                break;
+            case "False":
+                _phraseHolder.SetActive(false);
+                break;
+            case "Manual":
+                {
+                    if (_phraseHolder.activeInHierarchy == true)
+                    {
+                        _phraseHolder.SetActive(false);
+                    }
+                    else
+                    {
+                        _phraseHolder.SetActive(true);
+                    }
+                }
+                break;
+        }
+    }
+    public void DefineBordersActivityState()
+    {
+        if (_screenBorders.activeInHierarchy == true)
+        {
+            _screenBorders.SetActive(false);
+        }
+        else
+        {
+            _screenBorders.SetActive(true);
+        }
+    }
     public void ReadStoryline()
     {
         try
@@ -158,25 +207,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             Debug.Log("Error: " + ex.Message);
         }
     }
-    public Boolean WriteStorylineToStr()
-    {
-        try
-        {
-            StreamWriter SW = new StreamWriter(_folders._storylines + "/" + _StorylineName, true, encoding: System.Text.Encoding.Unicode);
-            for (int i = 0; i < _storylineActions.Count; i++)
-            {
-                string t = _storylineActions[i];
-                SW.WriteLine(t);
-            }
-            SW.Close();
-            _storylineActions.Clear();
-        }
-        catch (Exception ex)
-        {
 
-        }
-        return true;
-    }
     public void UpdateInitPart()
     {
         _initPart.Clear();
@@ -247,7 +278,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         tempStrStruct.CGImage = _CGImage;
         tempStrStruct.CGRectTransform = _CGRectTransform;
         tempStrStruct.ActiveCharacters = _activeCharacters;
-        tempStrStruct.ActiveRectTransforms = _activeRectTransforms;      
+        tempStrStruct.ActiveRectTransforms = _activeRectTransforms;
         tempStrStruct.StepsOfCurrentAction = _curretActionSteps;
         tempStrStruct.RequiredObjects = _requiredObjects;
         tempStrStruct.RequiredCG = _requiredCG;
@@ -256,7 +287,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         return tempStrStruct;
     }
     private bool GetPhraseHolderActivityState()
-    {        
+    {
         return _phraseHolder.activeInHierarchy;
     }
     private StrUncomposedStorylineParts SetUncomposedStorylineParts()
@@ -268,7 +299,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     private void ClearStepAssociatedData()
     {
-   
+
     }
     private void ClearActionAssociatedData()
     {
@@ -351,17 +382,17 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         Character.transform.SetParent(_CGRectTransform.transform, false);
         _activeRectTransforms.Add(RT);
         if (_activeCharacters.Count == 0)
-        {         
+        {
             _activeCharacters.Add(_ñharacter);
         }
         else
-        {           
+        {
             _ñharacter.SetActive(false);
         }
     }
     public void SelectAction(int TargetActionID)
     {
-        _actionID = TargetActionID;    
+        _actionID = TargetActionID;
         List<string> selectedAction = _replacer.GetSelectedActionData(TargetActionID);
         SelectedActionSetup(selectedAction);
     }
@@ -371,19 +402,22 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         StrDecomposedAction decomposedAction = _decomposer.DecomposeSelectedAction(selectedActionData);
         SetPhrase(decomposedAction.Phrase);
         SetAuthor(decomposedAction.PhraseAuthor);
+        DefinePhraseHolderActivityState(decomposedAction.IsPhraseHolderActive);
+        TranslocatePhraseHolder(decomposedAction.PhraseHolderPosition.x);
+        SetPhraseHolderText(_phraseAuthor, _phrase);
         SetCG(decomposedAction.CGImageName);
         DefineCharacterActivityState(decomposedAction.ActiveCharacters);
         foreach (KeyValuePair<string, Vector3> characterPosition in decomposedAction.ActiveCharactersPositions)
         {
-            RelocateObjects(characterPosition.Key, characterPosition.Value);
+            TranslocateCharacters(characterPosition.Key, characterPosition.Value);
         }
         foreach (KeyValuePair<string, Vector2> characterScale in decomposedAction.ActiveCharactersScales)
         {
-            RescaleObjects(characterScale.Key, characterScale.Value);
+            RescaleCharacters(characterScale.Key, characterScale.Value);
         }
         SetChoiseOptions(decomposedAction.ChoiseOptions);
         SetJumpMarker(decomposedAction.JumpToAction);
-        RelocateCG(decomposedAction.CGPosition.x);
+        TranslocateCG(decomposedAction.CGPosition.x);
         SetCGPosition(decomposedAction.CGPosition.x);
     }
     private Boolean ActivateObjects()
@@ -428,7 +462,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         return true;
     }
-    private Boolean RelocateObjects(string characterName, Vector3 characterPosition)
+    private Boolean TranslocateCharacters(string characterName, Vector3 characterPosition)
     {
         for (int i = 0; i < _requiredObjects.Count; i++)
         {
@@ -439,7 +473,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         return true;
     }
-    private void RescaleObjects(string characterName, Vector2 characterScale)
+    private void RescaleCharacters(string characterName, Vector2 characterScale)
     {
         for (int i = 0; i < _requiredObjects.Count; i++)
         {
@@ -644,7 +678,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             if (Character.name == CharacterName)
             {
-                string temp = Character.ToString().Replace(" (UnityEngine.GameObject)", "");            
+                string temp = Character.ToString().Replace(" (UnityEngine.GameObject)", "");
                 Character.SetActive(false);
                 _activeCharacters.Remove(Character);
                 return true;
@@ -662,7 +696,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             if (character.name == characterName)
             {
-                string tempName = character.ToString().Replace(" (UnityEngine.GameObject)", "");               
+                string tempName = character.ToString().Replace(" (UnityEngine.GameObject)", "");
                 character.SetActive(true);
                 _activeCharacters.Add(character);
                 return true;
@@ -699,6 +733,12 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     public Boolean OpenStoryline(string fileName)
     {
         // >> clearing method
+        _phraseHolderRectTransform.localPosition = new Vector3(0f, 0f, 0f);
+        SetCGPosition(0f);
+
+        _phrase = "";
+        _phraseHolderAuthor.text = "----";
+        _phraseHolderPhrase.text = "----";
         foreach (GameObject destroy in _requiredObjects)
         {
             DestroyImmediate(destroy);
@@ -709,7 +749,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _requiredObjects.Clear();
         _activatedObjects.Clear();
         _activeCharacters.Clear();
-        _activeRectTransforms.Clear();   
+        _activeRectTransforms.Clear();
         _requiredCG.Clear();
         _storylineActions.Clear();
         _initPart.Clear();
@@ -722,7 +762,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _stepID = 1;
         _actionID = 1;
         _totalActions = 0;
-
+        _StrEvents.EditorUpdated();
         return true;
     }
     public Boolean ValidateStoryline()
@@ -740,19 +780,44 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             if (CGSprite.name == CGName)
             {
                 _CGImage.sprite = CGSprite;
+                SceneViewRepaintCrutch();
                 _StrEvents.EditorUpdated();
-                HandleUtility.Repaint();
             }
         }
     }
-    private void SetPhrase(string phrase)
+    public void SetPhrase(string phrase)
     {
         _phrase = phrase;
+        SetPhraseHolderText(_phraseAuthor, _phrase);
+        SceneViewRepaintCrutch();
     }
     public void SetAuthor(string authorObjectName)
     {
         string temp = authorObjectName.ToString().Replace(" (UnityEngine.GameObject)", "");
         _phraseAuthor = temp;
+        SetPhraseHolderText(_phraseAuthor, _phrase);
+        SceneViewRepaintCrutch();
+    }
+    public void SelectPhraseHolderInHierarchy()
+    {
+        Selection.activeGameObject = _phraseHolder;
+    }
+    public void SelectActiveCharacterInHierarchy(string characterName)
+    {
+        Debug.Log(characterName);
+        foreach (GameObject character in _activeCharacters)
+        {
+            if (character.name == characterName)
+            {
+                Selection.activeGameObject = character;
+            }
+        }
+
+    }
+    public void SceneViewRepaintCrutch()
+    {
+        DefineBordersActivityState();
+        DefineBordersActivityState();
     }
     public Boolean DeleteCharacter(string characterName)
     {
@@ -791,7 +856,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                     {
                         _activeRectTransforms.Remove(_activeRectTransforms[i5]);
                     }
-                }               
+                }
                 if (_initPart.Count != 0)
                 {
                     for (int i8 = 0; i8 < _initPart.Count; i8++)

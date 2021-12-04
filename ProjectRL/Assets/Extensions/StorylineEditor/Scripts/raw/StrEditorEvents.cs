@@ -171,6 +171,8 @@ namespace StorylineEditor
     {
         public string Phrase;
         public string PhraseAuthor;
+        public string IsPhraseHolderActive;
+        public Vector3 PhraseHolderPosition;
         public string CGImageName;
         public Vector3 CGPosition;
         public List<string> ActiveCharacters;
