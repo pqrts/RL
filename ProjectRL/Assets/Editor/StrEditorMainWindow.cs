@@ -31,6 +31,7 @@ public class StrEditorMainWindow : EditorWindow
     private Button _addChoiseButton;
     private Button _selectPhraseHolderButton;
     private Button _newStepButton;
+    private Button _overwriteSelectedActionButton;
     private Button _newActionButton;
     private Button _exportToStrButton;
     private Button _deactivateCharacterButton;
@@ -160,15 +161,16 @@ public class StrEditorMainWindow : EditorWindow
             _controlPanelButton = new Button(() => OpenControlPanel());
             _characterConstructorButton = new Button(() => StrEditorCharacterConstructorWindow.ShowWindow());
             _saveButton = new Button(() => _StrEvents.EditorUpdated());
-            _screenBordersModeButton = new Button(() => ChangeScreenBordersMode());
+            _screenBordersModeButton = new Button(() => _StrEditorRoot.SaveToFile());
             _openCharactersListButton = new Button(() => OpenCharactersList());
-            _selectCGButton = new Button(() => SelectCG());          
+            _selectCGButton = new Button(() => SelectCG());
             _activatePhraseHolderButton = new Button(() => DefinePhraseHolderState());
             _addCharacterButton = new Button(() => SelectCharacter());
             _addJumpMarkerButton = new Button(() => StrEditorJumpMarkerWindow.ShowWindow());
             _addChoiseButton = new Button(() => StrEditorChoiseConstructorWindow.ShowWindow());
             _selectPhraseHolderButton = new Button(() => _StrEditorRoot.SelectPhraseHolderInHierarchy());
             _newStepButton = new Button(() => CreateStep());
+            _overwriteSelectedActionButton = new Button(() => OverwriteSelectedAction());
             _newActionButton = new Button(() => CreateNewAction());
             _exportToStrButton = new Button(() => ExportToStr());
             _deactivateCharacterButton = new Button(() => DeactivateCharacter());
@@ -179,13 +181,14 @@ public class StrEditorMainWindow : EditorWindow
             _saveButton.text = "Save";
             _screenBordersModeButton.text = "Borders Mode";
             _openCharactersListButton.text = "Open Characters list";
-            _selectCGButton.text = "Select CG";           
-            _activatePhraseHolderButton.text = "Phrase activity";
+            _selectCGButton.text = "Select CG";
+            _activatePhraseHolderButton.text = "Activate Phrase";
             _addCharacterButton.text = "Add character";
             _addJumpMarkerButton.text = "Add jump marker";
             _addChoiseButton.text = "Add choise";
             _selectPhraseHolderButton.text = "Select phrase holder";
             _newStepButton.text = "New Step";
+            _overwriteSelectedActionButton.text = "Overwrite Action";
             _newActionButton.text = "New Action";
             _exportToStrButton.text = "Export to .str";
             _deactivateCharacterButton.text = "Deactivate Character";
@@ -305,8 +308,9 @@ public class StrEditorMainWindow : EditorWindow
         _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_selectCGButton);
         _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addCharacterButton);
         _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addJumpMarkerButton);
-        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addChoiseButton);    
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_addChoiseButton);
         _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_newStepButton);
+        _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_overwriteSelectedActionButton);
         _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_newActionButton);
         _mainWindowMainVE.Q<VisualElement>("leftToolbar3").Add(_exportToStrButton);
         _mainWindowMainVE.Q<VisualElement>("phraseHolder2").Add(_phraseField);
@@ -337,6 +341,10 @@ public class StrEditorMainWindow : EditorWindow
     {
         _StrEditorRoot.CreateNewStep();
         _StrEvents.EditorUpdated();
+    }
+    private void OverwriteSelectedAction()
+    {
+        _StrEditorRoot.OverwriteSelectedAction();
     }
     private void CreateNewAction()
     {
@@ -422,10 +430,8 @@ public class StrEditorMainWindow : EditorWindow
     {
         if (_translocationModeDropdown.value == _translocationModeDropdownChoises[0])
         {
-            Debug.Log("converted: " + CGSliderValue);
             float PoolX = _StrEditorRoot._ñanvasMovingPool;
             float SliderValueOfDivision = PoolX / 100;
-            Debug.Log(SliderValueOfDivision);
             float CGPosisitionX = CGSliderValue * SliderValueOfDivision;
             _StrEditorRoot.TranslocateCG(CGPosisitionX);
             _CGPositionsSliderValue = CGSliderValue;
@@ -479,7 +485,7 @@ public class StrEditorMainWindow : EditorWindow
     private void SetPhrase(string phraseText)
     {
         _StrEditorRoot.SetPhrase(phraseText);
-        _StrEvents.EditorUpdated();   
+        _StrEvents.EditorUpdated();
     }
     private void GetPreviewComponents(int SelectedCharacterID)
     {

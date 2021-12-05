@@ -183,7 +183,6 @@ namespace StorylineEditor
     }
     public struct StrCharacter
     {
-
         public string CharacterTechName;
         public string CharacterRuntimeName;
         public string CharacterDescription;
@@ -192,4 +191,5 @@ namespace StorylineEditor
         public Image CharacterClothes;
         public Image CharacterMakeup;
     }
+
 }

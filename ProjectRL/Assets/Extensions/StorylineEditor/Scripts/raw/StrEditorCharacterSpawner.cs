@@ -54,19 +54,19 @@ public class StrEditorCharacterSpawner : MonoBehaviour
             {
                 case 0:
                     string tempPathBody = ComposeElementResourcesPath(StrCharacterElementType.Body);
-                    CreateCharacterElements(canvas, tempPathBody, StrCharacterElementType.Body);
+                    CreateCharacterElements(canvas, tempPathBody,_bodyFileName, StrCharacterElementType.Body);
                     break;
                 case 1:
                     string tempPathClothes = ComposeElementResourcesPath(StrCharacterElementType.Clothes);
-                    CreateCharacterElements(canvas, tempPathClothes, StrCharacterElementType.Clothes);
+                    CreateCharacterElements(canvas, tempPathClothes,_clothesFileName, StrCharacterElementType.Clothes);
                     break;
                 case 2:
                     string tempPathHaircut = ComposeElementResourcesPath(StrCharacterElementType.Haircut);
-                    CreateCharacterElements(canvas, tempPathHaircut, StrCharacterElementType.Haircut);
+                    CreateCharacterElements(canvas, tempPathHaircut, _haircutFileName,StrCharacterElementType.Haircut);
                     break;
                 case 3:
                     string tempPathMakeup = ComposeElementResourcesPath(StrCharacterElementType.Makeup);
-                    CreateCharacterElements(canvas, tempPathMakeup, StrCharacterElementType.Makeup);
+                    CreateCharacterElements(canvas, tempPathMakeup,_makeupFileName, StrCharacterElementType.Makeup);
                     break;
             }
         }
@@ -156,7 +156,7 @@ public class StrEditorCharacterSpawner : MonoBehaviour
         }
     }
 
-    private void CreateCharacterElements(GameObject canvas, string elementResourcesPath, StrCharacterElementType elementType)
+    private void CreateCharacterElements(GameObject canvas, string elementResourcesPath, string spriteName, StrCharacterElementType elementType)
     {
         GameObject tempElementGameObject = new GameObject();
         RectTransform tempElementRectTransform = tempElementGameObject.AddComponent<RectTransform>();
@@ -169,21 +169,22 @@ public class StrEditorCharacterSpawner : MonoBehaviour
             tempElementGameObject.transform.SetParent(canvas.transform, false);
             tempElementGameObject.AddComponent<Character>();
             _characterGameObject = tempElementGameObject;
-            SetupCharacterElement(tempElementGameObject, elementResourcesPath, elementType);
+            SetupCharacterElement(tempElementGameObject, elementResourcesPath,spriteName, elementType);
         }
         else
         {
-            SetupCharacterElement(tempElementGameObject, elementResourcesPath, elementType);
+            SetupCharacterElement(tempElementGameObject, elementResourcesPath,spriteName, elementType);
             tempElementGameObject.transform.SetParent(_characterElements[StrCharacterElementType.Body].transform, false);
             tempElementGameObject.name = elementType.GetFieldTypeAssociatedFolder();
         }
     }
-    private void SetupCharacterElement(GameObject tempElement, string resourcesPath, StrCharacterElementType elementType)
+    private void SetupCharacterElement(GameObject tempElement, string resourcesPath,string name, StrCharacterElementType elementType)
     {
         Texture2D tempTexture;
         tempTexture = Resources.Load(resourcesPath) as Texture2D;
         _characterElements[elementType] = tempElement.AddComponent<Image>();
         _characterElements[elementType].sprite = Sprite.Create(tempTexture, new Rect(0, 0, tempTexture.width, tempTexture.height), new Vector2(tempTexture.width / 2, tempTexture.height / 2));
+        _characterElements[elementType].sprite.name = name;
     }
 
 

@@ -74,7 +74,32 @@ public class StrEditorReplacer : MonoBehaviour
         }
         return _selectedActionData;
     }
-   
+    public List<string> ReplaceSelectedAction(List<string> actionForReplace)
+    {
+        List<string> replacedStorylineActions = new List<string>();
+        if (_beforeSelectedData.Count != 0)
+        {
+            foreach (string beforeSelected in _beforeSelectedData)
+            {
+                replacedStorylineActions.Add(beforeSelected);
+            }
+        }
+        if (actionForReplace.Count != 0)
+        {
+            foreach (string replaced in actionForReplace)
+            {
+                replacedStorylineActions.Add(replaced);
+            }
+        }
+        if (_afterSelectedData.Count != 0)
+        {
+            foreach (string afterSelected in _afterSelectedData)
+            {
+                replacedStorylineActions.Add(afterSelected);
+            }
+        }      
+        return replacedStorylineActions;
+    }
 
 
 }
