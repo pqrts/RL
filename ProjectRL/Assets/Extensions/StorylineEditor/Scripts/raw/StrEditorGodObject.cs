@@ -41,17 +41,15 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     //steps parameters
     private List<RectTransform> _activeRectTransforms = new List<RectTransform>();
     public List<GameObject> _activeCharacters = new List<GameObject>();
-    private List<string> _activatedObjects = new List<string>();
-    public List<string> _inactivatedObjects = new List<string>();
     public List<string> _choiseOptions = new List<string>();
     [SerializeField] private List<string> _composedStoryline = new List<string>();
     public string _StorylineName;
     //for str form
     public List<string> _initPart = new List<string>();
     public List<string> _storylineActions = new List<string>();
-    private List<string> _curretActionSteps = new List<string>();
+    [SerializeField] private List<string> _curretActionSteps = new List<string>();
     [HideInInspector] public List<string> _totalStepsCount = new List<string>();
-    [HideInInspector] public List<List<string>> _actionsTotal = new List<List<string>>();
+
     //scene
     [HideInInspector] public Sprite _CGsprite;
     public Image _CGImage;
@@ -67,7 +65,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     [HideInInspector] public string _phraseAuthor;
     //characters spawn
     public GameObject _ñharacter;
-    StrEditorCharacterSpawner _characterSpawner;
+    private StrEditorCharacterSpawner _characterSpawner;
     [HideInInspector] public float _ñanvasMovingPool;
     [HideInInspector] public float _CGMovingPool;
     [HideInInspector] public float _cgPositionX;
@@ -684,10 +682,13 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     public Boolean OpenStoryline(string fileName)
     {
-        // >> clearing method
+
+        return true;
+    }
+    public void ResetEditor()
+    {
         _phraseHolderRectTransform.localPosition = new Vector3(0f, 0f, 0f);
         SetCGPosition(0f);
-
         _phrase = "";
         _phraseHolderAuthor.text = "----";
         _phraseHolderPhrase.text = "----";
@@ -695,17 +696,14 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             DestroyImmediate(destroy);
         }
-        _StorylineName = fileName;
         _replacer._selectedActionData.Clear();
         _replacer._selectedActionSteps.Clear();
         _requiredObjects.Clear();
-        _activatedObjects.Clear();
         _activeCharacters.Clear();
         _activeRectTransforms.Clear();
         _requiredCG.Clear();
         _storylineActions.Clear();
         _initPart.Clear();
-        _actionsTotal.Clear();
         _totalStepsCount.Clear();
         _choiseOptions.Clear();
         _CGImage.sprite = null;
@@ -715,7 +713,6 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _actionID = 1;
         _totalActions = 0;
         _StrEvents.EditorUpdated();
-        return true;
     }
     public Boolean ValidateStoryline()
     {
@@ -784,20 +781,6 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                     if (_activeCharacters[i2] != null && _activeCharacters[i2].name == characterName)
                     {
                         _activeCharacters.Remove(_activeCharacters[i2]);
-                    }
-                }
-                for (int i3 = 0; i3 < _activatedObjects.Count; i3++)
-                {
-                    if (_activatedObjects[i3] != null && _activatedObjects[i3] == characterName)
-                    {
-                        _activatedObjects.Remove(_activatedObjects[i3]);
-                    }
-                }
-                for (int i4 = 0; i4 < _inactivatedObjects.Count; i4++)
-                {
-                    if (_inactivatedObjects[i4] != null && _inactivatedObjects[i4] == characterName)
-                    {
-                        _inactivatedObjects.Remove(_inactivatedObjects[i4]);
                     }
                 }
                 for (int i5 = 0; i5 < _activeRectTransforms.Count; i5++)
@@ -870,11 +853,40 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     }
     public void SaveToFile()
     {
-        string fileName = _StorylineName + "." + StrExtensions.RawStr;
-        IFormatter formatter = new BinaryFormatter();
-        Stream stream = new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.None);
-        formatter.Serialize(stream, this);
-        stream.Close();
+        Debug.Log("save");
+        StrRawStr rawStr = new StrRawStr();
+        rawStr.User = _editorUser;
+        rawStr.Version = _version;
+        rawStr.ActionID = _actionID;
+        rawStr.StepID = _stepID;
+        rawStr.Phrase = _phrase;
+        rawStr.PhraseAuthor = _phraseAuthor;
+        rawStr.IsPhraseHolderActive = GetPhraseHolderActivityState();
+        rawStr.PhraseHolderRectTransform = _phraseHolderRectTransform;
+        rawStr.CGRectTransform = _CGRectTransform;
+        rawStr.ActiveCharacters = _activeCharacters;
+        rawStr.ActiveRectTransforms = _activeRectTransforms;
+        rawStr.RequiredObjects = _requiredObjects;
+        rawStr.RequiredCG = _requiredCG;
+        rawStr.ChoiseOptions = _choiseOptions;
+        rawStr.JumpMarker = _jumpMarker;
+        rawStr.StorylineName = _StorylineName;
+        rawStr.InitPart = _initPart;
+        rawStr.StorylineActions = _storylineActions;
+        rawStr.CurretActionSteps = _curretActionSteps;
+        rawStr.TotalStepsCount = _totalStepsCount;
+        rawStr.CGsprite = _CGsprite;
+        rawStr.ReadyForNextAction = _readyForNextAction;
+        rawStr.RefereceResolutionWidht = _refereceResolutionWidht;
+        List<string> tempRawStr = _composer.ComposeRawStr(rawStr);
+        foreach (string line in tempRawStr)
+        {
+            Debug.Log(line);
+        }
+    }
+    private void LoadFromFile(string filePath)
+    {
+
     }
     private void OnDisable()
     {

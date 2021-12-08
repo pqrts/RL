@@ -37,7 +37,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         int stepID = uncomposedStoryline.StepID;
         RectTransform _CGRectTransform = uncomposedStoryline.CGRectTransform;
         List<GameObject> activeCharacters = uncomposedStoryline.ActiveCharacters;
-        List<RectTransform> _activeRectTransforms = uncomposedStoryline.ActiveRectTransforms;    
+        List<RectTransform> _activeRectTransforms = uncomposedStoryline.ActiveRectTransforms;
         for (int i = 0; i <= StrConstantValues.StepComposeStagesCount; i++)
         {
             switch (i)
@@ -163,7 +163,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     currentAction.Add(phrase);
                     currentAction.Add(_tags._author + _tags._separator + actionID);
                     currentAction.Add(phraseAuthor);
-                    currentAction.Add(_tags._phraseHolderState +_tags._separator + actionID);
+                    currentAction.Add(_tags._phraseHolderState + _tags._separator + actionID);
                     currentAction.Add(isPhraseHolderActive.ToString());
                     currentAction.Add(_tags._praseHolderPosition + _tags._separator + actionID);
                     if (phraseHolderRectTransform != null)
@@ -173,10 +173,10 @@ public class StrEditorStorylineComposer : MonoBehaviour
                         float positionZ = phraseHolderRectTransform.localPosition.z;
                         currentAction.Add(positionX + _tags._separator + positionY + _tags._separator + positionZ);
                     }
-                    else 
+                    else
                     {
                         currentAction.Add(_tags._null);
-                    }                   
+                    }
                     currentAction.Add(_tags._CG);
                     currentAction.Add(CGSpriteName);
                     break;
@@ -244,5 +244,139 @@ public class StrEditorStorylineComposer : MonoBehaviour
             }
         }
         return composedStoryline;
+    }
+    public List<string> ComposeRawStr(StrRawStr rawStr)
+    {
+        List<string> composedRawStr = new List<string>();
+        composedRawStr.Add(rawStr.StorylineName);
+        composedRawStr.Add(rawStr.User);
+        composedRawStr.Add(rawStr.Version.ToString());
+        composedRawStr.Add(rawStr.ActionID.ToString());
+        composedRawStr.Add(rawStr.StepID.ToString());
+        composedRawStr.Add(rawStr.Phrase);
+        composedRawStr.Add(rawStr.PhraseAuthor);
+        composedRawStr.Add(rawStr.IsPhraseHolderActive.ToString());
+        composedRawStr.Add(rawStr.ReadyForNextAction.ToString());
+        composedRawStr.Add(rawStr.RefereceResolutionWidht.ToString());
+        composedRawStr.Add(rawStr.JumpMarker);
+        if (rawStr.PhraseHolderRectTransform != null)
+        {
+            float positionX = rawStr.PhraseHolderRectTransform.localPosition.x;
+            float positionY = rawStr.PhraseHolderRectTransform.localPosition.y;
+            float positionZ = rawStr.PhraseHolderRectTransform.localPosition.z;
+            composedRawStr.Add(positionX + _tags._separator + positionY + _tags._separator + positionZ);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        composedRawStr.Add(rawStr.CGsprite.name);
+        if (rawStr.CGRectTransform != null)
+        {
+            float CGpositionX = rawStr.CGRectTransform.localPosition.x;
+            float CGpositionY = rawStr.CGRectTransform.localPosition.y;
+            float CGpositionZ = rawStr.CGRectTransform.localPosition.z;
+            composedRawStr.Add(CGpositionX + _tags._separator + CGpositionY + _tags._separator + CGpositionZ);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+
+        if (rawStr.ActiveCharacters.Count != 0)
+        {
+            string tempActiveCharacters = "";
+            foreach (GameObject character in rawStr.ActiveCharacters)
+            {
+                tempActiveCharacters = tempActiveCharacters + _tags._separator + character.name;
+            }
+            composedRawStr.Add(tempActiveCharacters);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+
+        if (rawStr.RequiredObjects.Count != 0)
+        {
+            string tempRequiredObjects = "";
+            foreach (GameObject gObject in rawStr.RequiredObjects)
+            {
+                tempRequiredObjects = tempRequiredObjects + _tags._separator + gObject.name;
+            }
+            composedRawStr.Add(tempRequiredObjects);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+
+        if (rawStr.RequiredCG.Count != 0)
+        {
+            string tempRequiredCG = "";
+            foreach (Sprite CG in rawStr.RequiredCG)
+            {
+                tempRequiredCG = tempRequiredCG + _tags._separator + CG.name;
+            }
+            composedRawStr.Add(tempRequiredCG);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        if (rawStr.ChoiseOptions.Count != 0)
+        {
+            string tempChoiseOptions = "";
+            foreach (string option in rawStr.ChoiseOptions)
+            {
+                tempChoiseOptions = tempChoiseOptions + _tags._separatorVertical + option;
+            }
+            composedRawStr.Add(tempChoiseOptions);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        if (rawStr.TotalStepsCount.Count != 0)
+        {
+            string tempTotalStepsCount = "";
+            foreach (string stepsCount in rawStr.ChoiseOptions)
+            {
+                tempTotalStepsCount = tempTotalStepsCount + _tags._separatorVertical + stepsCount;
+            }
+            composedRawStr.Add(tempTotalStepsCount);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        if (rawStr.CurretActionSteps.Count != 0)
+        {
+            string tempCurrentActionSteps = "";
+            foreach (string step in rawStr.CurretActionSteps)
+            {
+                tempCurrentActionSteps = tempCurrentActionSteps + _tags._separatorVertical + step;
+            }
+            composedRawStr.Add(tempCurrentActionSteps);
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        composedRawStr.Add(_tags._skip+ _tags._skip+ _tags._skip);
+        if (rawStr.StorylineActions.Count != 0)
+        {
+
+            foreach (string actionLine in rawStr.StorylineActions)
+            {
+                composedRawStr.Add(actionLine);
+            }
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        composedRawStr.Add(_tags._skip + _tags._skip + _tags._skip);
+        return composedRawStr;
     }
 }

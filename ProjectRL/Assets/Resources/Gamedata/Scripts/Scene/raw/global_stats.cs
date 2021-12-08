@@ -23,6 +23,7 @@ public class global_stats : MonoBehaviour
         _temp_save_path = Path.Combine(Application.dataPath, _temp_save_file_name);
 #endif
         LoadFromFile();
+      
     }
     public void SaveToFile()
     {
@@ -42,7 +43,7 @@ public class global_stats : MonoBehaviour
     public void LoadFromFile()
     {
         if (!File.Exists(_temp_save_path))
-        {
+        {            
             Debug.Log("File missed");
             return;
         }

@@ -15,6 +15,7 @@ public class global_folders : MonoBehaviour
     public string _haircut;
     public string _clothes;
     public string _makeup;
+    public string _savedStorylines;
     void Start()
     {
         Setup_folders();
@@ -35,6 +36,7 @@ public class global_folders : MonoBehaviour
         _haircut = _root + "/Resources/Gamedata/Textures/Char_haircut";
         _clothes = _root + "/Resources/Gamedata/Textures/Char_clothes";
         _makeup = _root + "/Resources/Gamedata/Textures/Char_makeup";
+        _savedStorylines = _root + "/Extensions/StorylineEditor/SavedStorylines";
         return true;
     }
 }

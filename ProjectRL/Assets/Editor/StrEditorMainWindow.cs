@@ -160,8 +160,8 @@ public class StrEditorMainWindow : EditorWindow
         {
             _controlPanelButton = new Button(() => OpenControlPanel());
             _characterConstructorButton = new Button(() => StrEditorCharacterConstructorWindow.ShowWindow());
-            _saveButton = new Button(() => _StrEvents.EditorUpdated());
-            _screenBordersModeButton = new Button(() => _StrEditorRoot.SaveToFile());
+            _saveButton = new Button(() => _StrEditorRoot.SaveToFile());
+            _screenBordersModeButton = new Button(() => ChangeScreenBordersMode());
             _openCharactersListButton = new Button(() => OpenCharactersList());
             _selectCGButton = new Button(() => SelectCG());
             _activatePhraseHolderButton = new Button(() => DefinePhraseHolderState());
@@ -280,7 +280,7 @@ public class StrEditorMainWindow : EditorWindow
         _initializationStatusLabel = _mainWindowMainVE.Q<VisualElement>("status") as Label;
         _initializationStatusLabel.text = "Initialization : " + _StrEditorRoot._initStatus + "      Current file : " + _StrEditorRoot._StorylineName;
         _actionStatusLabel = _mainWindowMainVE.Q<VisualElement>("status2") as Label;
-        _actionStatusLabel.text = "Action: " + _StrEditorRoot._actionID + " (Total: " + _StrEditorRoot._actionsTotal.Count + ") / Step: " + _StrEditorRoot._stepID + " (Total: " + _StrEditorRoot._totalStepsCount.Count + ")";
+        _actionStatusLabel.text = "Action: " + _StrEditorRoot._actionID + " (Total: " + ") / Step: " + _StrEditorRoot._stepID + " (Total: " + _StrEditorRoot._totalStepsCount.Count + ")";
     }
     private void InstatiateDropDownFields()
     {
@@ -464,7 +464,8 @@ public class StrEditorMainWindow : EditorWindow
                 string temp = Path.Replace(_StrEditorRoot._folders._root + "/Resources/", "");
                 string temp2 = temp.Replace(".str", "");
                 string temp3 = temp.Replace("Gamedata/Storylines/", "");
-                _StrEditorRoot.OpenStoryline(temp3);
+                // _StrEditorRoot.OpenStoryline(temp3);
+                _StrEditorRoot.ResetEditor();
                 _StrEvents.EditorUpdated();
 
             }
