@@ -363,7 +363,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         {
             composedRawStr.Add(_tags._null);
         }
-        composedRawStr.Add(_tags._skip+ _tags._skip+ _tags._skip);
+        composedRawStr.Add(_tags._rawStrActions);
         if (rawStr.StorylineActions.Count != 0)
         {
 
@@ -375,8 +375,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         else
         {
             composedRawStr.Add(_tags._null);
-        }
-        composedRawStr.Add(_tags._skip + _tags._skip + _tags._skip);
+        } 
         return composedRawStr;
     }
 }

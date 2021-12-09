@@ -405,18 +405,7 @@ public class global_scene : MonoBehaviour
                     }
                 }
             }
-            if (units[i] == _s_tag._inactivate)
-            {
-                if (units[i + 1] != _s_tag._null)
-                {
-                    string line = units[i + 1];
-                    string[] units2 = line.Split(_s_tag._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string unit2 in units2)
-                    {
-                        _list_inactivated_objects.Add(unit2);
-                    }
-                }
-            }
+         
  
             if (units[i] == _s_tag._characterRelocated)
             {

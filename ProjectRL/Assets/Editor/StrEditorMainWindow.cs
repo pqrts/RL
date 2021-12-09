@@ -458,13 +458,14 @@ public class StrEditorMainWindow : EditorWindow
     {
         if (EditorUtility.DisplayDialog("Notice", "Usaved progress will be lost. Continue?", "OK", "Cancel"))
         {
-            string Path = EditorUtility.OpenFilePanel("Select storyline", _StrEditorRoot._folders._storylines, "str");
+            string Path = EditorUtility.OpenFilePanel("Select storyline", _StrEditorRoot._folders._savedStorylines, StrExtensions.RawStr.Replace(".",""));
             if (Path.Length != 0)
             {
                 string temp = Path.Replace(_StrEditorRoot._folders._root + "/Resources/", "");
                 string temp2 = temp.Replace(".str", "");
                 string temp3 = temp.Replace("Gamedata/Storylines/", "");
-                // _StrEditorRoot.OpenStoryline(temp3);
+                _StrEditorRoot.LoadFromFile(Path);
+                //_StrEditorRoot.OpenStoryline(temp3);
                 _StrEditorRoot.ResetEditor();
                 _StrEvents.EditorUpdated();
 

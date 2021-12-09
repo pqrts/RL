@@ -19,7 +19,7 @@ public class TaglistReader : MonoBehaviour
     public string _step;
     public string _characterRelocated;
     public string _activate;
-    public string _inactivate;
+    public string _rawStrActions;
     public string _author;
     public string _rescale;
     public string _null;
@@ -103,7 +103,7 @@ public class TaglistReader : MonoBehaviour
                     count += 1;
                     break;
                 case 13:
-                    _inactivate = line;
+                    _rawStrActions = line;
                     count += 1;
                     break;
                 case 14:

@@ -879,15 +879,29 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         rawStr.ReadyForNextAction = _readyForNextAction;
         rawStr.RefereceResolutionWidht = _refereceResolutionWidht;
         List<string> tempRawStr = _composer.ComposeRawStr(rawStr);
-        foreach (string line in tempRawStr)
-        {
-            Debug.Log(line);
-        }
-    }
-    private void LoadFromFile(string filePath)
-    {
 
+        try
+        {
+            string tempName = _StorylineName.Replace(StrExtensions.FinalStr, "");
+            string fileName = tempName + StrExtensions.RawStr;
+            StreamWriter SW = new StreamWriter(_folders._savedStorylines + "/" + fileName, true, encoding: System.Text.Encoding.Unicode);
+            foreach (string unit in tempRawStr)
+            {
+                SW.WriteLine(unit);
+            }
+            SW.Close();
+        }
+        catch (Exception ex)
+        {
+            Debug.Log(ex.Message);
+        }
+       
     }
+    public void LoadFromFile(string fileName)
+    {
+        Debug.Log(fileName);
+    }
+  
     private void OnDisable()
     {
         _StrEvents.StrEditorRootObjectRequested -= OnStrEditorRootObjectRequested;
