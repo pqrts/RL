@@ -256,26 +256,26 @@ public class StrEditorStorylineComposer : MonoBehaviour
         composedRawStr.Add(rawStr.Phrase);
         composedRawStr.Add(rawStr.PhraseAuthor);
         composedRawStr.Add(rawStr.IsPhraseHolderActive.ToString());
-        composedRawStr.Add(rawStr.ReadyForNextAction.ToString());
+        composedRawStr.Add(rawStr.IsReadyForNextAction.ToString());
         composedRawStr.Add(rawStr.RefereceResolutionWidht.ToString());
         composedRawStr.Add(rawStr.JumpMarker);
-        if (rawStr.PhraseHolderRectTransform != null)
+        if (rawStr.PhraseHolderPosition != null)
         {
-            float positionX = rawStr.PhraseHolderRectTransform.localPosition.x;
-            float positionY = rawStr.PhraseHolderRectTransform.localPosition.y;
-            float positionZ = rawStr.PhraseHolderRectTransform.localPosition.z;
+            float positionX = rawStr.PhraseHolderPosition.x;
+            float positionY = rawStr.PhraseHolderPosition.y;
+            float positionZ = rawStr.PhraseHolderPosition.z;
             composedRawStr.Add(positionX + _tags._separator + positionY + _tags._separator + positionZ);
         }
         else
         {
             composedRawStr.Add(_tags._null);
         }
-        composedRawStr.Add(rawStr.CGsprite.name);
-        if (rawStr.CGRectTransform != null)
+        composedRawStr.Add(rawStr.CGspriteName);
+        if (rawStr.CGPosition != null)
         {
-            float CGpositionX = rawStr.CGRectTransform.localPosition.x;
-            float CGpositionY = rawStr.CGRectTransform.localPosition.y;
-            float CGpositionZ = rawStr.CGRectTransform.localPosition.z;
+            float CGpositionX = rawStr.CGPosition.x;
+            float CGpositionY = rawStr.CGPosition.y;
+            float CGpositionZ = rawStr.CGPosition.z;
             composedRawStr.Add(CGpositionX + _tags._separator + CGpositionY + _tags._separator + CGpositionZ);
         }
         else
@@ -286,9 +286,9 @@ public class StrEditorStorylineComposer : MonoBehaviour
         if (rawStr.ActiveCharacters.Count != 0)
         {
             string tempActiveCharacters = "";
-            foreach (GameObject character in rawStr.ActiveCharacters)
+            foreach (string character in rawStr.ActiveCharacters)
             {
-                tempActiveCharacters = tempActiveCharacters + _tags._separator + character.name;
+                tempActiveCharacters = tempActiveCharacters + _tags._separator + character;
             }
             composedRawStr.Add(tempActiveCharacters);
         }
@@ -300,9 +300,9 @@ public class StrEditorStorylineComposer : MonoBehaviour
         if (rawStr.RequiredObjects.Count != 0)
         {
             string tempRequiredObjects = "";
-            foreach (GameObject gObject in rawStr.RequiredObjects)
+            foreach (string gObject in rawStr.RequiredObjects)
             {
-                tempRequiredObjects = tempRequiredObjects + _tags._separator + gObject.name;
+                tempRequiredObjects = tempRequiredObjects + _tags._separator + gObject;
             }
             composedRawStr.Add(tempRequiredObjects);
         }
@@ -314,9 +314,9 @@ public class StrEditorStorylineComposer : MonoBehaviour
         if (rawStr.RequiredCG.Count != 0)
         {
             string tempRequiredCG = "";
-            foreach (Sprite CG in rawStr.RequiredCG)
+            foreach (string CG in rawStr.RequiredCG)
             {
-                tempRequiredCG = tempRequiredCG + _tags._separator + CG.name;
+                tempRequiredCG = tempRequiredCG + _tags._separator + CG;
             }
             composedRawStr.Add(tempRequiredCG);
         }
@@ -340,7 +340,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         if (rawStr.TotalStepsCount.Count != 0)
         {
             string tempTotalStepsCount = "";
-            foreach (string stepsCount in rawStr.ChoiseOptions)
+            foreach (string stepsCount in rawStr.TotalStepsCount)
             {
                 tempTotalStepsCount = tempTotalStepsCount + _tags._separatorVertical + stepsCount;
             }

@@ -79,7 +79,7 @@ public class StrEditorDecomposer : MonoBehaviour
         string phraseHolderPositionRaw = "";
         for (int i = 0; i < selectedAction.Count; i++)
         {
-            if (selectedAction[i] ==  _tags._praseHolderPosition + _tags._separator + actionID)
+            if (selectedAction[i] == _tags._praseHolderPosition + _tags._separator + actionID)
             {
                 phraseHolderPositionRaw = selectedAction[i + 1];
             }
@@ -263,5 +263,116 @@ public class StrEditorDecomposer : MonoBehaviour
             }
         }
         return jumpMarker;
+    }
+    public StrRawStr DecomposeRawStr(List<string> rstrContent)
+    {
+        StrRawStr decomposedRawStr = new StrRawStr();
+        decomposedRawStr.StorylineName = rstrContent[0];
+        decomposedRawStr.User = rstrContent[1];
+        decomposedRawStr.Version = float.Parse(rstrContent[2]);
+        decomposedRawStr.ActionID = int.Parse(rstrContent[3]);
+        decomposedRawStr.StepID = int.Parse(rstrContent[4]);
+        decomposedRawStr.Phrase = rstrContent[5];
+        decomposedRawStr.PhraseAuthor = rstrContent[6];
+        if (rstrContent[7] == true.ToString())
+        {
+            decomposedRawStr.IsPhraseHolderActive = true;
+        }
+        else
+        {
+            decomposedRawStr.IsPhraseHolderActive = false;
+        }
+        if (rstrContent[8] == true.ToString())
+        {
+            decomposedRawStr.IsReadyForNextAction = true;
+        }
+        else
+        {
+            decomposedRawStr.IsReadyForNextAction = false;
+        }
+        decomposedRawStr.RefereceResolutionWidht = int.Parse(rstrContent[9]);
+        decomposedRawStr.JumpMarker = rstrContent[10];
+        string[] phraseHolderPositionValues = rstrContent[11].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        int positionX = int.Parse(phraseHolderPositionValues[0]);
+        int positionY = int.Parse(phraseHolderPositionValues[1]);
+        int positionZ = int.Parse(phraseHolderPositionValues[2]);
+        decomposedRawStr.PhraseHolderPosition = new Vector3(positionX, positionY, positionZ);
+        decomposedRawStr.CGspriteName = rstrContent[12];
+        string[] CGPositionValues = rstrContent[13].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        Debug.Log("line 12: "+ rstrContent[13]);
+        int CGpositionX = int.Parse(CGPositionValues[0]);
+        int CGpositionY = int.Parse(CGPositionValues[1]);
+        int CGpositionZ = int.Parse(CGPositionValues[2]);
+        decomposedRawStr.CGPosition = new Vector3(CGpositionX, CGpositionY, CGpositionZ);
+        string[] tempActiveCharacters = rstrContent[14].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        List<string> decomposedTempActiveCharacters = new List<string>();
+        if (tempActiveCharacters.Length != 0)
+        {
+            foreach (string unit in tempActiveCharacters)
+            {
+                decomposedTempActiveCharacters.Add(unit);
+            }
+        }
+        decomposedRawStr.ActiveCharacters = decomposedTempActiveCharacters;
+        string[] tempRequiredObjects = rstrContent[15].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        List<string> decomposedTempRequiredObjects = new List<string>();
+        if (tempRequiredObjects.Length != 0)
+        {           
+            foreach (string unit in tempRequiredObjects)
+            {
+                decomposedTempRequiredObjects.Add(unit);
+            }
+        }
+        decomposedRawStr.RequiredObjects = decomposedTempRequiredObjects;
+        string[] tempRequiredCG = rstrContent[16].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        List<string> decomposedTempRequiredCG = new List<string>();
+        if (tempRequiredCG.Length != 0)
+        {
+            foreach (string unit in tempRequiredCG)
+            {
+                decomposedTempRequiredCG.Add(unit);
+            }
+        }
+        decomposedRawStr.RequiredCG = decomposedTempRequiredCG;
+        string[] tempChoiseOptions = rstrContent[17].Split(_tags._separatorVertical.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        List<string> decomposedTempChoiseOptions = new List<string>();
+        if (tempChoiseOptions.Length != 0)
+        {
+            foreach (string choiseOption in tempChoiseOptions)
+            {
+                decomposedTempChoiseOptions.Add(choiseOption);
+            }
+        }
+        decomposedRawStr.ChoiseOptions = decomposedTempChoiseOptions;
+        string[] tempTotalStepsCount = rstrContent[18].Split(_tags._separatorVertical.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        List<string> decomposedTotalStepsCount = new List<string>();
+        if (tempTotalStepsCount.Length != 0)
+        {
+            foreach (string count in tempTotalStepsCount)
+            {
+                decomposedTotalStepsCount.Add(count);
+            }
+        }
+        decomposedRawStr.TotalStepsCount = decomposedTotalStepsCount;
+        string[] tempCurrentActionSteps = rstrContent[19].Split(_tags._separatorVertical.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+        List<string> decomposedTempCurrentActionSteps = new List<string>();
+        if (tempCurrentActionSteps.Length != 0)
+        {
+            foreach (string step in tempCurrentActionSteps)
+            {
+                decomposedTempCurrentActionSteps.Add(step);
+            }
+        }
+        decomposedRawStr.CurretActionSteps = decomposedTempCurrentActionSteps;
+        List<string> tempStorylineActions = new List<string>();
+        if (rstrContent[20] == _tags._rawStrActions)
+        {
+            for (int i = 19; i < rstrContent.Count; i++)
+            {
+                tempStorylineActions.Add(rstrContent[i]);
+            }
+        }
+        decomposedRawStr.StorylineActions = tempStorylineActions;
+        return decomposedRawStr;
     }
 }

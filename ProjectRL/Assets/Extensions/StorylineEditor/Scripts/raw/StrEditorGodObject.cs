@@ -862,12 +862,32 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         rawStr.Phrase = _phrase;
         rawStr.PhraseAuthor = _phraseAuthor;
         rawStr.IsPhraseHolderActive = GetPhraseHolderActivityState();
-        rawStr.PhraseHolderRectTransform = _phraseHolderRectTransform;
-        rawStr.CGRectTransform = _CGRectTransform;
-        rawStr.ActiveCharacters = _activeCharacters;
-        rawStr.ActiveRectTransforms = _activeRectTransforms;
-        rawStr.RequiredObjects = _requiredObjects;
-        rawStr.RequiredCG = _requiredCG;
+        rawStr.PhraseHolderPosition = _phraseHolderRectTransform.localPosition;
+        rawStr.CGPosition = _CGRectTransform.localPosition;
+         List<string> tempActiveCharacters = new List<string>();
+        foreach (GameObject character in _activeCharacters)
+        {
+            tempActiveCharacters.Add(character.name);
+        }
+        rawStr.ActiveCharacters = tempActiveCharacters;
+        List<string> tempRequiredObjects = new List<string>();
+        if (_requiredObjects.Count != 0)
+        {
+            foreach (GameObject gObject in _requiredObjects)
+            {
+                tempRequiredObjects.Add(gObject.name);
+            }
+        }
+        rawStr.RequiredObjects = tempRequiredObjects;
+        List<string> tempRequiredCG = new List<string>();
+        if (_requiredCG.Count != 0)
+        {
+            foreach (Sprite requiredCG in _requiredCG)
+            {
+                tempRequiredCG.Add(requiredCG.name);
+            }
+        }
+        rawStr.RequiredCG = tempRequiredCG;
         rawStr.ChoiseOptions = _choiseOptions;
         rawStr.JumpMarker = _jumpMarker;
         rawStr.StorylineName = _StorylineName;
@@ -875,8 +895,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         rawStr.StorylineActions = _storylineActions;
         rawStr.CurretActionSteps = _curretActionSteps;
         rawStr.TotalStepsCount = _totalStepsCount;
-        rawStr.CGsprite = _CGsprite;
-        rawStr.ReadyForNextAction = _readyForNextAction;
+        rawStr.CGspriteName = _CGsprite.name;
+        rawStr.IsReadyForNextAction = _readyForNextAction;
         rawStr.RefereceResolutionWidht = _refereceResolutionWidht;
         List<string> tempRawStr = _composer.ComposeRawStr(rawStr);
 
@@ -897,11 +917,28 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
        
     }
-    public void LoadFromFile(string fileName)
+    public void LoadFromFile(string filePath)
     {
-        Debug.Log(fileName);
+        List<string> rstrContent = new List<string>();
+        StreamReader SR = new StreamReader(filePath);
+        string line = SR.ReadLine();
+        rstrContent.Add(line);
+        while (line != null)
+        {
+            line = SR.ReadLine();
+            rstrContent.Add(line);
+        }
+        SR.Close();
+        StrRawStr rawStr = _decomposer.DecomposeRawStr(rstrContent);
+        Debug.Log(rawStr.RequiredObjects.Count);
+
+            foreach (string CG in rawStr.TotalStepsCount)
+            {
+                Debug.Log(CG);
+            }
+
+      
     }
-  
     private void OnDisable()
     {
         _StrEvents.StrEditorRootObjectRequested -= OnStrEditorRootObjectRequested;

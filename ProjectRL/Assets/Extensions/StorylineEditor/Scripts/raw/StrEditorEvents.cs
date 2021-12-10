@@ -200,12 +200,11 @@ namespace StorylineEditor
         public string Phrase;
         public string PhraseAuthor;
         public bool IsPhraseHolderActive;
-        public RectTransform PhraseHolderRectTransform;
-        public RectTransform CGRectTransform;
-        public List<GameObject> ActiveCharacters;
-        public List<RectTransform> ActiveRectTransforms;
-        public List<GameObject> RequiredObjects;
-        public List<Sprite> RequiredCG;
+        public Vector3 PhraseHolderPosition;
+        public Vector3 CGPosition;
+        public List<string> ActiveCharacters;
+        public List<string> RequiredObjects;
+        public List<string> RequiredCG;
         public List<string> ChoiseOptions;
         public string JumpMarker;
         public string StorylineName;
@@ -213,8 +212,8 @@ namespace StorylineEditor
         public List<string> StorylineActions;
         public List<string> CurretActionSteps;
         public List<string> TotalStepsCount;
-        public Sprite CGsprite;
-        public bool ReadyForNextAction;
+        public string CGspriteName;
+        public bool IsReadyForNextAction;
         public int RefereceResolutionWidht;
     }
 }

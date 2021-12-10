@@ -41,8 +41,8 @@ public class TaglistReader : MonoBehaviour
     }
     public Boolean Setup_tags()
     {
-        string tag_list_path = _s_folder._configs + "/tag_list.cfg";
-        StreamReader SR = new StreamReader(tag_list_path);
+        string taglistPath = _s_folder._configs + "/tag_list.cfg";
+        StreamReader SR = new StreamReader(taglistPath);
         string line = SR.ReadLine();
         _version = line;
         int count = 1;
