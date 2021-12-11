@@ -128,6 +128,7 @@ namespace StorylineEditor
         public const string RawStr = ".rstr";
         public const string Key = ".strk";
         public const string IV = ".striv";
+        public const string Character = ".char";
     }
     public struct StrUXMLElementsNames
     {
@@ -203,8 +204,8 @@ namespace StorylineEditor
         public Vector3 PhraseHolderPosition;
         public Vector3 CGPosition;
         public List<string> ActiveCharacters;
-        public List<string> RequiredObjects;
-        public List<string> RequiredCG;
+        public List<string> RequiredCharacters;
+        public List<string> RequiredCGs;
         public List<string> ChoiseOptions;
         public string JumpMarker;
         public string StorylineName;
@@ -212,8 +213,11 @@ namespace StorylineEditor
         public List<string> StorylineActions;
         public List<string> CurretActionSteps;
         public List<string> TotalStepsCount;
-        public string CGspriteName;
+        public string CGSpriteName;
         public bool IsReadyForNextAction;
         public int RefereceResolutionWidht;
+        public int TotalActions;
+        public Dictionary<string, Vector3> CharactersPositions;
+        public Dictionary<string, Vector2> CharactersScales;
     }
 }

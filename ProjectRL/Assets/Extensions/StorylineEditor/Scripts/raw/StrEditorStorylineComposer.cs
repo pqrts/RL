@@ -32,8 +32,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
     public List<string> ComposeStep(StrStorylineParameters uncomposedStoryline)
     {
         List<string> stepsOfCurrentAction = new List<string>();
-        string _activeCharacters = "";
-        string _charactersToInactivation = "";
+        string _activeCharacters = string.Empty;     
         int stepID = uncomposedStoryline.StepID;
         RectTransform _CGRectTransform = uncomposedStoryline.CGRectTransform;
         List<GameObject> activeCharacters = uncomposedStoryline.ActiveCharacters;
@@ -51,7 +50,6 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     {
                         _activeCharacters = _activeCharacters + temp.name + _tags._separator;
                     }
-
                     break;
                 case 2:
                     stepsOfCurrentAction.Add(StrConstantValues.StrFileStepGap + _tags._CGposition);
@@ -112,23 +110,22 @@ public class StrEditorStorylineComposer : MonoBehaviour
         string metaInfo = "Created by: " + user + " at " + date;
         List<GameObject> requiredObjects = uncomposedStoryline.RequiredObjects;
         List<Sprite> requiredCG = uncomposedStoryline.RequiredCG;
-
         initPart.Add(_tags._skip + _tags._separator + "**************************META**************************");
         initPart.Add(_tags._skip + _tags._separator + metaInfo);
         initPart.Add(_tags._skip + _tags._separator + "********************************************************");
         initPart.Add(_tags._init);
         initPart.Add(_tags._skip);
         initPart.Add(_tags._version);
-        initPart.Add("" + version);
+        initPart.Add(string.Empty + version);
         initPart.Add(_tags._requiredObjects);
-        string RequiredObjects = "";
+        string RequiredObjects = string.Empty;
         foreach (GameObject requiredObject in requiredObjects)
         {
             RequiredObjects = RequiredObjects + requiredObject.name + _tags._separator;
         }
         initPart.Add(RequiredObjects);
         initPart.Add(_tags._requiredCG);
-        string RequiredCG = "";
+        string RequiredCG = string.Empty;
         foreach (Sprite requiredSprite in requiredCG)
         {
             RequiredCG = RequiredCG + requiredSprite.name + _tags._separator;
@@ -137,7 +134,6 @@ public class StrEditorStorylineComposer : MonoBehaviour
         initPart.Add(_tags._skip + _tags._separator + "********************************************************");
         initPart.Add(_tags._start);
         initPart.Add(_tags._skip);
-
         return initPart;
     }
     public List<string> ComposeAction(StrStorylineParameters uncomposedStoryline)
@@ -150,15 +146,14 @@ public class StrEditorStorylineComposer : MonoBehaviour
         string phraseAuthor = uncomposedStoryline.PhraseAuthor;
         bool isPhraseHolderActive = uncomposedStoryline.IsPhraseHolderActive;
         RectTransform phraseHolderRectTransform = uncomposedStoryline.PhraseHolder.GetComponent<RectTransform>();
-        string CGSpriteName = uncomposedStoryline.CGImage.sprite.ToString().Replace(" (UnityEngine.Sprite)", "");
+        string CGSpriteName = uncomposedStoryline.CGImage.sprite.name;
         string _jumpMarker = uncomposedStoryline.JumpMarker;
         for (int i = 0; i <= StrConstantValues.ActionComposeStagesCount; i++)
         {
             switch (i)
             {
                 case 0:
-                    currentAction.Add(_tags._action + _tags._separator + actionID);
-                    currentAction.Add("{");
+                    currentAction.Add(_tags._action + _tags._separator + actionID);                   
                     currentAction.Add(_tags._phrase + _tags._separator + actionID);
                     currentAction.Add(phrase);
                     currentAction.Add(_tags._author + _tags._separator + actionID);
@@ -203,7 +198,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     {
                         currentAction.Add(_tags._null);
                     }
-                    if (_jumpMarker != "")
+                    if (_jumpMarker != string.Empty)
                     {
                         currentAction.Add(_tags._jumpMarker);
                         currentAction.Add(_jumpMarker);
@@ -215,11 +210,9 @@ public class StrEditorStorylineComposer : MonoBehaviour
                     }
                     break;
                 case 3:
-                    currentAction.Add(_tags._actionEnd);
-                    currentAction.Add("}");
+                    currentAction.Add(_tags._actionEnd);                  
                     currentAction.Add(_tags._skip);
                     break;
-
             }
         }
         return currentAction;
@@ -261,21 +254,21 @@ public class StrEditorStorylineComposer : MonoBehaviour
         composedRawStr.Add(rawStr.JumpMarker);
         if (rawStr.PhraseHolderPosition != null)
         {
-            float positionX = rawStr.PhraseHolderPosition.x;
-            float positionY = rawStr.PhraseHolderPosition.y;
-            float positionZ = rawStr.PhraseHolderPosition.z;
+            float positionX = Mathf.Round(rawStr.PhraseHolderPosition.x);
+            float positionY = Mathf.Round(rawStr.PhraseHolderPosition.y);
+            float positionZ = Mathf.Round(rawStr.PhraseHolderPosition.z);
             composedRawStr.Add(positionX + _tags._separator + positionY + _tags._separator + positionZ);
         }
         else
         {
             composedRawStr.Add(_tags._null);
         }
-        composedRawStr.Add(rawStr.CGspriteName);
+        composedRawStr.Add(rawStr.CGSpriteName);
         if (rawStr.CGPosition != null)
         {
-            float CGpositionX = rawStr.CGPosition.x;
-            float CGpositionY = rawStr.CGPosition.y;
-            float CGpositionZ = rawStr.CGPosition.z;
+            float CGpositionX = Mathf.Round(rawStr.CGPosition.x);
+            float CGpositionY = Mathf.Round(rawStr.CGPosition.y);
+            float CGpositionZ = Mathf.Round(rawStr.CGPosition.z);
             composedRawStr.Add(CGpositionX + _tags._separator + CGpositionY + _tags._separator + CGpositionZ);
         }
         else
@@ -285,7 +278,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
 
         if (rawStr.ActiveCharacters.Count != 0)
         {
-            string tempActiveCharacters = "";
+            string tempActiveCharacters = string.Empty;
             foreach (string character in rawStr.ActiveCharacters)
             {
                 tempActiveCharacters = tempActiveCharacters + _tags._separator + character;
@@ -297,10 +290,10 @@ public class StrEditorStorylineComposer : MonoBehaviour
             composedRawStr.Add(_tags._null);
         }
 
-        if (rawStr.RequiredObjects.Count != 0)
+        if (rawStr.RequiredCharacters.Count != 0)
         {
-            string tempRequiredObjects = "";
-            foreach (string gObject in rawStr.RequiredObjects)
+            string tempRequiredObjects = string.Empty;
+            foreach (string gObject in rawStr.RequiredCharacters)
             {
                 tempRequiredObjects = tempRequiredObjects + _tags._separator + gObject;
             }
@@ -311,10 +304,10 @@ public class StrEditorStorylineComposer : MonoBehaviour
             composedRawStr.Add(_tags._null);
         }
 
-        if (rawStr.RequiredCG.Count != 0)
+        if (rawStr.RequiredCGs.Count != 0)
         {
-            string tempRequiredCG = "";
-            foreach (string CG in rawStr.RequiredCG)
+            string tempRequiredCG = string.Empty;
+            foreach (string CG in rawStr.RequiredCGs)
             {
                 tempRequiredCG = tempRequiredCG + _tags._separator + CG;
             }
@@ -326,7 +319,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         }
         if (rawStr.ChoiseOptions.Count != 0)
         {
-            string tempChoiseOptions = "";
+            string tempChoiseOptions = string.Empty;
             foreach (string option in rawStr.ChoiseOptions)
             {
                 tempChoiseOptions = tempChoiseOptions + _tags._separatorVertical + option;
@@ -339,7 +332,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         }
         if (rawStr.TotalStepsCount.Count != 0)
         {
-            string tempTotalStepsCount = "";
+            string tempTotalStepsCount = string.Empty;
             foreach (string stepsCount in rawStr.TotalStepsCount)
             {
                 tempTotalStepsCount = tempTotalStepsCount + _tags._separatorVertical + stepsCount;
@@ -352,7 +345,7 @@ public class StrEditorStorylineComposer : MonoBehaviour
         }
         if (rawStr.CurretActionSteps.Count != 0)
         {
-            string tempCurrentActionSteps = "";
+            string tempCurrentActionSteps = string.Empty;
             foreach (string step in rawStr.CurretActionSteps)
             {
                 tempCurrentActionSteps = tempCurrentActionSteps + _tags._separatorVertical + step;
@@ -363,7 +356,34 @@ public class StrEditorStorylineComposer : MonoBehaviour
         {
             composedRawStr.Add(_tags._null);
         }
-        composedRawStr.Add(_tags._rawStrActions);
+        composedRawStr.Add(rawStr.TotalActions.ToString());
+        composedRawStr.Add(_tags._rstrCharctersPositions);
+        if (rawStr.CharactersPositions.Count != 0)
+        {
+            foreach (KeyValuePair<string, Vector3> characterPosition in rawStr.CharactersPositions)
+            {
+                string tempPosition = characterPosition.Key + _tags._separator + Mathf.Round(characterPosition.Value.x) + _tags._separator + Mathf.Round(characterPosition.Value.y) + _tags._separator + Mathf.Round(characterPosition.Value.z);
+                composedRawStr.Add(tempPosition);
+            }
+        }
+        else 
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        composedRawStr.Add(_tags._rstrCharctersScales);
+        if (rawStr.CharactersScales.Count != 0)
+        {
+            foreach (KeyValuePair<string, Vector2> characterScale in rawStr.CharactersScales)
+            {
+                string tempScale = characterScale.Key + _tags._separator + Mathf.Round(characterScale.Value.x) + _tags._separator + Mathf.Round(characterScale.Value.y);
+                composedRawStr.Add(tempScale);
+            }
+        }
+        else
+        {
+            composedRawStr.Add(_tags._null);
+        }
+        composedRawStr.Add(_tags._rstrActions);
         if (rawStr.StorylineActions.Count != 0)
         {
 
@@ -375,7 +395,8 @@ public class StrEditorStorylineComposer : MonoBehaviour
         else
         {
             composedRawStr.Add(_tags._null);
-        } 
+        }
+      
         return composedRawStr;
     }
 }

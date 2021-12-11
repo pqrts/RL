@@ -19,7 +19,7 @@ public class TaglistReader : MonoBehaviour
     public string _step;
     public string _characterRelocated;
     public string _activate;
-    public string _rawStrActions;
+    public string _rstrActions;
     public string _author;
     public string _rescale;
     public string _null;
@@ -33,6 +33,8 @@ public class TaglistReader : MonoBehaviour
     public string _characterRescaled;
     public string _phraseHolderState;
     public string _praseHolderPosition;
+    public string _rstrCharctersPositions;
+    public string _rstrCharctersScales;
 
     void Start()
     {
@@ -103,7 +105,7 @@ public class TaglistReader : MonoBehaviour
                     count += 1;
                     break;
                 case 13:
-                    _rawStrActions = line;
+                    _rstrActions = line;
                     count += 1;
                     break;
                 case 14:
@@ -156,6 +158,14 @@ public class TaglistReader : MonoBehaviour
                     break;
                 case 26:
                     _praseHolderPosition = line;
+                    count += 1;
+                    break;
+                case 27:
+                    _rstrCharctersPositions = line;
+                    count += 1;
+                    break;
+                case 28:
+                    _rstrCharctersScales = line;
                     count = 0;
                     break;
             }

@@ -296,13 +296,14 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _totalStepsCount.Clear();
         _jumpMarker = "";
     }
-    public Boolean AddCG(string CGPath, string CGName)
+    public void AddCG(string CGPath, string CGName)
     {
         try
         {
-            Texture2D tex;
-            tex = Resources.Load(CGPath) as Texture2D;
-            _CGsprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height), new Vector2(tex.width / 2, tex.height / 2));
+            Debug.Log("add path "+ CGPath);
+            Debug.Log("add name "+ CGName);
+            Texture2D tempTexture = Resources.Load(CGPath) as Texture2D;
+            _CGsprite = Sprite.Create(tempTexture, new Rect(0, 0, tempTexture.width, tempTexture.height), new Vector2(tempTexture.width / 2, tempTexture.height / 2));
             _CGsprite.name = CGName;
             if (_requiredCG.Count == 0)
             {
@@ -325,10 +326,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         catch (Exception ex)
         {
-            Debug.Log(ex);
-            return false;
-        }
-        return true;
+            Debug.Log(ex);          
+        }       
     }
     public void AddCharacter(string CharacterPath, string CharacterName)
     {
@@ -677,21 +676,18 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _actionID = 1;
         _editorUser = user;
         _StorylineName = fileName;
-        OpenStoryline(fileName);
+        LoadFromFile(fileName);
         return true;
     }
-    public Boolean OpenStoryline(string fileName)
-    {
 
-        return true;
-    }
     public void ResetEditor()
     {
         _phraseHolderRectTransform.localPosition = new Vector3(0f, 0f, 0f);
         SetCGPosition(0f);
-        _phrase = "";
-        _phraseHolderAuthor.text = "----";
-        _phraseHolderPhrase.text = "----";
+        _phrase = string.Empty;
+        _phraseHolderAuthor.text = StrConstantValues.PlaceholderText;
+        _phraseHolderPhrase.text = StrConstantValues.PlaceholderText; ;
+        DefinePhraseHolderActivityState(true.ToString());
         foreach (GameObject destroy in _requiredObjects)
         {
             DestroyImmediate(destroy);
@@ -708,12 +704,13 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _choiseOptions.Clear();
         _CGImage.sprite = null;
         _CGsprite = null;
-        _phraseAuthor = "";
+        _phraseAuthor = string.Empty;
         _stepID = 1;
         _actionID = 1;
         _totalActions = 0;
         _StrEvents.EditorUpdated();
     }
+
     public Boolean ValidateStoryline()
     {
         if (_StorylineName == "" || _StorylineName != null)
@@ -721,6 +718,26 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             return false;
         }
         return true;
+    }
+  public void SetUser(string user)
+    {
+        _editorUser = user;
+    }
+   public  void SetVersion(float version)
+    {
+        _version = version;
+    }
+    private void SetStorylineActions(List<string> storylineActions)
+    {
+        _storylineActions = storylineActions;
+    }
+    private void SetTotalActions(int totalActions)
+    {
+        _totalActions = totalActions;
+    }
+    public void SetActionID(int actionID)
+    {
+        _actionID = actionID;
     }
     private void SetCG(string CGName)
     {
@@ -852,8 +869,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
     }
     public void SaveToFile()
-    {
-        Debug.Log("save");
+    {        
         StrRawStr rawStr = new StrRawStr();
         rawStr.User = _editorUser;
         rawStr.Version = _version;
@@ -871,14 +887,21 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         rawStr.ActiveCharacters = tempActiveCharacters;
         List<string> tempRequiredObjects = new List<string>();
+        Dictionary<string, Vector3> tempCharactersPositions = new Dictionary<string, Vector3>();
+        Dictionary<string, Vector2> tempCharactersScales = new Dictionary<string, Vector2>();
         if (_requiredObjects.Count != 0)
         {
             foreach (GameObject gObject in _requiredObjects)
             {
+                RectTransform gObjectRectTransform = gObject.GetComponent<RectTransform>();
                 tempRequiredObjects.Add(gObject.name);
+                tempCharactersPositions.Add(gObject.name, gObjectRectTransform.localPosition);
+                tempCharactersScales.Add(gObject.name, new Vector2(gObjectRectTransform.rect.width, gObjectRectTransform.rect.height));
             }
         }
-        rawStr.RequiredObjects = tempRequiredObjects;
+        rawStr.RequiredCharacters = tempRequiredObjects;
+        rawStr.CharactersPositions = tempCharactersPositions;
+        rawStr.CharactersScales = tempCharactersScales;
         List<string> tempRequiredCG = new List<string>();
         if (_requiredCG.Count != 0)
         {
@@ -887,7 +910,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                 tempRequiredCG.Add(requiredCG.name);
             }
         }
-        rawStr.RequiredCG = tempRequiredCG;
+        rawStr.RequiredCGs = tempRequiredCG;
         rawStr.ChoiseOptions = _choiseOptions;
         rawStr.JumpMarker = _jumpMarker;
         rawStr.StorylineName = _StorylineName;
@@ -895,14 +918,15 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         rawStr.StorylineActions = _storylineActions;
         rawStr.CurretActionSteps = _curretActionSteps;
         rawStr.TotalStepsCount = _totalStepsCount;
-        rawStr.CGspriteName = _CGsprite.name;
+        rawStr.CGSpriteName = _CGsprite.name;
         rawStr.IsReadyForNextAction = _readyForNextAction;
         rawStr.RefereceResolutionWidht = _refereceResolutionWidht;
+        rawStr.TotalActions = _totalActions;      
+       
         List<string> tempRawStr = _composer.ComposeRawStr(rawStr);
-
         try
         {
-            string tempName = _StorylineName.Replace(StrExtensions.FinalStr, "");
+            string tempName = _StorylineName.Replace(StrExtensions.FinalStr, string.Empty);
             string fileName = tempName + StrExtensions.RawStr;
             StreamWriter SW = new StreamWriter(_folders._savedStorylines + "/" + fileName, true, encoding: System.Text.Encoding.Unicode);
             foreach (string unit in tempRawStr)
@@ -914,8 +938,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         catch (Exception ex)
         {
             Debug.Log(ex.Message);
-        }
-       
+        }       
     }
     public void LoadFromFile(string filePath)
     {
@@ -930,14 +953,68 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         SR.Close();
         StrRawStr rawStr = _decomposer.DecomposeRawStr(rstrContent);
-        Debug.Log(rawStr.RequiredObjects.Count);
-
-            foreach (string CG in rawStr.TotalStepsCount)
+        SetupEditor(rawStr);            
+    }
+    private void SetupEditor(StrRawStr rawStr)
+    {
+        SetUser(rawStr.User);
+        SetVersion(rawStr.Version);
+        SetStorylineActions(rawStr.StorylineActions);
+        SetTotalActions(rawStr.TotalActions);
+        InitializeCharacters(rawStr.RequiredCharacters);
+        InitializeRequiredCGs(rawStr.RequiredCGs);
+        if (rawStr.ActionID <= rawStr.TotalActions)
+        {
+            SelectAction(rawStr.ActionID);
+        }
+        else      
+        {
+            SetActionID(rawStr.ActionID);
+            SetPhrase(rawStr.Phrase);
+            SetAuthor(rawStr.PhraseAuthor);
+            DefinePhraseHolderActivityState(rawStr.IsPhraseHolderActive.ToString());
+            TranslocatePhraseHolder(rawStr.PhraseHolderPosition.x);
+            SetPhraseHolderText(_phraseAuthor, _phrase);
+            SetCG(rawStr.CGSpriteName);
+            DefineCharacterActivityState(rawStr.ActiveCharacters);
+            SetChoiseOptions(rawStr.ChoiseOptions);
+            SetJumpMarker(rawStr.JumpMarker);
+            TranslocateCG(rawStr.CGPosition.x);
+            SetCGPosition(rawStr.CGPosition.x);
+            foreach (KeyValuePair<string, Vector3> characterPosition in rawStr.CharactersPositions)
             {
-                Debug.Log(CG);
+                TranslocateCharacters(characterPosition.Key, characterPosition.Value);
+            }          
+            foreach (KeyValuePair<string, Vector2> characterScale in rawStr.CharactersScales)
+            {
+                RescaleCharacters(characterScale.Key, characterScale.Value);
+            }          
+            _StrEvents.EditorUpdated();
+            SceneViewRepaintCrutch();
+        }
+    }
+    private void InitializeCharacters(List<string> requiredCharacters)
+    {
+        if (requiredCharacters.Count != 0)
+        {
+            foreach (string charcter in requiredCharacters)
+            {
+                string tempPath = _folders._characters + "/" + charcter + StrExtensions.Character;
+                AddCharacter(tempPath, name);
             }
-
-      
+        }
+    }   
+    private void InitializeRequiredCGs(List<string> requiredCGs)
+    {
+        if (requiredCGs.Count != 0)
+        {
+            foreach (string CG in requiredCGs)
+            {
+                string tempPath = _folders._CG + "/" + CG;
+                string path = tempPath.Replace(_folders._root + "/Resources/", string.Empty);            
+                AddCG(path, CG);
+            }
+        }
     }
     private void OnDisable()
     {

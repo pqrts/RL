@@ -297,9 +297,9 @@ public class StrEditorDecomposer : MonoBehaviour
         int positionY = int.Parse(phraseHolderPositionValues[1]);
         int positionZ = int.Parse(phraseHolderPositionValues[2]);
         decomposedRawStr.PhraseHolderPosition = new Vector3(positionX, positionY, positionZ);
-        decomposedRawStr.CGspriteName = rstrContent[12];
+        decomposedRawStr.CGSpriteName = rstrContent[12];
         string[] CGPositionValues = rstrContent[13].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-        Debug.Log("line 12: "+ rstrContent[13]);
+        Debug.Log("line 12: " + rstrContent[13]);
         int CGpositionX = int.Parse(CGPositionValues[0]);
         int CGpositionY = int.Parse(CGPositionValues[1]);
         int CGpositionZ = int.Parse(CGPositionValues[2]);
@@ -317,13 +317,13 @@ public class StrEditorDecomposer : MonoBehaviour
         string[] tempRequiredObjects = rstrContent[15].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         List<string> decomposedTempRequiredObjects = new List<string>();
         if (tempRequiredObjects.Length != 0)
-        {           
+        {
             foreach (string unit in tempRequiredObjects)
             {
                 decomposedTempRequiredObjects.Add(unit);
             }
         }
-        decomposedRawStr.RequiredObjects = decomposedTempRequiredObjects;
+        decomposedRawStr.RequiredCharacters = decomposedTempRequiredObjects;
         string[] tempRequiredCG = rstrContent[16].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         List<string> decomposedTempRequiredCG = new List<string>();
         if (tempRequiredCG.Length != 0)
@@ -333,7 +333,7 @@ public class StrEditorDecomposer : MonoBehaviour
                 decomposedTempRequiredCG.Add(unit);
             }
         }
-        decomposedRawStr.RequiredCG = decomposedTempRequiredCG;
+        decomposedRawStr.RequiredCGs = decomposedTempRequiredCG;
         string[] tempChoiseOptions = rstrContent[17].Split(_tags._separatorVertical.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
         List<string> decomposedTempChoiseOptions = new List<string>();
         if (tempChoiseOptions.Length != 0)
@@ -364,15 +364,85 @@ public class StrEditorDecomposer : MonoBehaviour
             }
         }
         decomposedRawStr.CurretActionSteps = decomposedTempCurrentActionSteps;
-        List<string> tempStorylineActions = new List<string>();
-        if (rstrContent[20] == _tags._rawStrActions)
+        decomposedRawStr.TotalActions = int.Parse(rstrContent[20]);
+        decomposedRawStr.CharactersPositions = ReadRawStrCharactersPositions(rstrContent);
+        decomposedRawStr.CharactersScales = ReadRawStrCharactersScales(rstrContent);
+        decomposedRawStr.StorylineActions = ReadRawStrActions(rstrContent);
+        return decomposedRawStr;
+    }
+    private Dictionary<string, Vector3> ReadRawStrCharactersPositions(List<string> rstrContent)
+    {
+        Dictionary<string, Vector3> tempPositions = new Dictionary<string, Vector3>();
+        if (rstrContent.Count != 0)
         {
-            for (int i = 19; i < rstrContent.Count; i++)
+            for (int i = 0; i < rstrContent.Count; i++)
             {
-                tempStorylineActions.Add(rstrContent[i]);
+                if (rstrContent[i] == _tags._rstrCharctersPositions)
+                {
+                    for (int k = i + 1; k < rstrContent.Count; k++)
+                    {
+                        if (rstrContent[k] == _tags._rstrCharctersScales)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            string[] decomposedTempPositions = rstrContent[k].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            foreach (string line in decomposedTempPositions)
+                            {
+                                Debug.Log(line);
+                            }
+                            Vector3 positions = new Vector3(float.Parse(decomposedTempPositions[1]), float.Parse(decomposedTempPositions[2]), float.Parse(decomposedTempPositions[3]));
+                            tempPositions.Add(decomposedTempPositions[0], positions);
+                        }
+                    }
+                    break;
+                }
             }
         }
-        decomposedRawStr.StorylineActions = tempStorylineActions;
-        return decomposedRawStr;
+        return tempPositions;
+    }
+    private Dictionary<string, Vector2> ReadRawStrCharactersScales(List<string> rstrContent)
+    {
+        Dictionary<string, Vector2> tempScales = new Dictionary<string, Vector2>();
+        if (rstrContent.Count != 0)
+        {
+            for (int i = 0; i < rstrContent.Count; i++)
+            {
+                if (rstrContent[i] == _tags._rstrCharctersScales)
+                {
+                    for (int k = i + 1; k < rstrContent.Count; k++)
+                    {
+                        if (rstrContent[k] == _tags._rstrActions)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            string[] decomposedTempScales = rstrContent[k].Split(_tags._separator.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                            Vector2 scales = new Vector2(float.Parse(decomposedTempScales[1]), float.Parse(decomposedTempScales[2]));
+                            tempScales.Add(decomposedTempScales[0], scales);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        return tempScales;
+    }
+    private List<string> ReadRawStrActions(List<string> rstrContent)
+    {
+        List<string> tempStorylineActions = new List<string>();
+        for (int i = 0; i < rstrContent.Count; i++)
+        {
+            if (rstrContent[i] == _tags._rstrActions)
+            {
+                for (int k = i + 1; k < rstrContent.Count; k++)
+                {
+                    tempStorylineActions.Add(rstrContent[k]);
+                }
+            }
+        }
+        return tempStorylineActions;
     }
 }

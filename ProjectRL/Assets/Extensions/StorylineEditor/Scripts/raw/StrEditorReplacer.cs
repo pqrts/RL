@@ -12,14 +12,11 @@ using System.IO;
 public class StrEditorReplacer : MonoBehaviour
 {
     private TaglistReader _tags;
-    private StrEditorGodObject _StrEditorRoot;
-    private int _decomposedStepsCount;
+    private StrEditorGodObject _StrEditorRoot;  
     public List<string> _beforeSelectedData = new List<string>();
     public List<string> _afterSelectedData = new List<string>();
     public List<string> _selectedActionData = new List<string>();
     public List<string> _selectedActionSteps = new List<string>();
-
-
     public Boolean GetRequieredComponents()
     {
         _StrEditorRoot = GetComponent<StrEditorGodObject>();
@@ -28,18 +25,15 @@ public class StrEditorReplacer : MonoBehaviour
     }
     public List<string> GetSelectedActionData(int selectedActionID)
     {
-
         int k = 0;
         int f = 0;
         _selectedActionData.Clear();
         _selectedActionSteps.Clear();
         _beforeSelectedData.Clear();
         _afterSelectedData.Clear();
-
         int nextActionID = selectedActionID + 1;
         string nextActionData = _tags._action + _tags._separator + nextActionID;
         string currentActionData = _tags._action + _tags._separator + selectedActionID;
-
         for (int i = 0; i < _StrEditorRoot._storylineActions.Count; i++)
         {
             if (_StrEditorRoot._storylineActions[i] != currentActionData)
@@ -51,7 +45,6 @@ public class StrEditorReplacer : MonoBehaviour
                 k = i;
                 goto Selected;
             }
-
         }
         Selected:
         for (int r = k; r < _StrEditorRoot._storylineActions.Count; r++)
@@ -100,6 +93,4 @@ public class StrEditorReplacer : MonoBehaviour
         }      
         return replacedStorylineActions;
     }
-
-
 }

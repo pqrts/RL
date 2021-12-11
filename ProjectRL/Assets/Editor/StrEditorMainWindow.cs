@@ -159,7 +159,8 @@ public class StrEditorMainWindow : EditorWindow
         if (ValidateStoryline())
         {
             _controlPanelButton = new Button(() => OpenControlPanel());
-            _characterConstructorButton = new Button(() => StrEditorCharacterConstructorWindow.ShowWindow());
+            // _characterConstructorButton = new Button(() => StrEditorCharacterConstructorWindow.ShowWindow());
+            _characterConstructorButton = new Button(() => _StrEditorRoot.ResetEditor());
             _saveButton = new Button(() => _StrEditorRoot.SaveToFile());
             _screenBordersModeButton = new Button(() => ChangeScreenBordersMode());
             _openCharactersListButton = new Button(() => OpenCharactersList());
@@ -250,7 +251,7 @@ public class StrEditorMainWindow : EditorWindow
     }
     private void OnActiveCharacterListviewItemSelected()
     {
-        string tempCharacterName = _activeCharactersListview.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+        string tempCharacterName = _activeCharactersListview.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", string.Empty);
         SetSelectedCharacterRectTransform(tempCharacterName);
         _StrEditorRoot.SelectActiveCharacterInHierarchy(tempCharacterName);
         GetPreviewComponents(_activeCharactersListview.selectedIndex);
@@ -447,9 +448,9 @@ public class StrEditorMainWindow : EditorWindow
         string Path = EditorUtility.OpenFilePanel("Select CG", _StrEditorRoot._folders._CG, "png");
         if (Path.Length != 0)
         {
-            string temp = Path.Replace(_StrEditorRoot._folders._root + "/Resources/", "");
-            string temp2 = temp.Replace(".png", "");
-            string temp3 = temp2.Replace("Gamedata/Textures/CG/", "");
+            string temp = Path.Replace(_StrEditorRoot._folders._root + "/Resources/", string.Empty);
+            string temp2 = temp.Replace(".png", string.Empty);
+            string temp3 = temp2.Replace("Gamedata/Textures/CG/", string.Empty);
             _StrEditorRoot.AddCG(temp2, temp3);
             _StrEvents.EditorUpdated();
         }
@@ -458,17 +459,12 @@ public class StrEditorMainWindow : EditorWindow
     {
         if (EditorUtility.DisplayDialog("Notice", "Usaved progress will be lost. Continue?", "OK", "Cancel"))
         {
-            string Path = EditorUtility.OpenFilePanel("Select storyline", _StrEditorRoot._folders._savedStorylines, StrExtensions.RawStr.Replace(".",""));
+            string Path = EditorUtility.OpenFilePanel("Select storyline", _StrEditorRoot._folders._savedStorylines, StrExtensions.RawStr.Replace(".", string.Empty));
             if (Path.Length != 0)
-            {
-                string temp = Path.Replace(_StrEditorRoot._folders._root + "/Resources/", "");
-                string temp2 = temp.Replace(".str", "");
-                string temp3 = temp.Replace("Gamedata/Storylines/", "");
-                _StrEditorRoot.LoadFromFile(Path);
-                //_StrEditorRoot.OpenStoryline(temp3);
+            {                
                 _StrEditorRoot.ResetEditor();
+                _StrEditorRoot.LoadFromFile(Path);                           
                 _StrEvents.EditorUpdated();
-
             }
         }
     }
@@ -477,9 +473,9 @@ public class StrEditorMainWindow : EditorWindow
         string Path = EditorUtility.OpenFilePanel("Select Character", _StrEditorRoot._folders._characters, "char");
         if (Path.Length != 0)
         {
-            string temp = Path.Replace(_StrEditorRoot._folders._root + "/Resources/", "");
-            string temp2 = temp.Replace(".char", "");
-            string temp3 = temp2.Replace("Gamedata/Ñharacters/", "");
+            string temp = Path.Replace(_StrEditorRoot._folders._root + "/Resources/", string.Empty);
+            string temp2 = temp.Replace(".char", string.Empty);
+            string temp3 = temp2.Replace("Gamedata/Ñharacters/", string.Empty);
             _StrEditorRoot.AddCharacter(Path, temp3);
             _StrEvents.EditorUpdated();
         }
