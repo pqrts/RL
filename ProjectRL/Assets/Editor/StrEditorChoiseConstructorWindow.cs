@@ -136,8 +136,8 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
             _addOptionButton = new Button(() => CreateOption());
             _deleteOptionButton = new Button(() => DeleteOption());
             _addOptionToActionButton = new Button(() => _StrEvents.EditorUpdated());
-            _moveOptionUpButton = new Button(() => MoveChoiseOption(StrListDirection.Up));
-            _moveOptionDownButton = new Button(() => MoveChoiseOption(StrListDirection.Down));
+            _moveOptionUpButton = new Button(() => MoveChoiseOption(StrDirection.Up));
+            _moveOptionDownButton = new Button(() => MoveChoiseOption(StrDirection.Down));
             _addOptionButton.text = "Add option";
             _deleteOptionButton.text = "Delete selected option";
             _addOptionToActionButton.text = "Add choise to Action";
@@ -342,15 +342,15 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
         }
         _StrEvents.EditorUpdated();
     }
-    private void MoveChoiseOption(StrListDirection moveDirection)
+    private void MoveChoiseOption(StrDirection moveDirection)
     {
         if (_optionsListview.selectedItem != null)
         {
-            if (moveDirection == StrListDirection.Up)
+            if (moveDirection == StrDirection.Up)
             {
                 if (_optionsListview.selectedIndex != 0)
                 {
-                    _StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrListDirection.Up);
+                    _StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrDirection.Up);
                     _optionsListview.selectedIndex = _optionsListview.selectedIndex - 1;
                 }
                 else
@@ -358,12 +358,12 @@ public class StrEditorChoiseConstructorWindow : EditorWindow
                     EditorUtility.DisplayDialog("Notice", "Option already on top", "OK");
                 }
             }
-            if (moveDirection == StrListDirection.Down)
+            if (moveDirection == StrDirection.Down)
             {
                 int selected_option_id = _optionsListview.selectedIndex;
                 if ((_optionsListview.selectedIndex + 1) != _choiseOptions.Count)
                 {
-                    _StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrListDirection.Down);
+                    _StrEditorRoot.ChangeChoiseOptionPosition(_optionsListview.selectedIndex, StrDirection.Down);
                     _optionsListview.selectedIndex = _optionsListview.selectedIndex + 1;
                 }
                 else

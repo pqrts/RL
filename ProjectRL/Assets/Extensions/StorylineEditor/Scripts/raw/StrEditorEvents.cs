@@ -50,7 +50,7 @@ namespace StorylineEditor
         public List<string> GetChoiseOptionsList();
         public void CreateChoiseOption(StrChoiseOption choiseOption);
         public void DeleteChoiseOption(int optionIndex);
-        public void ChangeChoiseOptionPosition(int optionIndex, StrListDirection direction);
+        public void ChangeChoiseOptionPosition(int optionIndex, StrDirection direction);
         public void RenumberChoiseOptionsList();
     }
     public interface IStrEventSystem
@@ -100,15 +100,15 @@ namespace StorylineEditor
         public static StrFieldType ItemIDField = new StrFieldType("FieldTypeItemId");
         public static StrFieldType CharacterDescriptionField = new StrFieldType("FieldTypeCharacterDescription");
     }
-    public class StrListDirection
+    public class StrDirection
     {
         private string _typeIndex;
-        public StrListDirection(string index)
+        public StrDirection(string index)
         {
             _typeIndex = index;
         }
-        public static StrListDirection Up = new StrListDirection("DirectionUp");
-        public static StrListDirection Down = new StrListDirection("DirectionDown");
+        public static StrDirection Up = new StrDirection("DirectionUp");
+        public static StrDirection Down = new StrDirection("DirectionDown");
 
     }
     public struct StrConstantValues

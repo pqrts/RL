@@ -300,8 +300,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
     {
         try
         {
-            Debug.Log("add path "+ CGPath);
-            Debug.Log("add name "+ CGName);
+            Debug.Log("add path " + CGPath);
+            Debug.Log("add name " + CGName);
             Texture2D tempTexture = Resources.Load(CGPath) as Texture2D;
             _CGsprite = Sprite.Create(tempTexture, new Rect(0, 0, tempTexture.width, tempTexture.height), new Vector2(tempTexture.width / 2, tempTexture.height / 2));
             _CGsprite.name = CGName;
@@ -326,8 +326,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         catch (Exception ex)
         {
-            Debug.Log(ex);          
-        }       
+            Debug.Log(ex);
+        }
     }
     public void AddCharacter(string CharacterPath, string CharacterName)
     {
@@ -485,15 +485,15 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         _choiseOptions.Remove(_choiseOptions[optionIndex]);
         RenumberChoiseOptionsList();
     }
-    public void ChangeChoiseOptionPosition(int optionIndex, StrListDirection direction)
+    public void ChangeChoiseOptionPosition(int optionIndex, StrDirection direction)
     {
         string ReplacedOption = null;
         int ReplacedID = 0;
-        if (direction == StrListDirection.Up)
+        if (direction == StrDirection.Up)
         {
             ReplacedID = optionIndex - 1;
         }
-        if (direction == StrListDirection.Down)
+        if (direction == StrDirection.Down)
         {
             ReplacedID = optionIndex + 1;
         }
@@ -621,41 +621,60 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         return true;
     }
-    public Boolean DeactivateCharacter(string CharacterName)
+    public void DeactivateCharacter(string characterName)
     {
-        foreach (var Character in _activeCharacters)
-        {
-            if (Character.name == CharacterName)
-            {
-                string temp = Character.ToString().Replace(" (UnityEngine.GameObject)", "");
-                Character.SetActive(false);
-                _activeCharacters.Remove(Character);
-                return true;
-            }
-            else
-            {
-                continue;
-            }
-        }
-        return false;
+        GameObject character = FindCharacterInActive(characterName);
+        character.SetActive(false);
+        _activeCharacters.Remove(character);       
     }
-    public Boolean ActivateExistingCharacter(string characterName)
+    public void ActivateExistingCharacter(string characterName)
     {
-        foreach (var character in _requiredObjects)
+        GameObject character = FindCharacterInRequired(characterName);
+        character.SetActive(true);
+        _activeCharacters.Add(character);       
+    }
+    private GameObject FindCharacterInRequired(string characterName)
+    {
+        GameObject tempCharacter = null;
+        foreach (GameObject character in _requiredObjects)
         {
             if (character.name == characterName)
             {
-                string tempName = character.ToString().Replace(" (UnityEngine.GameObject)", "");
-                character.SetActive(true);
-                _activeCharacters.Add(character);
-                return true;
-            }
-            else
-            {
-                continue;
+              tempCharacter = character;              
             }
         }
-        return false;
+        return tempCharacter;
+    }
+    private GameObject FindCharacterInActive(string characterName)
+    {
+        GameObject tempCharacter = null;
+        foreach (GameObject character in _activeCharacters)
+        {
+            if (character.name == characterName)
+            {
+                tempCharacter = character;
+            }
+        }
+        return tempCharacter;
+    }
+    public StrCharacter GetSelectedCharacterParameters(string characterName)
+    {
+        StrCharacter tempCharacterParameters = new StrCharacter();
+        GameObject character = FindCharacterInRequired(characterName);
+        tempCharacterParameters = character.GetComponent<Character>().GetCharacterParameters();
+        return tempCharacterParameters;
+    }
+    public void ChangeCanvasHierarchy(string characterName, StrDirection direction)
+    {
+        GameObject character = FindCharacterInActive(characterName);
+        if (direction == StrDirection.Up)
+        {
+            character.transform.SetAsLastSibling();
+        }
+        else 
+        {
+            character.transform.SetAsFirstSibling();
+        }
     }
     public Boolean CreateNewStoryline(string fileName, string user)
     {
@@ -719,11 +738,11 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         return true;
     }
-  public void SetUser(string user)
+    public void SetUser(string user)
     {
         _editorUser = user;
     }
-   public  void SetVersion(float version)
+    public void SetVersion(float version)
     {
         _version = version;
     }
@@ -869,7 +888,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
     }
     public void SaveToFile()
-    {        
+    {
         StrRawStr rawStr = new StrRawStr();
         rawStr.User = _editorUser;
         rawStr.Version = _version;
@@ -880,7 +899,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         rawStr.IsPhraseHolderActive = GetPhraseHolderActivityState();
         rawStr.PhraseHolderPosition = _phraseHolderRectTransform.localPosition;
         rawStr.CGPosition = _CGRectTransform.localPosition;
-         List<string> tempActiveCharacters = new List<string>();
+        List<string> tempActiveCharacters = new List<string>();
         foreach (GameObject character in _activeCharacters)
         {
             tempActiveCharacters.Add(character.name);
@@ -921,8 +940,8 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         rawStr.CGSpriteName = _CGsprite.name;
         rawStr.IsReadyForNextAction = _readyForNextAction;
         rawStr.RefereceResolutionWidht = _refereceResolutionWidht;
-        rawStr.TotalActions = _totalActions;      
-       
+        rawStr.TotalActions = _totalActions;
+
         List<string> tempRawStr = _composer.ComposeRawStr(rawStr);
         try
         {
@@ -938,7 +957,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         catch (Exception ex)
         {
             Debug.Log(ex.Message);
-        }       
+        }
     }
     public void LoadFromFile(string filePath)
     {
@@ -953,7 +972,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         }
         SR.Close();
         StrRawStr rawStr = _decomposer.DecomposeRawStr(rstrContent);
-        SetupEditor(rawStr);            
+        SetupEditor(rawStr);
     }
     private void SetupEditor(StrRawStr rawStr)
     {
@@ -967,7 +986,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
         {
             SelectAction(rawStr.ActionID);
         }
-        else      
+        else
         {
             SetActionID(rawStr.ActionID);
             SetPhrase(rawStr.Phrase);
@@ -984,11 +1003,11 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             foreach (KeyValuePair<string, Vector3> characterPosition in rawStr.CharactersPositions)
             {
                 TranslocateCharacters(characterPosition.Key, characterPosition.Value);
-            }          
+            }
             foreach (KeyValuePair<string, Vector2> characterScale in rawStr.CharactersScales)
             {
                 RescaleCharacters(characterScale.Key, characterScale.Value);
-            }          
+            }
             _StrEvents.EditorUpdated();
             SceneViewRepaintCrutch();
         }
@@ -1003,7 +1022,7 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
                 AddCharacter(tempPath, name);
             }
         }
-    }   
+    }
     private void InitializeRequiredCGs(List<string> requiredCGs)
     {
         if (requiredCGs.Count != 0)
@@ -1011,8 +1030,29 @@ public class StrEditorGodObject : MonoBehaviour, IStrEditorRoot
             foreach (string CG in requiredCGs)
             {
                 string tempPath = _folders._CG + "/" + CG;
-                string path = tempPath.Replace(_folders._root + "/Resources/", string.Empty);            
+                string path = tempPath.Replace(_folders._root + "/Resources/", string.Empty);
                 AddCG(path, CG);
+            }
+        }
+    }
+    private void SortActiveCharactersList()
+    {
+        for (int i = 0; i < _requiredObjects.Count; i++)
+        {
+            for (int k = 0; k < _activeCharacters.Count; k++)
+            {
+                if (_activeCharacters[k] == _requiredObjects[i])
+                {
+                    if (k != i)
+                    {
+                        GameObject forReplace = _activeCharacters[k];
+                        GameObject replaced = _activeCharacters[i];
+                        _activeCharacters[k] = replaced;
+                        _activeCharacters[i] = forReplace;
+                        Debug.Log("replace");
+                        _StrEvents.EditorUpdated();
+                    }
+                }
             }
         }
     }

@@ -36,6 +36,8 @@ public class StrEditorMainWindow : EditorWindow
     private Button _exportToStrButton;
     private Button _deactivateCharacterButton;
     private Button _setAuthorButton;
+    private Button _bringToFrontButton;
+    private Button _bringToBackgroundButton;
     private Button _deleteSelectedStepButton;
     private ListView _activeCharactersListview;
     private ListView _stepsListview;
@@ -159,8 +161,8 @@ public class StrEditorMainWindow : EditorWindow
         if (ValidateStoryline())
         {
             _controlPanelButton = new Button(() => OpenControlPanel());
-            // _characterConstructorButton = new Button(() => StrEditorCharacterConstructorWindow.ShowWindow());
-            _characterConstructorButton = new Button(() => _StrEditorRoot.ResetEditor());
+             _characterConstructorButton = new Button(() => StrEditorCharacterConstructorWindow.ShowWindow());
+          //  _characterConstructorButton = new Button(() => _StrEditorRoot.ResetEditor());
             _saveButton = new Button(() => _StrEditorRoot.SaveToFile());
             _screenBordersModeButton = new Button(() => ChangeScreenBordersMode());
             _openCharactersListButton = new Button(() => OpenCharactersList());
@@ -176,6 +178,8 @@ public class StrEditorMainWindow : EditorWindow
             _exportToStrButton = new Button(() => ExportToStr());
             _deactivateCharacterButton = new Button(() => DeactivateCharacter());
             _setAuthorButton = new Button(() => SetAuthor());
+            _bringToBackgroundButton = new Button(() => ChangeCanvasHieracrchy(StrDirection.Down));
+            _bringToFrontButton = new Button(() => ChangeCanvasHieracrchy(StrDirection.Up));
             _deleteSelectedStepButton = new Button(() => DeleteSelectedStep());
             _controlPanelButton.text = "Control panel";
             _characterConstructorButton.text = "Character Constructor";
@@ -194,6 +198,8 @@ public class StrEditorMainWindow : EditorWindow
             _exportToStrButton.text = "Export to .str";
             _deactivateCharacterButton.text = "Deactivate Character";
             _setAuthorButton.text = "Set as author";
+            _bringToBackgroundButton.text = "Bring to background";
+            _bringToFrontButton.text = "Bring to front";
             _deleteSelectedStepButton.text = "Delete selected step";
         }
     }
@@ -254,7 +260,7 @@ public class StrEditorMainWindow : EditorWindow
         string tempCharacterName = _activeCharactersListview.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", string.Empty);
         SetSelectedCharacterRectTransform(tempCharacterName);
         _StrEditorRoot.SelectActiveCharacterInHierarchy(tempCharacterName);
-        GetPreviewComponents(_activeCharactersListview.selectedIndex);
+        GetPreviewComponents(tempCharacterName);
         if (_previewBody != null && _previewClothes != null && _previewHaircut != null && _previewMakeup != null)
         {
             _mainWindowMainVE.Q<VisualElement>("previewHolder").style.backgroundImage = _previewBody.texture;
@@ -318,6 +324,8 @@ public class StrEditorMainWindow : EditorWindow
         _mainWindowMainVE.Q<VisualElement>("labelCGtranlocationButtonHolder").Add(_translocationModeDropdown);
         _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_deactivateCharacterButton);
         _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_setAuthorButton);
+        _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_bringToFrontButton);
+        _mainWindowMainVE.Q<VisualElement>("CharspriteHolder").Add(_bringToBackgroundButton);
         _mainWindowMainVE.Q<VisualElement>("charlistBackgroung").Add(_activeCharactersListview);
         _mainWindowMainVE.Q<VisualElement>("steplistArea").Add(_stepsListview);
         _mainWindowMainVE.Q<VisualElement>("CG_sliderHolder").Add(_CGPositionScroller);
@@ -362,11 +370,11 @@ public class StrEditorMainWindow : EditorWindow
     }
     private void DeactivateCharacter()
     {
-        string temp = _activeCharactersListview.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
-        if (_StrEditorRoot.DeactivateCharacter(temp))
+        if (ValidateSelectedItem())
         {
+            string temp = _activeCharactersListview.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+            _StrEditorRoot.DeactivateCharacter(temp);
             EditorUtility.DisplayDialog("Notice", "Character deactivated", "OK");
-            _StrEvents.EditorUpdated();
         }
     }
     private void ExportToStr()
@@ -382,14 +390,18 @@ public class StrEditorMainWindow : EditorWindow
     }
     private void SetAuthor()
     {
-        if (_activeCharactersListview.selectedItem != null)
+        if (ValidateSelectedItem())
         {
             _StrEditorRoot.SetAuthor(_activeCharactersListview.selectedItem.ToString());
             _StrEvents.EditorUpdated();
         }
-        else
+    }
+    private void ChangeCanvasHieracrchy(StrDirection direction)
+    {
+        if (ValidateSelectedItem())
         {
-            EditorUtility.DisplayDialog("Notice", "No character selected", "OK");
+            string tempName = _activeCharactersListview.selectedItem.ToString().Replace(" (UnityEngine.GameObject)", "");
+            _StrEditorRoot.ChangeCanvasHierarchy(tempName, direction);
         }
     }
     private void DeleteSelectedStep()
@@ -423,7 +435,6 @@ public class StrEditorMainWindow : EditorWindow
             if (unit.name == characterName)
             {
                 _SelectedCharacterRectTransform = unit.GetComponent<RectTransform>();
-
             }
         }
     }
@@ -461,9 +472,9 @@ public class StrEditorMainWindow : EditorWindow
         {
             string Path = EditorUtility.OpenFilePanel("Select storyline", _StrEditorRoot._folders._savedStorylines, StrExtensions.RawStr.Replace(".", string.Empty));
             if (Path.Length != 0)
-            {                
+            {
                 _StrEditorRoot.ResetEditor();
-                _StrEditorRoot.LoadFromFile(Path);                           
+                _StrEditorRoot.LoadFromFile(Path);
                 _StrEvents.EditorUpdated();
             }
         }
@@ -485,9 +496,9 @@ public class StrEditorMainWindow : EditorWindow
         _StrEditorRoot.SetPhrase(phraseText);
         _StrEvents.EditorUpdated();
     }
-    private void GetPreviewComponents(int SelectedCharacterID)
+    private void GetPreviewComponents(string characterName)
     {
-        StrCharacter tempStrCharacter = _StrEditorRoot._requiredObjects[SelectedCharacterID].GetComponent<Character>().GetCharacterParameters();
+        StrCharacter tempStrCharacter = _StrEditorRoot.GetSelectedCharacterParameters(characterName);
         _previewBody = tempStrCharacter.CharacterBody.sprite;
         _previewClothes = tempStrCharacter.CharacterClothes.sprite;
         _previewHaircut = tempStrCharacter.CharacterHaircut.sprite;
@@ -506,6 +517,15 @@ public class StrEditorMainWindow : EditorWindow
             EditorUtility.DisplayDialog("Notice", "Create new storyline first", "OK");
             return false;
         }
+    }
+    private Boolean ValidateSelectedItem()
+    {
+        if (_activeCharactersListview.selectedItem == null)
+        {
+            EditorUtility.DisplayDialog("Notice", "No character selected", "OK");
+            return false;
+        }
+        return true;
     }
     private void OnDisable()
     {
